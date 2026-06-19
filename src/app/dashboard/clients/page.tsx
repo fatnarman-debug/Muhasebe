@@ -1,0 +1,81 @@
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { Plus, Building2, Phone, Mail, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export default async function ClientsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data: clients } = await supabase
+    .from("client_companies")
+    .select("*")
+    .eq("user_id", user!.id)
+    .order("name");
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Klientföretag</h1>
+          <p className="text-gray-500 text-sm mt-1">{clients?.length ?? 0} företag</p>
+        </div>
+        <Link href="/dashboard/clients/new">
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" /> Nytt klientföretag
+          </Button>
+        </Link>
+      </div>
+
+      {!clients?.length ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-16 text-center">
+          <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Inga klientföretag ännu</h3>
+          <p className="text-gray-500 text-sm mb-6">
+            Lägg till de företag du hanterar fakturering för.
+          </p>
+          <Link href="/dashboard/clients/new">
+            <Button className="gap-2"><Plus className="w-4 h-4" /> Lägg till första företaget</Button>
+          </Link>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {clients.map((client) => (
+            <Link
+              key={client.id}
+              href={`/dashboard/clients/${client.id}`}
+              className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm hover:border-blue-200 transition-all group"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-blue-600" />
+                </div>
+                {client.f_skatt && (
+                  <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="w-3 h-3" /> F-skatt
+                  </span>
+                )}
+              </div>
+              <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                {client.name}
+              </h3>
+              <p className="text-xs text-gray-400 mt-0.5 mb-3">Org.nr: {client.org_no}</p>
+              <div className="space-y-1">
+                {client.email && (
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <Mail className="w-3 h-3" /> {client.email}
+                  </div>
+                )}
+                {client.phone && (
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <Phone className="w-3 h-3" /> {client.phone}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
