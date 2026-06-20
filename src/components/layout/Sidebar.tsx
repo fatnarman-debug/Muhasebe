@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  FileText, Building2, Users, Package, BarChart3, Settings, LayoutDashboard,
+  FileText, Building2, Users, Package, BarChart3, Settings, LayoutDashboard, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/dashboard/customers", label: "Kunder", icon: Users },
   { href: "/dashboard/invoices", label: "Fakturor", icon: FileText },
   { href: "/dashboard/articles", label: "Artiklar", icon: Package },
+  { href: "/dashboard/reconciliation", label: "Bankavstämning", icon: Landmark },
   { href: "/dashboard/reports", label: "Rapporter", icon: BarChart3 },
 ];
 
