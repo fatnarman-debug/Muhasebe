@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSEK, formatDate, getInvoiceStatusLabel, getInvoiceStatusColor } from "@/lib/utils";
 import { InvoiceStatusActions } from "@/components/invoices/InvoiceStatusActions";
@@ -51,7 +51,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             {getInvoiceStatusLabel(invoice.status)}
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {invoice.status !== "paid" && invoice.status !== "cancelled" && (
+            <Link href={`/dashboard/invoices/${id}/edit`}>
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <Pencil className="w-3.5 h-3.5" /> Redigera
+              </Button>
+            </Link>
+          )}
           <InvoiceStatusActions
             invoiceId={id}
             currentStatus={invoice.status}
