@@ -31,19 +31,19 @@ export default async function DashboardPage() {
   }
 
   const stats = [
-    { label: "Klientföretag", value: clientCount, icon: Building2, href: "/dashboard/clients", color: "bg-blue-50 text-blue-600" },
-    { label: "Kunder", value: customerCount, icon: Users, href: "/dashboard/customers", color: "bg-indigo-50 text-indigo-600" },
-    { label: "Inbetalat (år)", value: formatSEK(paid), icon: TrendingUp, href: "/dashboard/invoices", color: "bg-green-50 text-green-600" },
-    { label: "Öppna fordringar", value: formatSEK(open), icon: Clock, href: "/dashboard/invoices?status=sent", color: "bg-yellow-50 text-yellow-600" },
-    { label: "Förfallna", value: formatSEK(overdue), icon: AlertCircle, href: "/dashboard/invoices?status=overdue", color: "bg-red-50 text-red-600" },
-    { label: "Utkast", value: draft, icon: FileText, href: "/dashboard/invoices?status=draft", color: "bg-gray-50 text-gray-600" },
+    { label: "Müşteri Şirket", value: clientCount, icon: Building2, href: "/dashboard/clients", color: "bg-blue-50 text-blue-600" },
+    { label: "Müşteri", value: customerCount, icon: Users, href: "/dashboard/customers", color: "bg-indigo-50 text-indigo-600" },
+    { label: "Tahsil Edilen", value: formatSEK(paid), icon: TrendingUp, href: "/dashboard/invoices", color: "bg-teal-50 text-teal-700" },
+    { label: "Açık Alacak", value: formatSEK(open), icon: Clock, href: "/dashboard/invoices?status=sent", color: "bg-amber-50 text-amber-600" },
+    { label: "Gecikmiş", value: formatSEK(overdue), icon: AlertCircle, href: "/dashboard/invoices?status=overdue", color: "bg-red-50 text-red-600" },
+    { label: "Taslak", value: draft, icon: FileText, href: "/dashboard/invoices?status=draft", color: "bg-slate-50 text-slate-600" },
   ];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Översikt</h1>
-        <p className="text-gray-500 text-sm mt-1">Välkommen tillbaka</p>
+        <h1 className="text-2xl font-bold text-slate-900">Genel Bakış</h1>
+        <p className="text-slate-500 text-sm mt-1">Hoş geldiniz — 24 Haziran 2026</p>
       </div>
 
       {/* Stats grid */}
@@ -52,31 +52,31 @@ export default async function DashboardPage() {
           <Link
             key={stat.label}
             href={stat.href}
-            className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow"
+            className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-sm transition-shadow"
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-gray-500">{stat.label}</span>
+              <span className="text-sm font-medium text-slate-500">{stat.label}</span>
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.color}`}>
                 <stat.icon className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+            <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
           </Link>
         ))}
       </div>
 
       {/* Quick actions */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-base font-semibold text-gray-900 mb-4">Snabbåtgärder</h2>
+      <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <h2 className="text-base font-semibold text-slate-900 mb-4">Hızlı İşlemler</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <FileText className="w-4 h-4" /> Ny faktura
+          <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            <FileText className="w-4 h-4" /> Yeni Fatura
           </Link>
-          <Link href="/dashboard/clients/new" className="inline-flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <Building2 className="w-4 h-4" /> Nytt klientföretag
+          <Link href="/dashboard/clients/new" className="inline-flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            <Building2 className="w-4 h-4" /> Yeni Müşteri Şirketi
           </Link>
-          <Link href="/dashboard/customers" className="inline-flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <Users className="w-4 h-4" /> Lägg till kund
+          <Link href="/dashboard/customers" className="inline-flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            <Users className="w-4 h-4" /> Müşteri Ekle
           </Link>
         </div>
       </div>

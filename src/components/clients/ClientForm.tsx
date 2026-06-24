@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save } from "lucide-react";
 import type { ClientCompany } from "@/types/database";
 import { LogoUpload } from "./LogoUpload";
+import { InvoiceTemplateSelector } from "@/components/invoices/InvoiceTemplateSelector";
 
 interface ClientFormProps {
   initialData?: ClientCompany;
@@ -42,6 +43,7 @@ export function ClientForm({ initialData }: ClientFormProps) {
     notes: initialData?.notes ?? "",
     logo_url: initialData?.logo_url ?? "",
     invoice_prefix: initialData?.invoice_prefix ?? "FAK",
+    invoice_template: (initialData as (typeof initialData & { invoice_template?: string }))?.invoice_template ?? "klasik-standart",
   });
 
   function set(field: string, value: string | boolean | number) {
@@ -222,6 +224,18 @@ export function ClientForm({ initialData }: ClientFormProps) {
             rows={3}
           />
         </div>
+      </section>
+
+      {/* Fatura Şablonu */}
+      <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fatura Şablonu</h2>
+          <p className="text-xs text-gray-400 mt-0.5">Bu şirket için oluşturulacak tüm faturalarda kullanılacak tasarım şablonu.</p>
+        </div>
+        <InvoiceTemplateSelector
+          value={form.invoice_template}
+          onChange={(tpl) => set("invoice_template", tpl)}
+        />
       </section>
 
       {error && (

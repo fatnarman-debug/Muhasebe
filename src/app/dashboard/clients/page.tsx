@@ -1,17 +1,24 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Plus, Building2, Phone, Mail, CheckCircle2 } from "lucide-react";
+import { Plus, Building2, Phone, Mail, CheckCircle2, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default async function ClientsPage() {
+export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const { q } = await searchParams;
 
-  const { data: clients } = await supabase
+  let query = supabase
     .from("client_companies")
     .select("*")
     .eq("user_id", user!.id)
     .order("name");
+
+  if (q) {
+    query = query.or(`name.ilike.%${q}%,org_no.ilike.%${q}%`);
+  }
+
+  const { data: clients } = await query;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -26,6 +33,22 @@ export default async function ClientsPage() {
           </Button>
         </Link>
       </div>
+
+      {/* Search */}
+      <form method="GET" className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <input
+          name="q"
+          defaultValue={q}
+          placeholder="Sök efter företagsnamn eller org-nummer..."
+          className="w-full h-10 pl-10 pr-10 rounded-lg border border-gray-200 bg-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        {q && (
+          <Link href="/dashboard/clients" className="absolute right-3 top-1/2 -translate-y-1/2">
+            <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+          </Link>
+        )}
+      </form>
 
       {!clients?.length ? (
         <div className="bg-white rounded-xl border border-gray-200 p-16 text-center">
