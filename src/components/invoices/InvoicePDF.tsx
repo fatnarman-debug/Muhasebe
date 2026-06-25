@@ -1,55 +1,63 @@
-import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
 
+// ── Şablon görselleri: yapı/sıra sabit, yalnızca renk + başlık bandı değişir ──
+type PdfTpl = { accent: string; band: boolean; bandBg?: string; minimal?: boolean };
+const PDF_TEMPLATES: Record<string, PdfTpl> = {
+  "klasik-standart":    { accent: "#1f2937", band: false },
+  "klasik-minimal":     { accent: "#111827", band: false, minimal: true },
+  "klasik-profesyonel": { accent: "#334155", band: false },
+  "klasik-corporate":   { accent: "#111827", band: true, bandBg: "#111827" },
+  "klasik-clean":       { accent: "#475569", band: false, minimal: true },
+  "modern-colorful":    { accent: "#0d9488", band: true, bandBg: "#0d9488" },
+  "modern-gradient":    { accent: "#7c3aed", band: true, bandBg: "#7c3aed" },
+  "modern-bold":        { accent: "#0d9488", band: true, bandBg: "#111827" },
+  "modern-tech":        { accent: "#16a34a", band: true, bandBg: "#0b0f0c" },
+  "modern-creative":    { accent: "#ea580c", band: true, bandBg: "#ea580c" },
+};
+
 const styles = StyleSheet.create({
-  page: { fontFamily: "Helvetica", fontSize: 9, color: "#1a1a1a", padding: 48, backgroundColor: "#ffffff" },
-  header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 32 },
-  logo: { width: 120, height: 48, objectFit: "contain" },
-  companyName: { fontSize: 16, fontFamily: "Helvetica-Bold", marginBottom: 2 },
-  companyMeta: { fontSize: 8, color: "#666", lineHeight: 1.5 },
-  invoiceLabel: { fontSize: 28, fontFamily: "Helvetica-Bold", color: "#1e40af", textAlign: "right" },
-  invoiceNumber: { fontSize: 11, fontFamily: "Helvetica-Bold", color: "#1e40af", textAlign: "right", marginTop: 2 },
-  divider: { borderBottomWidth: 1, borderBottomColor: "#e5e7eb", marginVertical: 16 },
-  twoCol: { flexDirection: "row", justifyContent: "space-between", marginBottom: 24 },
-  col: { width: "48%" },
-  label: { fontSize: 7, color: "#9ca3af", fontFamily: "Helvetica-Bold", textTransform: "uppercase", marginBottom: 4 },
-  value: { fontSize: 9, color: "#111827", lineHeight: 1.6 },
-  valueBold: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827", lineHeight: 1.6 },
-  metaGrid: { flexDirection: "row", flexWrap: "wrap", gap: 16, marginBottom: 24 },
-  metaItem: { width: "30%" },
-  table: { marginBottom: 8 },
-  tableHeader: { flexDirection: "row", backgroundColor: "#f3f4f6", padding: "6 8", borderRadius: 3 },
-  tableRow: { flexDirection: "row", padding: "6 8", borderBottomWidth: 1, borderBottomColor: "#f3f4f6" },
-  thDesc: { flex: 1, fontSize: 7, fontFamily: "Helvetica-Bold", color: "#6b7280", textTransform: "uppercase" },
-  thRight: { width: 60, fontSize: 7, fontFamily: "Helvetica-Bold", color: "#6b7280", textTransform: "uppercase", textAlign: "right" },
-  thVat: { width: 40, fontSize: 7, fontFamily: "Helvetica-Bold", color: "#6b7280", textTransform: "uppercase", textAlign: "right" },
-  tdDesc: { flex: 1, fontSize: 9, color: "#111827" },
-  tdRight: { width: 60, fontSize: 9, color: "#374151", textAlign: "right" },
-  tdVat: { width: 40, fontSize: 9, color: "#6b7280", textAlign: "right" },
-  totalsBox: { flexDirection: "row", justifyContent: "flex-end", marginTop: 8 },
-  totalsInner: { width: 200 },
-  totalRow: { flexDirection: "row", justifyContent: "space-between", padding: "3 0" },
-  totalLabel: { fontSize: 9, color: "#6b7280" },
-  totalValue: { fontSize: 9, color: "#374151", textAlign: "right" },
-  totalBoldLabel: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
-  totalBoldValue: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827", textAlign: "right" },
-  totalDivider: { borderTopWidth: 1.5, borderTopColor: "#111827", marginVertical: 4 },
-  paymentBox: { backgroundColor: "#eff6ff", borderRadius: 4, padding: 12, marginTop: 24 },
-  paymentTitle: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#1e40af", marginBottom: 4 },
-  paymentRow: { flexDirection: "row", gap: 24 },
-  paymentItem: { flexDirection: "column" },
-  paymentItemLabel: { fontSize: 7, color: "#3b82f6", marginBottom: 1 },
-  paymentItemValue: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#1e3a8a" },
-  notesBox: { marginTop: 16 },
-  notesLabel: { fontSize: 7, color: "#9ca3af", fontFamily: "Helvetica-Bold", textTransform: "uppercase", marginBottom: 3 },
-  notesText: { fontSize: 8, color: "#4b5563", lineHeight: 1.5 },
-  fskatt: { fontSize: 7, color: "#16a34a", fontFamily: "Helvetica-Bold", marginTop: 2 },
-  footer: { position: "absolute", bottom: 24, left: 48, right: 48, borderTopWidth: 1, borderTopColor: "#e5e7eb", paddingTop: 8, flexDirection: "row", justifyContent: "space-between" },
-  footerText: { fontSize: 7, color: "#9ca3af" },
+  page: { fontFamily: "Helvetica", fontSize: 9, color: "#1a1a1a", paddingTop: 40, paddingBottom: 90, paddingHorizontal: 40, backgroundColor: "#ffffff" },
+  logo: { width: 130, height: 44, objectFit: "contain", marginBottom: 6 },
+  companyName: { fontSize: 14, fontFamily: "Helvetica-Bold" },
+  companyLine: { fontSize: 8, color: "#555" },
+  fakturaTitle: { fontSize: 26, fontFamily: "Helvetica-Bold", textAlign: "right" },
+  sida: { fontSize: 8, color: "#888", textAlign: "right", marginTop: 2 },
+  recipientName: { fontSize: 10, fontFamily: "Helvetica-Bold" },
+  recipientLine: { fontSize: 9, color: "#222", lineHeight: 1.5 },
+  bandLabelSm: { fontSize: 8 },
+  bandBig: { fontSize: 18, fontFamily: "Helvetica-Bold" },
+  bandColLabel: { fontSize: 8 },
+  bandColVal: { fontSize: 11, fontFamily: "Helvetica-Bold" },
+  infoBox: { borderWidth: 1, borderColor: "#d1d5db", borderRadius: 4, padding: 12, flexDirection: "row", marginBottom: 22 },
+  infoCol: { width: "50%" },
+  infoRow: { flexDirection: "row", marginBottom: 3 },
+  infoKey: { fontSize: 8.5, color: "#6b7280", width: 78 },
+  infoVal: { fontSize: 8.5, color: "#111827", fontFamily: "Helvetica-Bold" },
+  thRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#9ca3af", paddingBottom: 5, marginBottom: 2 },
+  th: { fontSize: 8, color: "#6b7280" },
+  row: { flexDirection: "row", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#f0f0f0" },
+  cKind: { width: 56, fontSize: 9, fontFamily: "Helvetica-Bold" },
+  cDesc: { flex: 1, fontSize: 9, color: "#222", paddingRight: 8 },
+  cQty: { width: 78, fontSize: 9, color: "#444", textAlign: "right" },
+  cVat: { width: 42, fontSize: 9, color: "#444", textAlign: "right" },
+  cAmt: { width: 80, fontSize: 9, fontFamily: "Helvetica-Bold", textAlign: "right" },
+  sumWrap: { flexDirection: "row", justifyContent: "flex-end", marginTop: 14 },
+  sumBox: { width: 320 },
+  sumHead: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#e5e7eb", paddingBottom: 4 },
+  sumHeadCell: { fontSize: 8, color: "#6b7280", textAlign: "right" },
+  sumRow: { flexDirection: "row", paddingVertical: 4 },
+  sumLabel: { flex: 1, fontSize: 9, color: "#374151" },
+  sumCell: { width: 90, fontSize: 9, textAlign: "right", color: "#374151" },
+  attRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 8 },
+  attText: { fontSize: 13, fontFamily: "Helvetica-Bold" },
+  giro: { position: "absolute", bottom: 24, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 8, flexDirection: "row", justifyContent: "space-between" },
+  giroLabel: { fontSize: 7, color: "#6b7280" },
+  giroVal: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
 });
 
 function fmt(n: number) {
-  return new Intl.NumberFormat("sv-SE", { style: "currency", currency: "SEK", minimumFractionDigits: 2 }).format(n);
+  return new Intl.NumberFormat("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + " kr";
 }
 function fmtDate(d: string) {
   return new Intl.DateTimeFormat("sv-SE").format(new Date(d));
@@ -60,153 +68,152 @@ interface Props {
   company: ClientCompany;
   customer: Customer;
   lines: InvoiceLine[];
+  template?: string;
 }
 
-export function InvoicePDF({ invoice, company, customer, lines }: Props) {
+export function InvoicePDF({ invoice, company, customer, lines, template }: Props) {
+  const tpl = PDF_TEMPLATES[template ?? ""] ?? PDF_TEMPLATES["klasik-standart"];
+  const accent = tpl.accent;
+
   const sorted = [...lines].sort((a, b) => a.sort_order - b.sort_order);
-  const vatByRate: Record<number, number> = {};
-  sorted.forEach((l) => { vatByRate[l.vat_rate] = (vatByRate[l.vat_rate] ?? 0) + l.vat_amount; });
-  const vatRates = Object.keys(vatByRate).map(Number).filter((r) => vatByRate[r] > 0).sort((a, b) => b - a);
+  const vatByRate: Record<number, { net: number; vat: number }> = {};
+  sorted.forEach((l) => {
+    const r = l.vat_rate;
+    vatByRate[r] = vatByRate[r] ?? { net: 0, vat: 0 };
+    vatByRate[r].net += l.line_total;
+    vatByRate[r].vat += l.vat_amount;
+  });
+  const vatRates = Object.keys(vatByRate).map(Number).filter((r) => vatByRate[r].net !== 0).sort((a, b) => b - a);
+  const rounding = invoice.total - (invoice.subtotal + invoice.vat_amount);
+
+  // "Att betala" özet bandı: band şablonlarda renkli (beyaz yazı), diğerlerinde gri (accent tutar)
+  const bandBg = tpl.band ? tpl.bandBg! : "#f3f4f6";
+  const bandFg = tpl.band ? "#ffffff" : "#111827";
+  const bandSub = tpl.band ? "rgba(255,255,255,0.75)" : "#6b7280";
+  const bandAmt = tpl.band ? "#ffffff" : accent;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            {company.logo_url ? (
-              <Image src={company.logo_url} style={styles.logo} />
-            ) : (
-              <Text style={styles.companyName}>{company.name}</Text>
-            )}
-            {company.logo_url && <Text style={[styles.companyName, { marginTop: 4 }]}>{company.name}</Text>}
-            <Text style={styles.companyMeta}>Org.nr: {company.org_no}</Text>
-            {company.moms_no && <Text style={styles.companyMeta}>Moms.nr: {company.moms_no}</Text>}
-            {company.f_skatt && <Text style={styles.fskatt}>✓ Godkänd för F-skatt</Text>}
-            <Text style={[styles.companyMeta, { marginTop: 4 }]}>{company.address_line1}</Text>
-            <Text style={styles.companyMeta}>{company.postal_code} {company.city}</Text>
+        {/* 1) Üst: logo + firma satırı (sol) · Faktura + sida (sağ) */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+          <View style={{ maxWidth: "62%" }}>
+            {company.logo_url ? <Image src={company.logo_url} style={styles.logo} /> : <Text style={styles.companyName}>{company.name}</Text>}
+            <Text style={styles.companyLine}>
+              {company.name}, {company.address_line1}, {company.postal_code} {company.city}
+            </Text>
           </View>
           <View>
-            <Text style={styles.invoiceLabel}>FAKTURA</Text>
-            <Text style={styles.invoiceNumber}>{invoice.invoice_number}</Text>
+            <Text style={[styles.fakturaTitle, { color: accent }]}>Faktura</Text>
+            <Text style={styles.sida}>sida 1/1</Text>
           </View>
         </View>
 
-        <View style={styles.divider} />
-
-        {/* Bill to + Meta */}
-        <View style={styles.twoCol}>
-          <View style={styles.col}>
-            <Text style={styles.label}>Faktureras till</Text>
-            <Text style={styles.valueBold}>{customer.name}</Text>
-            {customer.org_no && <Text style={styles.value}>Org.nr: {customer.org_no}</Text>}
-            <Text style={styles.value}>{customer.address_line1}</Text>
-            {customer.address_line2 && <Text style={styles.value}>{customer.address_line2}</Text>}
-            <Text style={styles.value}>{customer.postal_code} {customer.city}</Text>
-            {customer.email && <Text style={[styles.value, { marginTop: 4 }]}>{customer.email}</Text>}
-          </View>
-          <View style={[styles.col, { alignItems: "flex-end" }]}>
-            <View style={styles.metaGrid}>
-              {[
-                ["Fakturadatum", fmtDate(invoice.invoice_date)],
-                ["Förfallodatum", fmtDate(invoice.due_date)],
-                ["OCR-nummer", invoice.ocr_number ?? "—"],
-                ...(invoice.your_reference ? [["Er referens", invoice.your_reference]] : []),
-                ...(invoice.our_reference ? [["Vår referens", invoice.our_reference]] : []),
-              ].map(([l, v]) => (
-                <View key={l} style={{ alignItems: "flex-end", marginBottom: 8 }}>
-                  <Text style={styles.label}>{l}</Text>
-                  <Text style={styles.valueBold}>{v}</Text>
-                </View>
-              ))}
-            </View>
+        {/* 2) Alıcı (Mottagare) */}
+        <View style={{ alignItems: "flex-end", marginTop: 28, marginBottom: 28 }}>
+          <View style={{ width: 240 }}>
+            <Text style={styles.recipientName}>{customer.name}</Text>
+            <Text style={styles.recipientLine}>{customer.address_line1}</Text>
+            {customer.address_line2 ? <Text style={styles.recipientLine}>{customer.address_line2}</Text> : null}
+            <Text style={styles.recipientLine}>{customer.postal_code} {customer.city}</Text>
           </View>
         </View>
 
-        {/* Lines */}
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.thDesc}>Beskrivning</Text>
-            <Text style={styles.thRight}>Antal</Text>
-            <Text style={[styles.thRight, { width: 40 }]}>Enhet</Text>
-            <Text style={styles.thRight}>À-pris</Text>
-            <Text style={styles.thVat}>Moms%</Text>
-            <Text style={styles.thRight}>Belopp</Text>
+        {/* 3) "Att betala" özet bandı (tam genişlik) */}
+        <View style={{ marginHorizontal: -40, paddingHorizontal: 40, paddingVertical: 16, backgroundColor: bandBg, flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+          <View style={{ flex: 1.3 }}>
+            <Text style={[styles.bandLabelSm, { color: bandSub }]}>Att betala (inkl. moms)</Text>
+            <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(invoice.total)}</Text>
           </View>
-          {sorted.map((l, i) => (
-            <View key={i} style={styles.tableRow}>
-              <Text style={styles.tdDesc}>{l.description}</Text>
-              <Text style={styles.tdRight}>{l.quantity}</Text>
-              <Text style={[styles.tdRight, { width: 40 }]}>{l.unit}</Text>
-              <Text style={styles.tdRight}>{fmt(l.unit_price)}</Text>
-              <Text style={styles.tdVat}>{l.vat_rate}%</Text>
-              <Text style={styles.tdRight}>{fmt(l.line_total)}</Text>
-            </View>
-          ))}
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.bandColLabel, { color: bandSub }]}>Förfallodatum</Text>
+            <Text style={[styles.bandColVal, { color: bandFg }]}>{fmtDate(invoice.due_date)}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.bandColLabel, { color: bandSub }]}>Bankgiro</Text>
+            <Text style={[styles.bandColVal, { color: bandFg }]}>{company.bankgiro ?? "—"}</Text>
+          </View>
+          <View style={{ flex: 1.4 }}>
+            <Text style={[styles.bandColLabel, { color: bandSub }]}>OCR/Referensnr.</Text>
+            <Text style={[styles.bandColVal, { color: bandFg }]}>{invoice.ocr_number ?? invoice.invoice_number}</Text>
+          </View>
         </View>
 
-        {/* Totals */}
-        <View style={styles.totalsBox}>
-          <View style={styles.totalsInner}>
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Netto (ex. moms)</Text>
-              <Text style={styles.totalValue}>{fmt(invoice.subtotal)}</Text>
+        {/* 4) Bilgi kutusu */}
+        <View style={styles.infoBox}>
+          <View style={styles.infoCol}>
+            <View style={styles.infoRow}><Text style={styles.infoKey}>Fakturanummer</Text><Text style={styles.infoVal}>{invoice.invoice_number}</Text></View>
+            <View style={styles.infoRow}><Text style={styles.infoKey}>Utställare</Text><Text style={styles.infoVal}>{company.name}</Text></View>
+            <View style={styles.infoRow}><Text style={styles.infoKey}>Mottagare</Text><Text style={styles.infoVal}>{customer.name}</Text></View>
+          </View>
+          <View style={styles.infoCol}>
+            <View style={styles.infoRow}><Text style={styles.infoKey}>Fakturadatum</Text><Text style={styles.infoVal}>{fmtDate(invoice.invoice_date)}</Text></View>
+            {customer.org_no ? <View style={styles.infoRow}><Text style={styles.infoKey}>Org.nr</Text><Text style={styles.infoVal}>{customer.org_no}</Text></View> : null}
+            {invoice.your_reference ? <View style={styles.infoRow}><Text style={styles.infoKey}>Er referens</Text><Text style={styles.infoVal}>{invoice.your_reference}</Text></View> : null}
+          </View>
+        </View>
+
+        {/* 5) Satırlar */}
+        <View style={styles.thRow}>
+          <Text style={[styles.th, { flex: 1 }]}>Beskrivning</Text>
+          <Text style={[styles.th, styles.cQty]}>Antal/À-pris</Text>
+          <Text style={[styles.th, styles.cVat]}>Moms</Text>
+          <Text style={[styles.th, styles.cAmt, { color: "#6b7280" }]}>Pris inkl. moms</Text>
+        </View>
+        {sorted.map((l, i) => (
+          <View key={i} style={styles.row}>
+            <Text style={styles.cDesc}>{l.description}</Text>
+            <Text style={styles.cQty}>{l.quantity} {l.unit} × {fmt(l.unit_price)}</Text>
+            <Text style={styles.cVat}>{l.vat_rate}%</Text>
+            <Text style={[styles.cAmt, { color: "#111827" }]}>{fmt(l.line_total + l.vat_amount)}</Text>
+          </View>
+        ))}
+
+        {/* 6) Toplam */}
+        <View style={styles.sumWrap}>
+          <View style={styles.sumBox}>
+            <View style={styles.sumHead}>
+              <Text style={[styles.sumLabel, { fontSize: 8, color: "#6b7280" }]}> </Text>
+              <Text style={[styles.sumHeadCell, { width: 90 }]}>Netto</Text>
+              <Text style={[styles.sumHeadCell, { width: 70 }]}>Moms</Text>
+              <Text style={[styles.sumHeadCell, { width: 90 }]}>Summering</Text>
             </View>
             {vatRates.map((r) => (
-              <View key={r} style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Moms {r}%</Text>
-                <Text style={styles.totalValue}>{fmt(vatByRate[r])}</Text>
+              <View key={r} style={styles.sumRow}>
+                <Text style={styles.sumLabel}>{r}% Moms</Text>
+                <Text style={[styles.sumCell, { width: 90 }]}>{fmt(vatByRate[r].net)}</Text>
+                <Text style={[styles.sumCell, { width: 70 }]}>{fmt(vatByRate[r].vat)}</Text>
+                <Text style={[styles.sumCell, { width: 90, fontFamily: "Helvetica-Bold", color: "#111827" }]}>{fmt(vatByRate[r].net + vatByRate[r].vat)}</Text>
               </View>
             ))}
-            <View style={styles.totalDivider} />
-            <View style={styles.totalRow}>
-              <Text style={styles.totalBoldLabel}>Totalt att betala</Text>
-              <Text style={styles.totalBoldValue}>{fmt(invoice.total)}</Text>
+            {Math.abs(rounding) >= 0.005 && (
+              <View style={styles.sumRow}>
+                <Text style={styles.sumLabel}>Öresavrundning</Text>
+                <Text style={[styles.sumCell, { width: 90 }]}> </Text>
+                <Text style={[styles.sumCell, { width: 70 }]}> </Text>
+                <Text style={[styles.sumCell, { width: 90 }]}>{fmt(rounding)}</Text>
+              </View>
+            )}
+            <View style={styles.attRow}>
+              <Text style={[styles.attText, { color: accent }]}>Att betala {fmt(invoice.total)}</Text>
             </View>
           </View>
         </View>
 
-        {/* Payment box */}
-        <View style={styles.paymentBox}>
-          <Text style={styles.paymentTitle}>Betalningsinformation</Text>
-          <View style={styles.paymentRow}>
-            {invoice.ocr_number && (
-              <View style={styles.paymentItem}>
-                <Text style={styles.paymentItemLabel}>OCR-nummer</Text>
-                <Text style={styles.paymentItemValue}>{invoice.ocr_number}</Text>
-              </View>
-            )}
-            {company.bankgiro && (
-              <View style={styles.paymentItem}>
-                <Text style={styles.paymentItemLabel}>Bankgiro</Text>
-                <Text style={styles.paymentItemValue}>{company.bankgiro}</Text>
-              </View>
-            )}
-            {company.swish && (
-              <View style={styles.paymentItem}>
-                <Text style={styles.paymentItemLabel}>Swish</Text>
-                <Text style={styles.paymentItemValue}>{company.swish}</Text>
-              </View>
-            )}
-            <View style={styles.paymentItem}>
-              <Text style={styles.paymentItemLabel}>Förfallodatum</Text>
-              <Text style={styles.paymentItemValue}>{fmtDate(invoice.due_date)}</Text>
-            </View>
+        {/* 7) Alt ödeme şeridi (giro) */}
+        <View style={styles.giro} fixed>
+          <View>
+            <Text style={styles.giroLabel}>Referensnr (OCR)</Text>
+            <Text style={styles.giroVal}>{invoice.ocr_number ?? invoice.invoice_number}</Text>
           </View>
-        </View>
-
-        {/* Notes */}
-        {invoice.notes && (
-          <View style={styles.notesBox}>
-            <Text style={styles.notesLabel}>Meddelande</Text>
-            <Text style={styles.notesText}>{invoice.notes}</Text>
+          <View>
+            <Text style={styles.giroLabel}>Att betala</Text>
+            <Text style={styles.giroVal}>{fmt(invoice.total)}</Text>
           </View>
-        )}
-
-        {/* Footer */}
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>{company.name} · {company.address_line1}, {company.postal_code} {company.city}</Text>
-          <Text style={styles.footerText}>{invoice.invoice_number}</Text>
+          <View>
+            <Text style={styles.giroLabel}>Bankgiro</Text>
+            <Text style={styles.giroVal}>{company.bankgiro ?? "—"}</Text>
+          </View>
         </View>
       </Page>
     </Document>

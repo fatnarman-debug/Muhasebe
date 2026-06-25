@@ -20,16 +20,16 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
   if (!invoice) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const company = invoice.client_companies as unknown as ClientCompany & { user_id: string };
-  if (company?.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
+  // Yetki: RLS faturayı yalnızca sahibine VEYA atanan muhasebeciye döndürür.
+  // invoice null değilse kullanıcı yetkilidir; ayrı sahip kontrolü konsult'u engellerdi.
+  const company = invoice.client_companies as unknown as ClientCompany & { user_id: string; invoice_template?: string };
   const customer = invoice.customers as unknown as Customer;
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
   const inv = invoice as unknown as Invoice;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template }) as any
   );
 
   return new NextResponse(buffer as unknown as BodyInit, {
