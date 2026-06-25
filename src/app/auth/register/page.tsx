@@ -7,11 +7,15 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Loader2, CheckCircle2 } from "lucide-react";
+import { FileText, Loader2, CheckCircle2, Building2, User } from "lucide-react";
+
+type AccountType = "byra" | "privat";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [accountType, setAccountType] = useState<AccountType>("byra");
   const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,23 +25,41 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (accountType === "byra" && companyName.trim().length < 2) {
+      setError("Ange namnet på din byrå.");
+      return;
+    }
     if (password.length < 8) {
       setError("Lösenordet måste vara minst 8 tecken.");
       return;
     }
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        data: {
+          full_name: fullName,
+          account_type: accountType,
+          role: accountType === "byra" ? "byraansvarig" : "privat",
+          dukkan_adi: accountType === "byra" ? companyName.trim() : null,
+        },
+      },
     });
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      setSuccess(true);
+      return;
     }
+    // E-postabekräftelse av: signUp loggar in direkt → skicka till rätt panel
+    if (data.session) {
+      router.push(accountType === "byra" ? "/yetkili" : "/dashboard");
+      router.refresh();
+      return;
+    }
+    // E-postabekräftelse på: visa bekräftelseskärm
+    setSuccess(true);
   }
 
   if (success) {
@@ -59,7 +81,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -71,6 +93,36 @@ export default function RegisterPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Skapa konto</h1>
           <p className="text-gray-500 text-sm mb-6">Gratis i 14 dagar, inget kreditkort krävs</p>
+
+          {/* Kontotyp */}
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <button
+              type="button"
+              onClick={() => setAccountType("byra")}
+              className={`flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition ${
+                accountType === "byra"
+                  ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
+                  : "border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              <Building2 className={`w-5 h-5 ${accountType === "byra" ? "text-blue-600" : "text-gray-400"}`} />
+              <span className="text-sm font-semibold text-gray-900">Redovisningsbyrå</span>
+              <span className="text-xs text-gray-500 leading-snug">Flera användare, egna konsulter</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAccountType("privat")}
+              className={`flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition ${
+                accountType === "privat"
+                  ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
+                  : "border-gray-200 hover:border-gray-300"
+              }`}
+            >
+              <User className={`w-5 h-5 ${accountType === "privat" ? "text-blue-600" : "text-gray-400"}`} />
+              <span className="text-sm font-semibold text-gray-900">Privat användning</span>
+              <span className="text-xs text-gray-500 leading-snug">En användare, eget företag</span>
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
@@ -84,6 +136,21 @@ export default function RegisterPage() {
                 required
               />
             </div>
+
+            {accountType === "byra" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="companyName">Byråns namn</Label>
+                <Input
+                  id="companyName"
+                  type="text"
+                  placeholder="Andersson Redovisning AB"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
             <div className="space-y-1.5">
               <Label htmlFor="email">E-postadress</Label>
               <Input

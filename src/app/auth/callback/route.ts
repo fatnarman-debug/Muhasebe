@@ -23,6 +23,14 @@ export async function GET(request: NextRequest) {
       }
     );
     await supabase.auth.exchangeCodeForSession(code);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    const role = user?.user_metadata?.role ?? "privat";
+    const dest =
+      role === "byraansvarig" ? "/yetkili" :
+      role === "konsult"      ? "/konsult" :
+      "/dashboard";
+    return NextResponse.redirect(`${origin}${dest}`);
   }
 
   return NextResponse.redirect(`${origin}/dashboard`);

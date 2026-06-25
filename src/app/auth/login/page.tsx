@@ -34,7 +34,11 @@ export default function LoginPage() {
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
       if (authError) { setError("Felaktigt e-post eller lösenord."); setLoading(false); return; }
       const role = data.user?.user_metadata?.role ?? "konsult";
-      router.push(role === "byraansvarig" ? "/yetkili" : "/konsult");
+      const dest =
+        role === "byraansvarig" ? "/yetkili" :
+        role === "privat"       ? "/dashboard" :
+        "/konsult";
+      router.push(dest);
       router.refresh();
     } catch {
       setError("Ett fel uppstod. Försök igen.");
