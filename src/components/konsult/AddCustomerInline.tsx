@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +9,7 @@ import { Loader2, Plus, UserPlus } from "lucide-react";
 
 type Company = { id: string; name: string };
 
-export function AddCustomerInline({ companies }: { companies: Company[] }) {
-  const router = useRouter();
+export function AddCustomerInline({ companies, onAdded }: { companies: Company[]; onAdded?: () => void }) {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -48,7 +46,7 @@ export function AddCustomerInline({ companies }: { companies: Company[] }) {
     setName(""); setOrgNo(""); setAddress(""); setPostal(""); setCity(""); setEmail("");
     setSaving(false);
     setOpen(false);
-    router.refresh(); // sunucu müşterileri yeniden yükler, form güncellenir
+    onAdded?.(); // üst sayfa müşteri listesini yeniden yükler
   }
 
   if (!open) {
