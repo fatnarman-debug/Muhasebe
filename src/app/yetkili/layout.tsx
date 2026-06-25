@@ -91,7 +91,7 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
         const supabase = createClient();
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error || !user) { router.replace("/auth/login"); return; }
-        const { data: dukkan } = await supabase.from("muhasebe_dukkanlar").select("id").eq("yetkili_id", user.id).maybeSingle();
+        const { data: dukkan } = await supabase.from("muhasebe_dukkanlar").select("id").eq("user_id", user.id).maybeSingle();
         if (!dukkan) { router.replace("/auth/login"); return; }
         setChecking(false);
       } catch { router.replace("/auth/login"); }
