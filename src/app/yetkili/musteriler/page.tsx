@@ -1,52 +1,59 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, HelpCircle, Search, Filter, RefreshCw, CheckCircle, Plus } from "lucide-react";
+import { Bell, HelpCircle, Search, Filter, CheckCircle, Plus, Loader2 } from "lucide-react";
 
 const cardStyle = { background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
 const labelStyle = { fontSize: 12, fontWeight: 600, color: "#7f8c8d", textTransform: "uppercase" as const, letterSpacing: "0.5px" };
 const inputStyle = { border: "1px solid #e8ecf1", borderRadius: 8, padding: "9px 14px", fontSize: 13, color: "#2c3e50", background: "#fff", outline: "none" };
 
-const ACCOUNTANTS = ["Selin Caner", "Murat Tekin", "Ayşe Yıldız", "Emre Şahin"];
+type Muhasebeci = { id: string; full_name: string };
+type Musteri = {
+  id: string;
+  name: string;
+  org_no: string;
+  city: string | null;
+  email: string | null;
+  phone: string | null;
+  is_active: boolean;
+  muhasebeci_id: string | null;
+  muhasebeci_name: string | null;
+};
 
-const CUSTOMERS = [
-  { id: "1", name: "Lojistik A.Ş.",    orgNo: "TC-44211", accountant: "Selin Caner",  lastInvoice: "20 Haz 2026", status: "Aktif",    sector: "Lojistik" },
-  { id: "2", name: "Tekno Çözüm Ltd.", orgNo: "TC-55832", accountant: "Selin Caner",  lastInvoice: "18 Haz 2026", status: "Aktif",    sector: "Teknoloji" },
-  { id: "3", name: "İnşaat Pro A.Ş.", orgNo: "TC-67921", accountant: "Murat Tekin",  lastInvoice: "15 Haz 2026", status: "Gecikmiş", sector: "İnşaat" },
-  { id: "4", name: "Gıda Market Ltd.", orgNo: "TC-33109", accountant: "Murat Tekin",  lastInvoice: "12 Haz 2026", status: "Aktif",    sector: "Gıda" },
-  { id: "5", name: "Nakliye Ekspres",  orgNo: "TC-78441", accountant: "Ayşe Yıldız", lastInvoice: "10 Haz 2026", status: "Aktif",    sector: "Lojistik" },
-  { id: "6", name: "Yazılım Evi A.Ş.", orgNo: "TC-90213", accountant: "Ayşe Yıldız", lastInvoice: "8 Haz 2026",  status: "Bekliyor", sector: "Teknoloji" },
-  { id: "7", name: "Mimarlık Atölyesi",orgNo: "TC-12877", accountant: "Emre Şahin",  lastInvoice: "5 Haz 2026",  status: "Aktif",    sector: "Mimarlık" },
-  { id: "8", name: "Sağlık Klinik Ltd",orgNo: "TC-65544", accountant: "Emre Şahin",  lastInvoice: "3 Haz 2026",  status: "Aktif",    sector: "Sağlık" },
-  { id: "9", name: "Enerji Çözümleri", orgNo: "TC-21098", accountant: "",            lastInvoice: "—",           status: "Yeni",     sector: "Enerji" },
-  { id:"10", name: "Turizm Ajansı",    orgNo: "TC-48723", accountant: "",            lastInvoice: "—",           status: "Yeni",     sector: "Turizm" },
-];
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, [string, string]> = {
-    "Aktif":    ["#d4edda", "#155724"],
-    "Gecikmiş": ["#fdecea", "#c0392b"],
-    "Bekliyor": ["#fff3cd", "#856404"],
-    "Yeni":     ["#cce5ff", "#0056b3"],
-  };
-  const [bg, color] = map[status] ?? ["#f5f7fa", "#7f8c8d"];
-  return <span style={{ background: bg, color, padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>{status}</span>;
-}
+const emptyForm = { name: "", org_no: "", address_line1: "", postal_code: "", city: "", email: "", phone: "" };
 
 export default function MusterilerPage() {
-  const [assignments, setAssignments] = useState<Record<string, string>>({});
+  const [list, setList] = useState<Musteri[]>([]);
+  const [accountants, setAccountants] = useState<Muhasebeci[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
   const [search, setSearch] = useState("");
   const [filterAcc, setFilterAcc] = useState("all");
+  const [savingId, setSavingId] = useState<string | null>(null);
   const [toast, setToast] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
 
-  const getAcc = (c: typeof CUSTOMERS[0]) => assignments[c.id] ?? c.accountant;
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
-  function handleAssign(id: string, acc: string) {
-    setAssignments(p => ({ ...p, [id]: acc }));
-    setToast("Atama güncellendi");
-    setToastVisible(true);
-  }
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/yetkili/musteriler");
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Liste yüklenemedi");
+        setList(json.musteriler ?? []);
+        setAccountants(json.muhasebeciler ?? []);
+      } catch (e) {
+        setLoadError(e instanceof Error ? e.message : "Liste yüklenemedi");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!toastVisible) return;
@@ -54,14 +61,75 @@ export default function MusterilerPage() {
     return () => clearTimeout(t);
   }, [toastVisible, toast]);
 
-  const filtered = CUSTOMERS.filter(c => {
-    const acc = getAcc(c);
+  function showToast(msg: string) {
+    setToast(msg);
+    setToastVisible(true);
+  }
+
+  async function handleAssign(musteri: Musteri, muhasebeci_id: string) {
+    setSavingId(musteri.id);
+    try {
+      let res: Response;
+      if (muhasebeci_id) {
+        res = await fetch(`/api/yetkili/musteriler/${musteri.id}/ata`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ muhasebeci_id }),
+        });
+      } else {
+        res = await fetch(`/api/yetkili/musteriler/${musteri.id}/ata`, { method: "DELETE" });
+      }
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Atama başarısız");
+      const name = accountants.find((a) => a.id === muhasebeci_id)?.full_name ?? null;
+      setList((p) => p.map((m) => (m.id === musteri.id ? { ...m, muhasebeci_id: muhasebeci_id || null, muhasebeci_name: name } : m)));
+      showToast(muhasebeci_id ? "Atama güncellendi" : "Atama kaldırıldı");
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Atama başarısız");
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  async function handleAddCustomer() {
+    setFormError("");
+    if (!form.name.trim() || !form.org_no.trim() || !form.address_line1.trim() || !form.postal_code.trim() || !form.city.trim()) {
+      setFormError("Ad, org.nr, adres, posta kodu ve şehir zorunludur.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const res = await fetch("/api/yetkili/musteriler", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Müşteri eklenemedi");
+      setList((p) => [json.musteri, ...p]);
+      setForm(emptyForm);
+      setShowForm(false);
+      showToast("Müşteri eklendi");
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : "Müşteri eklenemedi");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const filtered = list.filter((c) => {
     const q = search.toLowerCase();
-    return (!q || c.name.toLowerCase().includes(q) || c.orgNo.includes(q)) &&
-      (filterAcc === "all" || acc === filterAcc);
+    const matchQ = !q || c.name.toLowerCase().includes(q) || c.org_no.includes(q);
+    const matchAcc =
+      filterAcc === "all" ? true :
+      filterAcc === "" ? !c.muhasebeci_id :
+      c.muhasebeci_id === filterAcc;
+    return matchQ && matchAcc;
   });
 
-  const unassigned = CUSTOMERS.filter(c => !getAcc(c)).length;
+  const unassigned = list.filter((c) => !c.muhasebeci_id).length;
+  const assigned = list.length - unassigned;
+  const aktif = list.filter((c) => c.is_active).length;
 
   return (
     <>
@@ -84,10 +152,10 @@ export default function MusterilerPage() {
         {/* KPI cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18, marginBottom: 28 }}>
           {[
-            { label: "Toplam Müşteri", value: CUSTOMERS.length, badge: "+8 Bu Ay", badgeBg: "#d4edda", badgeColor: "#155724" },
-            { label: "Aktif Müşteri",  value: CUSTOMERS.filter(c => c.status === "Aktif").length, badge: "Aktif", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
-            { label: "Atanmamış",     value: unassigned, badge: "Bekliyor", badgeBg: "#fff3cd", badgeColor: "#856404" },
-            { label: "Gecikmiş",      value: CUSTOMERS.filter(c => c.status === "Gecikmiş").length, badge: "Dikkat", badgeBg: "#fdecea", badgeColor: "#c0392b" },
+            { label: "Toplam Müşteri", value: list.length, badge: "Kayıtlı", badgeBg: "#d4edda", badgeColor: "#155724" },
+            { label: "Aktif Müşteri", value: aktif, badge: "Aktif", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
+            { label: "Atanmış", value: assigned, badge: "Muhasebeci", badgeBg: "#e8f0fe", badgeColor: "#1e3c72" },
+            { label: "Atanmamış", value: unassigned, badge: "Bekliyor", badgeBg: "#fff3cd", badgeColor: "#856404" },
           ].map((s, i) => (
             <div key={i} style={{ ...cardStyle, padding: 20 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -99,6 +167,51 @@ export default function MusterilerPage() {
           ))}
         </div>
 
+        {loadError && (
+          <div style={{ ...cardStyle, padding: 16, marginBottom: 20, background: "#fef2f2", color: "#dc2626", fontSize: 13 }}>{loadError}</div>
+        )}
+
+        {/* Add form */}
+        {showForm && (
+          <div style={{ ...cardStyle, marginBottom: 24, overflow: "hidden" }}>
+            <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Yeni Müşteri</h3>
+              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#95a5a6", fontSize: 20 }}>×</button>
+            </div>
+            <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {([
+                { k: "name", label: "Firma Adı *", ph: "Örn: Lojistik AB" },
+                { k: "org_no", label: "Org.nr / Vergi No *", ph: "556xxx-xxxx" },
+                { k: "address_line1", label: "Adres *", ph: "Storgatan 1" },
+                { k: "postal_code", label: "Posta Kodu *", ph: "211 34" },
+                { k: "city", label: "Şehir *", ph: "Malmö" },
+                { k: "email", label: "E-posta", ph: "info@firma.se" },
+                { k: "phone", label: "Telefon", ph: "+46 ..." },
+              ] as const).map((f) => (
+                <div key={f.k} style={f.k === "address_line1" ? { gridColumn: "1/-1" } : undefined}>
+                  <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>{f.label}</label>
+                  <input
+                    value={form[f.k]}
+                    onChange={(e) => setForm((p) => ({ ...p, [f.k]: e.target.value }))}
+                    placeholder={f.ph}
+                    style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }}
+                  />
+                </div>
+              ))}
+              {formError && (
+                <div style={{ gridColumn: "1/-1", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626" }}>{formError}</div>
+              )}
+            </div>
+            <div style={{ padding: "14px 24px", background: "#f5f7fa", borderTop: "1px solid #e8ecf1", display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button onClick={() => setShowForm(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #e8ecf1", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>İptal</button>
+              <button onClick={handleAddCustomer} disabled={saving} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: saving ? "#e8ecf1" : "linear-gradient(135deg,#2a5298,#1e3c72)", color: saving ? "#95a5a6" : "#fff", cursor: saving ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
+                {saving && <Loader2 size={14} className="animate-spin" />}
+                Kaydet
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Table card */}
         <div style={cardStyle}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
@@ -106,76 +219,88 @@ export default function MusterilerPage() {
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <div style={{ position: "relative" }}>
                 <Search size={14} color="#95a5a6" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }} />
-                <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Müşteri veya TC/Vergi No..." style={{ ...inputStyle, paddingLeft: 32, width: 220 }} />
+                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Müşteri veya org.nr..." style={{ ...inputStyle, paddingLeft: 32, width: 220 }} />
               </div>
               <div style={{ position: "relative" }}>
                 <Filter size={13} color="#95a5a6" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }} />
-                <select value={filterAcc} onChange={e => setFilterAcc(e.target.value)} style={{ ...inputStyle, paddingLeft: 28, paddingRight: 28, appearance: "none" as const, cursor: "pointer" }}>
+                <select value={filterAcc} onChange={(e) => setFilterAcc(e.target.value)} style={{ ...inputStyle, paddingLeft: 28, paddingRight: 28, appearance: "none" as const, cursor: "pointer" }}>
                   <option value="all">Tüm Muhasebeciler</option>
                   <option value="">Atanmamış</option>
-                  {ACCOUNTANTS.map(a => <option key={a} value={a}>{a}</option>)}
+                  {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                 </select>
               </div>
-              <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
-                <Plus size={13} /> Yeni Müşteri
-              </button>
+              {!showForm && (
+                <button onClick={() => setShowForm(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+                  <Plus size={13} /> Yeni Müşteri
+                </button>
+              )}
             </div>
           </div>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
-                  {["Müşteri", "Vergi/TC No", "Sektör", "Muhasebeci", "Son Fatura", "Durum", "Yeniden Ata"].map(h => (
-                    <th key={h} style={{ padding: "12px 16px", textAlign: "left", ...labelStyle, whiteSpace: "nowrap" as const }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr><td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "#95a5a6", fontSize: 13 }}>Arama kriterlerine uyan müşteri bulunamadı.</td></tr>
-                ) : filtered.map((c, i) => {
-                  const acc = getAcc(c);
-                  const reassigned = !!assignments[c.id];
-                  return (
-                    <tr key={c.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid #e8ecf1" : "none" }}
-                      className="hover:bg-[#f9fafc] transition-colors">
+
+          {loading ? (
+            <div style={{ padding: 48, display: "flex", justifyContent: "center", color: "#95a5a6" }}><Loader2 size={22} className="animate-spin" /></div>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
+                    {["Müşteri", "Org.nr", "Şehir", "Muhasebeci", "Durum", "Ata / Değiştir"].map((h) => (
+                      <th key={h} style={{ padding: "12px 16px", textAlign: "left", ...labelStyle, whiteSpace: "nowrap" as const }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.length === 0 ? (
+                    <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#95a5a6", fontSize: 13 }}>
+                      {list.length === 0 ? "Henüz müşteri yok. “Yeni Müşteri” ile ekleyin." : "Arama kriterlerine uyan müşteri bulunamadı."}
+                    </td></tr>
+                  ) : filtered.map((c, i) => (
+                    <tr key={c.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid #e8ecf1" : "none" }} className="hover:bg-[#f9fafc] transition-colors">
                       <td style={{ padding: "12px 16px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <div style={{ width: 32, height: 32, borderRadius: 8, background: "#f0f4ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#1e3c72", flexShrink: 0 }}>
-                            {c.name[0]}
+                            {c.name[0]?.toUpperCase()}
                           </div>
                           <span style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50", whiteSpace: "nowrap" }}>{c.name}</span>
                         </div>
                       </td>
                       <td style={{ padding: "12px 16px" }}>
-                        <code style={{ fontSize: 11, color: "#7f8c8d", background: "#f5f7fa", padding: "3px 8px", borderRadius: 4 }}>{c.orgNo}</code>
+                        <code style={{ fontSize: 11, color: "#7f8c8d", background: "#f5f7fa", padding: "3px 8px", borderRadius: 4 }}>{c.org_no}</code>
                       </td>
-                      <td style={{ padding: "12px 16px", fontSize: 12, color: "#95a5a6" }}>{c.sector}</td>
-                      <td style={{ padding: "12px 16px", fontSize: 13, color: reassigned ? "#155724" : "#2c3e50", fontWeight: reassigned ? 600 : 400 }}>
-                        {acc || <span style={{ color: "#bdc3c7", fontStyle: "italic" }}>Atanmamış</span>}
-                        {reassigned && <CheckCircle size={12} color="#27ae60" style={{ display: "inline", marginLeft: 6, verticalAlign: "middle" }} />}
+                      <td style={{ padding: "12px 16px", fontSize: 12, color: "#95a5a6" }}>{c.city ?? "—"}</td>
+                      <td style={{ padding: "12px 16px", fontSize: 13, color: c.muhasebeci_id ? "#155724" : "#bdc3c7", fontWeight: c.muhasebeci_id ? 600 : 400 }}>
+                        {c.muhasebeci_name || <span style={{ fontStyle: "italic" }}>Atanmamış</span>}
                       </td>
-                      <td style={{ padding: "12px 16px", fontSize: 12, color: "#95a5a6", whiteSpace: "nowrap" }}>{c.lastInvoice}</td>
-                      <td style={{ padding: "12px 16px" }}><StatusBadge status={c.status} /></td>
                       <td style={{ padding: "12px 16px" }}>
-                        <div style={{ position: "relative", display: "inline-block" }}>
-                          <select value={acc} onChange={e => handleAssign(c.id, e.target.value)}
-                            style={{ border: "1px solid #e8ecf1", borderRadius: 6, padding: "6px 28px 6px 10px", fontSize: 12, color: "#2c3e50", background: "#fff", cursor: "pointer", appearance: "none", outline: "none" }}>
+                        <span style={{ background: c.is_active ? "#d4edda" : "#f5f7fa", color: c.is_active ? "#155724" : "#7f8c8d", padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+                          {c.is_active ? "Aktif" : "Pasif"}
+                        </span>
+                      </td>
+                      <td style={{ padding: "12px 16px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <select
+                            value={c.muhasebeci_id ?? ""}
+                            disabled={savingId === c.id || accountants.length === 0}
+                            onChange={(e) => handleAssign(c, e.target.value)}
+                            style={{ border: "1px solid #e8ecf1", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#2c3e50", background: "#fff", cursor: "pointer", outline: "none" }}>
                             <option value="">Atanmamış</option>
-                            {ACCOUNTANTS.map(a => <option key={a} value={a}>{a}</option>)}
+                            {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                           </select>
-                          <RefreshCw size={11} color="#95a5a6" style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                          {savingId === c.id && <Loader2 size={13} className="animate-spin" color="#95a5a6" />}
                         </div>
                       </td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           <div style={{ padding: "12px 24px", borderTop: "1px solid #e8ecf1", background: "#f9fafc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: 12, color: "#95a5a6" }}>{filtered.length} müşteri gösteriliyor</span>
-            <span style={{ fontSize: 11, color: "#bdc3c7" }}>24 Haziran 2026</span>
+            {accountants.length === 0 && (
+              <span style={{ fontSize: 11, color: "#c0392b" }}>Atama için önce muhasebeci ekleyin.</span>
+            )}
           </div>
         </div>
       </main>
