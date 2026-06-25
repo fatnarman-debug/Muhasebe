@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { Eye, X } from "lucide-react";
+import { SampleInvoice } from "./InvoiceSamplePreview";
+
 interface Props {
   value: string;
   onChange: (template: string) => void;
@@ -474,6 +478,8 @@ const TEMPLATES: TemplateConfig[] = [
 export function InvoiceTemplateSelector({ value, onChange }: Props) {
   const klasikTemplates = TEMPLATES.filter((t) => t.category === "Klasik");
   const modernTemplates = TEMPLATES.filter((t) => t.category === "Modern");
+  const [previewId, setPreviewId] = useState<string | null>(null);
+  const previewTpl = TEMPLATES.find((t) => t.id === previewId);
 
   function renderGroup(label: string, templates: TemplateConfig[]) {
     return (
@@ -506,6 +512,17 @@ export function InvoiceTemplateSelector({ value, onChange }: Props) {
                   <div className="absolute inset-0 scale-100">
                     {tpl.preview}
                   </div>
+                  {/* Önizleme (popup) butonu */}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e) => { e.stopPropagation(); setPreviewId(tpl.id); }}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); setPreviewId(tpl.id); } }}
+                    className="absolute bottom-1 left-1 flex items-center gap-1 px-1.5 py-1 rounded-md bg-white/90 backdrop-blur border border-gray-200 text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity hover:text-gray-900 cursor-pointer shadow-sm"
+                  >
+                    <Eye className="w-3 h-3" />
+                    <span className="text-[9px] font-semibold">Önizle</span>
+                  </span>
                   {/* Selected checkmark */}
                   {selected && (
                     <div className="absolute top-1 right-1 w-4 h-4 bg-teal-600 rounded-full flex items-center justify-center shadow">
@@ -547,6 +564,60 @@ export function InvoiceTemplateSelector({ value, onChange }: Props) {
     <div className="space-y-5">
       {renderGroup("Klasik", klasikTemplates)}
       {renderGroup("Modern", modernTemplates)}
+
+      {/* Önizleme popup */}
+      {previewTpl && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          onClick={() => setPreviewId(null)}
+        >
+          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" />
+          <div
+            className="relative bg-gray-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-200 bg-white shrink-0">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900">{previewTpl.name}</h3>
+                <p className="text-[11px] text-gray-400 uppercase tracking-wide">{previewTpl.category} · Exempelfaktura</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewId(null)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Fatura örneği */}
+            <div className="overflow-y-auto p-5 bg-gray-100">
+              <div className="mx-auto max-w-[640px] rounded-xl overflow-hidden shadow-lg ring-1 ring-black/5 bg-white">
+                <SampleInvoice templateId={previewTpl.id} />
+              </div>
+            </div>
+
+            {/* Modal footer */}
+            <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-gray-200 bg-white shrink-0">
+              <button
+                type="button"
+                onClick={() => setPreviewId(null)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                Stäng
+              </button>
+              <button
+                type="button"
+                onClick={() => { onChange(previewTpl.id); setPreviewId(null); }}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 transition-colors"
+              >
+                {value === previewTpl.id ? "Vald mall ✓" : "Välj denna mall"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
