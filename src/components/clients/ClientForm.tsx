@@ -14,9 +14,12 @@ import { InvoiceTemplateSelector } from "@/components/invoices/InvoiceTemplateSe
 
 interface ClientFormProps {
   initialData?: ClientCompany;
+  // Kaydetme sonrası yönlendirme — varsayılan dashboard klient görünümü.
+  // Yetkili akışı kendi müşteri listesine yönlendirmek için override eder.
+  getRedirectPath?: (id: string) => string;
 }
 
-export function ClientForm({ initialData }: ClientFormProps) {
+export function ClientForm({ initialData, getRedirectPath }: ClientFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +46,7 @@ export function ClientForm({ initialData }: ClientFormProps) {
     notes: initialData?.notes ?? "",
     logo_url: initialData?.logo_url ?? "",
     invoice_prefix: initialData?.invoice_prefix ?? "FAK",
+    next_invoice_number: initialData?.next_invoice_number ?? 1,
     invoice_template: (initialData as (typeof initialData & { invoice_template?: string }))?.invoice_template ?? "klasik-standart",
   });
 
@@ -61,12 +65,12 @@ export function ClientForm({ initialData }: ClientFormProps) {
     if (initialData) {
       const { error } = await supabase.from("client_companies").update(form).eq("id", initialData.id);
       if (error) { setError(error.message); setLoading(false); return; }
-      router.push(`/dashboard/clients/${initialData.id}`);
+      router.push(getRedirectPath ? getRedirectPath(initialData.id) : `/dashboard/clients/${initialData.id}`);
     } else {
       const { data, error } = await supabase.from("client_companies")
         .insert({ ...form, user_id: user.id }).select().single();
       if (error) { setError(error.message); setLoading(false); return; }
-      router.push(`/dashboard/clients/${data.id}`);
+      router.push(getRedirectPath ? getRedirectPath(data.id) : `/dashboard/clients/${data.id}`);
     }
     router.refresh();
   }
@@ -176,7 +180,7 @@ export function ClientForm({ initialData }: ClientFormProps) {
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturainställningar</h2>
         <div className="grid grid-cols-3 gap-4 mb-4">
           <div className="space-y-1.5">
-            <Label htmlFor="invoice_prefix">Fakturaprefixe</Label>
+            <Label htmlFor="invoice_prefix">Fakturaprefix</Label>
             <Input
               id="invoice_prefix"
               placeholder="FAK"
@@ -184,7 +188,19 @@ export function ClientForm({ initialData }: ClientFormProps) {
               value={form.invoice_prefix}
               onChange={(e) => set("invoice_prefix", e.target.value.toUpperCase())}
             />
-            <p className="text-xs text-gray-400">Fakturnummer: {form.invoice_prefix || "FAK"}-0001</p>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="next_invoice_number">Startnummer</Label>
+            <Input
+              id="next_invoice_number"
+              type="number"
+              min={1}
+              value={form.next_invoice_number}
+              onChange={(e) => set("next_invoice_number", Math.max(1, parseInt(e.target.value) || 1))}
+            />
+            <p className="text-xs text-gray-400">
+              Nästa faktura: {(form.invoice_prefix || "FAK")}-{String(form.next_invoice_number || 1).padStart(4, "0")}
+            </p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">

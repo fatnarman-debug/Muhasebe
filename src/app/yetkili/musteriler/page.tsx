@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Bell, HelpCircle, Search, Filter, CheckCircle, Plus, Loader2 } from "lucide-react";
 
 const cardStyle = { background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
@@ -20,9 +21,8 @@ type Musteri = {
   muhasebeci_name: string | null;
 };
 
-const emptyForm = { name: "", org_no: "", address_line1: "", postal_code: "", city: "", email: "", phone: "" };
-
 export default function MusterilerPage() {
+  const router = useRouter();
   const [list, setList] = useState<Musteri[]>([]);
   const [accountants, setAccountants] = useState<Muhasebeci[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,11 +33,6 @@ export default function MusterilerPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [toast, setToast] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
-
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(emptyForm);
-  const [saving, setSaving] = useState(false);
-  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -88,32 +83,6 @@ export default function MusterilerPage() {
       showToast(e instanceof Error ? e.message : "Atama başarısız");
     } finally {
       setSavingId(null);
-    }
-  }
-
-  async function handleAddCustomer() {
-    setFormError("");
-    if (!form.name.trim() || !form.org_no.trim() || !form.address_line1.trim() || !form.postal_code.trim() || !form.city.trim()) {
-      setFormError("Ad, org.nr, adres, posta kodu ve şehir zorunludur.");
-      return;
-    }
-    setSaving(true);
-    try {
-      const res = await fetch("/api/yetkili/musteriler", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Müşteri eklenemedi");
-      setList((p) => [json.musteri, ...p]);
-      setForm(emptyForm);
-      setShowForm(false);
-      showToast("Müşteri eklendi");
-    } catch (e) {
-      setFormError(e instanceof Error ? e.message : "Müşteri eklenemedi");
-    } finally {
-      setSaving(false);
     }
   }
 
@@ -171,47 +140,6 @@ export default function MusterilerPage() {
           <div style={{ ...cardStyle, padding: 16, marginBottom: 20, background: "#fef2f2", color: "#dc2626", fontSize: 13 }}>{loadError}</div>
         )}
 
-        {/* Add form */}
-        {showForm && (
-          <div style={{ ...cardStyle, marginBottom: 24, overflow: "hidden" }}>
-            <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Yeni Müşteri</h3>
-              <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#95a5a6", fontSize: 20 }}>×</button>
-            </div>
-            <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              {([
-                { k: "name", label: "Firma Adı *", ph: "Örn: Lojistik AB" },
-                { k: "org_no", label: "Org.nr / Vergi No *", ph: "556xxx-xxxx" },
-                { k: "address_line1", label: "Adres *", ph: "Storgatan 1" },
-                { k: "postal_code", label: "Posta Kodu *", ph: "211 34" },
-                { k: "city", label: "Şehir *", ph: "Malmö" },
-                { k: "email", label: "E-posta", ph: "info@firma.se" },
-                { k: "phone", label: "Telefon", ph: "+46 ..." },
-              ] as const).map((f) => (
-                <div key={f.k} style={f.k === "address_line1" ? { gridColumn: "1/-1" } : undefined}>
-                  <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>{f.label}</label>
-                  <input
-                    value={form[f.k]}
-                    onChange={(e) => setForm((p) => ({ ...p, [f.k]: e.target.value }))}
-                    placeholder={f.ph}
-                    style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }}
-                  />
-                </div>
-              ))}
-              {formError && (
-                <div style={{ gridColumn: "1/-1", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626" }}>{formError}</div>
-              )}
-            </div>
-            <div style={{ padding: "14px 24px", background: "#f5f7fa", borderTop: "1px solid #e8ecf1", display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button onClick={() => setShowForm(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #e8ecf1", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>İptal</button>
-              <button onClick={handleAddCustomer} disabled={saving} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: saving ? "#e8ecf1" : "linear-gradient(135deg,#2a5298,#1e3c72)", color: saving ? "#95a5a6" : "#fff", cursor: saving ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
-                {saving && <Loader2 size={14} className="animate-spin" />}
-                Kaydet
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Table card */}
         <div style={cardStyle}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
@@ -229,11 +157,9 @@ export default function MusterilerPage() {
                   {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                 </select>
               </div>
-              {!showForm && (
-                <button onClick={() => setShowForm(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
-                  <Plus size={13} /> Yeni Müşteri
-                </button>
-              )}
+              <button onClick={() => router.push("/yetkili/musteriler/new")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+                <Plus size={13} /> Yeni Müşteri
+              </button>
             </div>
           </div>
 
