@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const M = ({ name, fill = false, size = 18 }: { name: string; fill?: boolean; size?: number }) => (
@@ -11,33 +11,38 @@ const M = ({ name, fill = false, size = 18 }: { name: string; fill?: boolean; si
 );
 
 type Kund = {
-  id: string; name: string; orgNo: string;
-  senasteFaktura: string; status: string; bransch: string; email: string;
-};
-
-const INIT: Kund[] = [
-  { id: "1", name: "AB Logistik Nord",      orgNo: "556701-2345", senasteFaktura: "20 jun 2026", status: "Aktiv",    bransch: "Logistik", email: "kontakt@logistiknord.se" },
-  { id: "2", name: "Bygg & Teknik AB",       orgNo: "556702-8823", senasteFaktura: "18 jun 2026", status: "Aktiv",    bransch: "Bygg",     email: "info@byggoteknik.se" },
-  { id: "3", name: "Svensson & Son AB",      orgNo: "556703-4412", senasteFaktura: "15 jun 2026", status: "Aktiv",    bransch: "Handel",   email: "info@svenssonson.se" },
-  { id: "4", name: "Nordtech Solutions AB",  orgNo: "556704-9901", senasteFaktura: "14 jun 2026", status: "Aktiv",    bransch: "IT",       email: "info@nordtech.se" },
-  { id: "5", name: "Malmö Konsult AB",       orgNo: "556705-3312", senasteFaktura: "12 jun 2026", status: "Försenad", bransch: "Konsult",  email: "kontakt@malmokonsult.se" },
-];
-
-const STATUS_COLORS: Record<string, [string, string]> = {
-  Aktiv:    ["#dcfce7", "#15803d"],
-  Försenad: ["#fee2e2", "#dc2626"],
-  Väntande: ["#fef9c3", "#a16207"],
+  id: string;
+  name: string;
+  org_no: string;
+  city: string | null;
+  email: string | null;
+  is_active: boolean;
 };
 
 export default function KonsultKunderPage() {
   const router = useRouter();
-  const [kunder]          = useState<Kund[]>(INIT);
+  const [kunder, setKunder] = useState<Kund[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Kund | null>(null);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/konsult/me");
+        const json = await res.json();
+        setKunder(json?.kunder ?? []);
+      } catch {
+        /* layout guards auth */
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   const filtered = kunder.filter(k => {
     const q = search.toLowerCase();
-    return !q || k.name.toLowerCase().includes(q) || k.orgNo.includes(q) || k.bransch.toLowerCase().includes(q);
+    return !q || k.name.toLowerCase().includes(q) || k.org_no.includes(q) || (k.city ?? "").toLowerCase().includes(q);
   });
 
   const panelOpen = !!selected;
@@ -78,47 +83,56 @@ export default function KonsultKunderPage() {
 
           {/* Table */}
           <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", overflow: "hidden" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ borderBottom: "1px solid #f3f4f6" }}>
-                  {["Kund", "Bransch", "Senaste faktura", "Status", ""].map(h => (
-                    <th key={h} style={{ padding: "12px 18px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((k, i) => {
-                  const [bg, color] = STATUS_COLORS[k.status] ?? ["#f3f4f6", "#6b7280"];
-                  const isSelected = selected?.id === k.id;
-                  return (
-                    <tr key={k.id}
-                      onClick={() => setSelected(isSelected ? null : k)}
-                      style={{ borderBottom: i < filtered.length - 1 ? "1px solid #f9fafb" : "none", cursor: "pointer", background: isSelected ? "#f9fafb" : "" }}
-                      onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#f9fafb"; }}
-                      onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = ""; }}>
-                      <td style={{ padding: "13px 18px" }}>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>{k.name}</p>
-                        <p style={{ fontSize: 11, color: "#9ca3af" }}>{k.orgNo}</p>
-                      </td>
-                      <td style={{ padding: "13px 18px", fontSize: 12, color: "#6b7280" }}>{k.bransch}</td>
-                      <td style={{ padding: "13px 18px", fontSize: 12, color: "#6b7280" }}>{k.senasteFaktura}</td>
-                      <td style={{ padding: "13px 18px" }}>
-                        <span style={{ background: bg, color, padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600 }}>{k.status}</span>
-                      </td>
-                      <td style={{ padding: "13px 18px" }}>
-                        <button
-                          onClick={e => { e.stopPropagation(); router.push("/konsult/fakturor"); }}
-                          style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 11px", borderRadius: 7, border: "1px solid #e5e7eb", background: "#fff", fontSize: 12, fontWeight: 500, color: "#374151", cursor: "pointer" }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "#f9fafb")}
-                          onMouseLeave={e => (e.currentTarget.style.background = "#fff")}>
-                          <M name="add" size={13} /> Faktura
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {loading ? (
+              <div style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>Laddar…</div>
+            ) : filtered.length === 0 ? (
+              <div style={{ padding: 40, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>
+                {kunder.length === 0
+                  ? "Inga kunder tilldelade ännu. Din byrå tilldelar kunder till dig."
+                  : "Ingen kund matchar sökningen."}
+              </div>
+            ) : (
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #f3f4f6" }}>
+                    {["Kund", "Stad", "Status", ""].map(h => (
+                      <th key={h} style={{ padding: "12px 18px", textAlign: "left", fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((k, i) => {
+                    const [bg, color] = k.is_active ? ["#dcfce7", "#15803d"] : ["#f3f4f6", "#6b7280"];
+                    const isSelected = selected?.id === k.id;
+                    return (
+                      <tr key={k.id}
+                        onClick={() => setSelected(isSelected ? null : k)}
+                        style={{ borderBottom: i < filtered.length - 1 ? "1px solid #f9fafb" : "none", cursor: "pointer", background: isSelected ? "#f9fafb" : "" }}
+                        onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#f9fafb"; }}
+                        onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = ""; }}>
+                        <td style={{ padding: "13px 18px" }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>{k.name}</p>
+                          <p style={{ fontSize: 11, color: "#9ca3af" }}>{k.org_no}</p>
+                        </td>
+                        <td style={{ padding: "13px 18px", fontSize: 12, color: "#6b7280" }}>{k.city ?? "—"}</td>
+                        <td style={{ padding: "13px 18px" }}>
+                          <span style={{ background: bg, color, padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600 }}>{k.is_active ? "Aktiv" : "Inaktiv"}</span>
+                        </td>
+                        <td style={{ padding: "13px 18px" }}>
+                          <button
+                            onClick={e => { e.stopPropagation(); router.push("/konsult/fakturor"); }}
+                            style={{ display: "flex", alignItems: "center", gap: 4, padding: "5px 11px", borderRadius: 7, border: "1px solid #e5e7eb", background: "#fff", fontSize: 12, fontWeight: 500, color: "#374151", cursor: "pointer" }}
+                            onMouseEnter={e => (e.currentTarget.style.background = "#f9fafb")}
+                            onMouseLeave={e => (e.currentTarget.style.background = "#fff")}>
+                            <M name="add" size={13} /> Faktura
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
@@ -140,13 +154,11 @@ export default function KonsultKunderPage() {
             </div>
 
             <div style={{ padding: "20px", flex: 1 }}>
-              {/* Info */}
               <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
                 {[
-                  { label: "Org.nummer",    value: selected.orgNo },
-                  { label: "Bransch",       value: selected.bransch },
-                  { label: "E-post",        value: selected.email },
-                  { label: "Senaste faktura", value: selected.senasteFaktura },
+                  { label: "Org.nummer", value: selected.org_no },
+                  { label: "Stad",       value: selected.city ?? "—" },
+                  { label: "E-post",     value: selected.email ?? "—" },
                 ].map(row => (
                   <div key={row.label}>
                     <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>{row.label}</p>
@@ -155,18 +167,13 @@ export default function KonsultKunderPage() {
                 ))}
                 <div>
                   <p style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 4 }}>Status</p>
-                  {(() => { const [bg, color] = STATUS_COLORS[selected.status] ?? ["#f3f4f6", "#6b7280"]; return <span style={{ background: bg, color, padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600 }}>{selected.status}</span>; })()}
+                  {(() => { const [bg, color] = selected.is_active ? ["#dcfce7", "#15803d"] : ["#f3f4f6", "#6b7280"]; return <span style={{ background: bg, color, padding: "3px 10px", borderRadius: 9999, fontSize: 11, fontWeight: 600 }}>{selected.is_active ? "Aktiv" : "Inaktiv"}</span>; })()}
                 </div>
               </div>
 
-              {/* Actions */}
               <button onClick={() => router.push("/konsult/fakturor")}
                 style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, background: "#111827", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 13, fontWeight: 600, cursor: "pointer", marginBottom: 8 }}>
                 <M name="receipt_long" size={16} /> Skapa faktura
-              </button>
-              <button
-                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, background: "#fff", color: "#374151", border: "1px solid #e5e7eb", borderRadius: 9, padding: "10px 0", fontSize: 13, fontWeight: 500, cursor: "pointer" }}>
-                <M name="mail" size={16} /> Skicka e-post
               </button>
             </div>
           </>

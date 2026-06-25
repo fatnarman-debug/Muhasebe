@@ -170,6 +170,7 @@ export async function POST(request: Request) {
       full_name,
       role: 'konsult',
       dukkan_id: shop.id,
+      benzersiz_kod,
     },
   })
 

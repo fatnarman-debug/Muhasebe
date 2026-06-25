@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -16,12 +17,36 @@ const NAV = [
   { href: "/konsult/fakturor", label: "Fakturor",  icon: "receipt_long" },
 ];
 
-// Dev-mode mock: inloggad konsult
-const KONSULT = { name: "Anna Svensson", title: "Ekonomiansvarig", kod: "LF-4432-AS" };
-
 export default function KonsultLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
   const pathname = usePathname();
+
+  const [checking, setChecking] = useState(true);
+  const [konsult, setKonsult] = useState<{ name: string; kod: string | null }>({ name: "Konsult", kod: null });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) { router.replace("/auth/login"); return; }
+        // Byråansvarig hör hemma i /yetkili
+        if (user.user_metadata?.role === "byraansvarig") { router.replace("/yetkili"); return; }
+
+        const res = await fetch("/api/konsult/me");
+        const json = await res.json().catch(() => null);
+        const k = json?.konsult;
+        setKonsult({
+          name: k?.full_name || user.user_metadata?.full_name || user.email || "Konsult",
+          kod: k?.benzersiz_kod ?? user.user_metadata?.benzersiz_kod ?? null,
+        });
+        setChecking(false);
+      } catch {
+        router.replace("/auth/login");
+      }
+    })();
+  }, [router]);
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -32,6 +57,15 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
       await createClient().auth.signOut();
     } catch {}
     router.push("/auth/login");
+  }
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#f8f9fb" }}>
+        <div style={{ width: 30, height: 30, borderRadius: "50%", border: "3px solid #e5e7eb", borderTopColor: "#111827", animation: "spin 0.7s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
   }
 
   return (
@@ -58,11 +92,13 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
 
         {/* Konsult info chip */}
         <div style={{ margin: "12px 10px 0", background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 10, padding: "10px 12px" }}>
-          <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{KONSULT.name}</p>
-          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>{KONSULT.title}</p>
-          <code style={{ display: "inline-block", marginTop: 6, fontSize: 10, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace", background: "#eef2ff", padding: "2px 7px", borderRadius: 5 }}>
-            {KONSULT.kod}
-          </code>
+          <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{konsult.name}</p>
+          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Redovisningskonsult</p>
+          {konsult.kod && (
+            <code style={{ display: "inline-block", marginTop: 6, fontSize: 10, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace", background: "#eef2ff", padding: "2px 7px", borderRadius: 5 }}>
+              {konsult.kod}
+            </code>
+          )}
         </div>
 
         {/* Nav */}
