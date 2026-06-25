@@ -62,6 +62,16 @@ function fmt(n: number) {
 function fmtDate(d: string) {
   return new Intl.DateTimeFormat("sv-SE").format(new Date(d));
 }
+// Luhn/mod10 — Bankgiro OCR optik satırı tutar kontrol rakamı
+function luhn(numStr: string): number {
+  let sum = 0, alt = true;
+  for (let i = numStr.length - 1; i >= 0; i--) {
+    let n = Number(numStr[i]);
+    if (alt) { n *= 2; if (n > 9) n -= 9; }
+    sum += n; alt = !alt;
+  }
+  return (10 - (sum % 10)) % 10;
+}
 
 interface Props {
   invoice: Invoice;
@@ -208,21 +218,27 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           </View>
         </View>
 
-        {/* 7) Alt ödeme şeridi (giro) */}
-        <View style={styles.giro} fixed>
-          <View>
-            <Text style={styles.giroLabel}>Referensnr (OCR)</Text>
-            <Text style={styles.giroVal}>{invoice.ocr_number ?? invoice.invoice_number}</Text>
-          </View>
-          <View>
-            <Text style={styles.giroLabel}>Att betala</Text>
-            <Text style={styles.giroVal}>{fmt(invoice.total)}</Text>
-          </View>
-          <View>
-            <Text style={styles.giroLabel}>Bankgiro</Text>
-            <Text style={styles.giroVal}>{company.bankgiro ?? "—"}</Text>
-          </View>
-        </View>
+        {/* 7) Bankgiro OCR optik satırı (typ 41) — en altta, makine-okur format */}
+        {company.bankgiro && (() => {
+          const ref = invoice.ocr_number || invoice.invoice_number.replace(/\D/g, "");
+          const kronor = Math.floor(invoice.total);
+          const ore = String(Math.round((invoice.total - kronor) * 100)).padStart(2, "0");
+          const check = luhn(`${kronor}${ore}`);
+          const bg = company.bankgiro.replace(/\D/g, "");
+          return (
+            <View style={styles.giro} fixed>
+              <View style={{ flexDirection: "row", marginBottom: 3 }}>
+                <Text style={[styles.giroLabel, { flex: 1 }]}>Referensnr</Text>
+                <Text style={[styles.giroLabel, { width: 70, textAlign: "right" }]}>Kronor</Text>
+                <Text style={[styles.giroLabel, { width: 36, textAlign: "right" }]}>öre</Text>
+                <Text style={[styles.giroLabel, { width: 120, textAlign: "right" }]}>Bankgiro</Text>
+              </View>
+              <Text style={{ fontFamily: "Courier-Bold", fontSize: 12, color: "#111827", letterSpacing: 1 }}>
+                {`#  ${ref}  #   ${kronor}  ${ore}  ${check}  >          ${bg}#41#`}
+              </Text>
+            </View>
+          );
+        })()}
       </Page>
     </Document>
   );
