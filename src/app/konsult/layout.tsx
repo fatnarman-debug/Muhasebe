@@ -22,7 +22,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
 
   const [checking, setChecking] = useState(true);
-  const [konsult, setKonsult] = useState<{ name: string; kod: string | null }>({ name: "Konsult", kod: null });
+  const [konsult, setKonsult] = useState<{ name: string; kod: string | null; email: string | null }>({ name: "Konsult", kod: null, email: null });
 
   useEffect(() => {
     (async () => {
@@ -40,6 +40,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
         setKonsult({
           name: k?.full_name || user.user_metadata?.full_name || user.email || "Konsult",
           kod: k?.benzersiz_kod ?? user.user_metadata?.benzersiz_kod ?? null,
+          email: user.email ?? null,
         });
         setChecking(false);
       } catch {
@@ -94,6 +95,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
         <div style={{ margin: "12px 10px 0", background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 10, padding: "10px 12px" }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{konsult.name}</p>
           <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Redovisningskonsult</p>
+          {konsult.email && <p style={{ fontSize: 10, color: "#c0c4cc", marginTop: 1 }}>{konsult.email}</p>}
           {konsult.kod && (
             <code style={{ display: "inline-block", marginTop: 6, fontSize: 10, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace", background: "#eef2ff", padding: "2px 7px", borderRadius: 5 }}>
               {konsult.kod}

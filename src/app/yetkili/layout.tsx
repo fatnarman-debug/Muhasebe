@@ -12,7 +12,7 @@ const NAV = [
   { href: "/yetkili/ayarlar",       label: "Ayarlar",       icon: Settings },
 ];
 
-function Sidebar() {
+function Sidebar({ email }: { email?: string }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -61,6 +61,12 @@ function Sidebar() {
         })}
       </nav>
 
+      {email && (
+        <div className="mx-3 mb-1 rounded-lg px-3 py-2.5" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="text-white text-xs font-semibold truncate">{email}</div>
+          <div className="text-white/55 text-[10px] uppercase tracking-wide font-semibold mt-0.5">Büro Yetkilisi</div>
+        </div>
+      )}
       <div className="px-3 pb-5 pt-3 border-t border-white/10 space-y-1">
         <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white/75 hover:bg-white/10 hover:text-white transition-all">
           <svg className="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -83,6 +89,7 @@ function Sidebar() {
 export default function YetkiliLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [email, setEmail] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     async function checkAuth() {
@@ -91,8 +98,13 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
         const supabase = createClient();
         const { data: { user }, error } = await supabase.auth.getUser();
         if (error || !user) { router.replace("/auth/login"); return; }
+        // Yanlış panele gelen kullanıcıyı kendi paneline yönlendir
+        const role = user.user_metadata?.role;
+        if (role === "konsult") { router.replace("/konsult"); return; }
+        if (role === "privat")  { router.replace("/dashboard"); return; }
         const { data: dukkan } = await supabase.from("muhasebe_dukkanlar").select("id").eq("user_id", user.id).maybeSingle();
         if (!dukkan) { router.replace("/auth/login"); return; }
+        setEmail(user.email ?? undefined);
         setChecking(false);
       } catch { router.replace("/auth/login"); }
     }
@@ -112,7 +124,7 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="flex min-h-screen" style={{ background: "#f5f7fa" }}>
-      <Sidebar />
+      <Sidebar email={email} />
       <div className="flex-1 ml-[280px] flex flex-col min-h-screen">
         {children}
       </div>
