@@ -1,9 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-function createClient() {
-  const cookieStore = cookies()
+async function createClient() {
+  const cookieStore = await cookies()
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -22,7 +23,18 @@ function createClient() {
   )
 }
 
-async function getShopForUser(supabase: ReturnType<typeof createClient>, userId: string) {
+function createAdmin() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+}
+
+async function getShopForUser(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string
+) {
   const { data, error } = await supabase
     .from('muhasebe_dukkanlar')
     .select('id')
@@ -33,28 +45,28 @@ async function getShopForUser(supabase: ReturnType<typeof createClient>, userId:
   return data
 }
 
-async function verifyAccountantBelongsToShop(
-  supabase: ReturnType<typeof createClient>,
+async function getAccountantInShop(
+  supabase: Awaited<ReturnType<typeof createClient>>,
   muhasebecId: string,
   shopId: string
-): Promise<boolean> {
+) {
   const { data } = await supabase
     .from('muhasebeciler')
-    .select('id')
+    .select('id, auth_user_id')
     .eq('id', muhasebecId)
     .eq('dukkan_id', shopId)
     .maybeSingle()
 
-  return !!data
+  return data
 }
 
 // DELETE /api/yetkili/muhasebeciler/[id]
 // Optional query param: transfer_to=<other_muhasebeci_id>
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
@@ -66,9 +78,9 @@ export async function DELETE(
     return NextResponse.json({ error: 'Dükkan bulunamadı' }, { status: 404 })
   }
 
-  const { id } = params
-  const belongs = await verifyAccountantBelongsToShop(supabase, id, shop.id)
-  if (!belongs) {
+  const { id } = await params
+  const accountant = await getAccountantInShop(supabase, id, shop.id)
+  if (!accountant) {
     return NextResponse.json({ error: 'Muhasebeci bulunamadı' }, { status: 404 })
   }
 
@@ -76,16 +88,14 @@ export async function DELETE(
   const transferTo = url.searchParams.get('transfer_to')
 
   if (transferTo) {
-    // Verify the transfer target also belongs to this shop
-    const transferBelongs = await verifyAccountantBelongsToShop(supabase, transferTo, shop.id)
-    if (!transferBelongs) {
+    const transferTarget = await getAccountantInShop(supabase, transferTo, shop.id)
+    if (!transferTarget) {
       return NextResponse.json(
         { error: 'Devir yapılacak muhasebeci bu dükkana ait değil' },
         { status: 400 }
       )
     }
 
-    // Transfer all customer assignments from deleted accountant to the target
     const { error: transferError } = await supabase
       .from('musteri_atamalari')
       .update({ muhasebeci_id: transferTo })
@@ -95,7 +105,6 @@ export async function DELETE(
       return NextResponse.json({ error: transferError.message }, { status: 500 })
     }
   } else {
-    // No transfer target — remove assignments first to avoid FK violation
     const { error: deleteAssignmentsError } = await supabase
       .from('musteri_atamalari')
       .delete()
@@ -115,15 +124,20 @@ export async function DELETE(
     return NextResponse.json({ error: deleteError.message }, { status: 500 })
   }
 
+  // Remove the accountant's login as well
+  if (accountant.auth_user_id) {
+    await createAdmin().auth.admin.deleteUser(accountant.auth_user_id)
+  }
+
   return NextResponse.json({ success: true })
 }
 
 // PATCH /api/yetkili/muhasebeciler/[id] — update accountant info
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
   if (authError || !user) {
@@ -135,9 +149,9 @@ export async function PATCH(
     return NextResponse.json({ error: 'Dükkan bulunamadı' }, { status: 404 })
   }
 
-  const { id } = params
-  const belongs = await verifyAccountantBelongsToShop(supabase, id, shop.id)
-  if (!belongs) {
+  const { id } = await params
+  const accountant = await getAccountantInShop(supabase, id, shop.id)
+  if (!accountant) {
     return NextResponse.json({ error: 'Muhasebeci bulunamadı' }, { status: 404 })
   }
 
