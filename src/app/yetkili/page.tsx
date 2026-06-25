@@ -1,25 +1,76 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bell, HelpCircle, TrendingUp, Users, UserCheck, FileText, PersonStanding } from "lucide-react";
+import { Bell, HelpCircle, Users, UserCheck, UserPlus, Loader2 } from "lucide-react";
 
 const cardStyle = { background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
 const labelStyle = { fontSize: 12, fontWeight: 600, color: "#7f8c8d", textTransform: "uppercase" as const, letterSpacing: "0.5px" };
 
-const activities = [
-  { icon: "👤", color: "#f5f7fa", label: "Yeni Müşteri Eklendi", desc: "Lojistik A.Ş. muhasebeci Emre tarafından eklendi.", time: "12 dakika önce" },
-  { icon: "📄", color: "#f5f7fa", label: "Fatura İptali", desc: "#4521 numaralı fatura geçersiz kılındı.", time: "1 saat önce" },
-  { icon: "✅", color: "#cce5ff", label: "Vergi Beyannamesi", desc: "KDV beyannamesi onaylandı.", time: "3 saat önce" },
-  { icon: "👥", color: "#f5f7fa", label: "Ekip Toplantısı", desc: "Yarın 09:00 için hatırlatıcı eklendi.", time: "5 saat önce" },
+const GRADS = [
+  "linear-gradient(135deg,#667eea,#764ba2)",
+  "linear-gradient(135deg,#f093fb,#f5576c)",
+  "linear-gradient(135deg,#4facfe,#00f2fe)",
+  "linear-gradient(135deg,#43e97b,#38f9d7)",
 ];
 
-const accountants = [
-  { initials: "SC", name: "Selin Caner", title: "Kıdemli Mali Müşavir", clients: 28, perf: "92%", status: "Müsait", grad: "linear-gradient(135deg,#667eea,#764ba2)" },
-  { initials: "MT", name: "Murat Tekin", title: "Genel Muhasebe Sorumlusu", clients: 21, perf: "78%", status: "Yoğun", grad: "linear-gradient(135deg,#f093fb,#f5576c)" },
-  { initials: "AY", name: "Ayşe Yıldız", title: "Vergi Danışmanı", clients: 18, perf: "85%", status: "Müsait", grad: "linear-gradient(135deg,#4facfe,#00f2fe)" },
-];
+type Muhasebeci = { id: string; full_name: string; is_active: boolean; musteri_sayisi: number };
+type Musteri = { id: string; name: string; city: string | null; created_at: string; muhasebeci_id: string | null };
+
+function initials(name: string) {
+  return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() || "?";
+}
 
 export default function YetkiliPage() {
+  const [name, setName] = useState("");
+  const [dukkan, setDukkan] = useState("");
+  const [muhasebeciler, setMuhasebeciler] = useState<Muhasebeci[]>([]);
+  const [musteriler, setMusteriler] = useState<Musteri[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setName(user.user_metadata?.full_name || user.email || "");
+          const { data: d } = await supabase
+            .from("muhasebe_dukkanlar")
+            .select("dukkan_adi")
+            .eq("user_id", user.id)
+            .maybeSingle();
+          setDukkan(d?.dukkan_adi ?? "");
+        }
+        const [mRes, cRes] = await Promise.all([
+          fetch("/api/yetkili/muhasebeciler"),
+          fetch("/api/yetkili/musteriler"),
+        ]);
+        const mJson = await mRes.json().catch(() => ({}));
+        const cJson = await cRes.json().catch(() => ({}));
+        setMuhasebeciler(mJson.muhasebeciler ?? []);
+        setMusteriler(cJson.musteriler ?? []);
+      } catch {
+        /* layout guards auth */
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const toplamMuh = muhasebeciler.length;
+  const toplamMus = musteriler.length;
+  const atanmamis = musteriler.filter((m) => !m.muhasebeci_id).length;
+  const topMuh = [...muhasebeciler].sort((a, b) => b.musteri_sayisi - a.musteri_sayisi).slice(0, 5);
+  const sonMusteriler = musteriler.slice(0, 5); // API zaten created_at desc döndürüyor
+
+  const stats = [
+    { icon: Users, label: "Toplam Muhasebeci", value: toplamMuh, hint: "Dükkanınıza kayıtlı uzmanlar.", badge: `${muhasebeciler.filter((m) => m.is_active).length} aktif`, badgeBg: "#d4edda", badgeColor: "#155724" },
+    { icon: UserCheck, label: "Toplam Müşteri", value: toplamMus, hint: "Kayıtlı müşteri firmalar.", badge: "Kayıtlı", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
+    { icon: UserPlus, label: "Atanmamış Müşteri", value: atanmamis, hint: "Henüz muhasebeci atanmamış.", badge: atanmamis > 0 ? "Bekliyor" : "Tamam", badgeBg: atanmamis > 0 ? "#fff3cd" : "#d4edda", badgeColor: atanmamis > 0 ? "#856404" : "#155724" },
+  ];
+
   return (
     <>
       {/* Topbar */}
@@ -33,8 +84,8 @@ export default function YetkiliPage() {
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
             <HelpCircle size={18} />
           </button>
-          <div style={{ width: 38, height: 38, borderRadius: 8, background: "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 13 }}>
-            AY
+          <div style={{ width: 38, height: 38, borderRadius: 8, background: GRADS[0], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 13 }}>
+            {name ? initials(name) : "—"}
           </div>
         </div>
       </header>
@@ -44,155 +95,121 @@ export default function YetkiliPage() {
         {/* Welcome */}
         <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <div>
-            <h2 style={{ fontSize: 26, fontWeight: 700, color: "#1e3c72", marginBottom: 6 }}>Hoş geldiniz, Ahmet Yılmaz</h2>
-            <p style={{ color: "#95a5a6", fontSize: 14 }}>Dükkan Yetkilisi — Bugün, 24 Haziran 2026</p>
+            <h2 style={{ fontSize: 26, fontWeight: 700, color: "#1e3c72", marginBottom: 6 }}>
+              Hoş geldiniz{name ? `, ${name}` : ""}
+            </h2>
+            <p style={{ color: "#95a5a6", fontSize: 14 }}>
+              {dukkan ? `${dukkan} — ` : ""}Dükkan Yetkilisi
+            </p>
             <p style={{ color: "#7f8c8d", fontSize: 13, marginTop: 4 }}>Dükkanınızın güncel durumu aşağıda özetlenmiştir.</p>
-            <Link href="/yetkili/muhasebeciler"
+            <Link href="/yetkili/musteriler"
               style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 16, padding: "10px 20px", borderRadius: 8, background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
-              + Yeni Fatura Oluştur
+              + Müşteri Ekle &amp; Ata
             </Link>
           </div>
           <div style={{ textAlign: "center" }}>
-            <div style={{ width: 90, height: 90, borderRadius: 12, background: "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 32, marginBottom: 8 }}>
-              👤
+            <div style={{ width: 90, height: 90, borderRadius: 12, background: GRADS[0], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 30, fontWeight: 700, marginBottom: 8 }}>
+              {name ? initials(name) : "—"}
             </div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#2c3e50" }}>Ahmet Yılmaz</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#2c3e50" }}>{name || "—"}</div>
             <div style={{ fontSize: 12, color: "#95a5a6" }}>Dükkan Yetkilisi</div>
           </div>
         </div>
 
         {/* Summary label */}
-        <h3 style={{ fontSize: 17, fontWeight: 600, color: "#2c3e50", marginBottom: 6 }}>Finansal Sağlık Özeti</h3>
-        <p style={{ color: "#95a5a6", fontSize: 13, marginBottom: 24 }}>Dükkanınızın anlık performans göstergeleri.</p>
+        <h3 style={{ fontSize: 17, fontWeight: 600, color: "#2c3e50", marginBottom: 6 }}>Dükkan Özeti</h3>
+        <p style={{ color: "#95a5a6", fontSize: 13, marginBottom: 24 }}>Anlık durum göstergeleri.</p>
 
         {/* Stats cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 28 }}>
-          <div style={cardStyle}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <Users size={18} color="#2a5298" />
-                <span style={labelStyle}>Toplam Muhasebeci</span>
+          {stats.map((s, i) => (
+            <div key={i} style={cardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <s.icon size={18} color="#2a5298" />
+                  <span style={labelStyle}>{s.label}</span>
+                </div>
+                <span style={{ background: s.badgeBg, color: s.badgeColor, fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>{s.badge}</span>
               </div>
-              <span style={{ background: "#d4edda", color: "#155724", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>+2 Bu Ay</span>
-            </div>
-            <div style={{ fontSize: 34, fontWeight: 700, color: "#1e3c72", marginBottom: 8 }}>12</div>
-            <p style={{ fontSize: 12, color: "#95a5a6" }}>Aktif çalışan uzman kadronuz.</p>
-          </div>
-          <div style={cardStyle}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <UserCheck size={18} color="#2a5298" />
-                <span style={labelStyle}>Toplam Müşteri</span>
+              <div style={{ fontSize: 34, fontWeight: 700, color: "#1e3c72", marginBottom: 8 }}>
+                {loading ? <Loader2 size={26} className="animate-spin" color="#bdc3c7" /> : s.value}
               </div>
-              <span style={{ background: "#d4edda", color: "#155724", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>+14%</span>
+              <p style={{ fontSize: 12, color: "#95a5a6" }}>{s.hint}</p>
             </div>
-            <div style={{ fontSize: 34, fontWeight: 700, color: "#1e3c72", marginBottom: 8 }}>142</div>
-            <p style={{ fontSize: 12, color: "#95a5a6" }}>Kayıtlı ve aktif hizmet alan müşteriler.</p>
-          </div>
-          <div style={cardStyle}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <TrendingUp size={18} color="#2a5298" />
-                <span style={labelStyle}>Aylık Hacim</span>
-              </div>
-              <span style={{ background: "#cce5ff", color: "#0056b3", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>✓ Tahsil Edildi</span>
-            </div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: "#1e3c72", marginBottom: 8 }}>₺ 842.500</div>
-            <p style={{ fontSize: 12, color: "#95a5a6" }}>Bekleyen tahsilat: ₺ 42.100</p>
-          </div>
-        </div>
-
-        {/* Chart placeholder */}
-        <div style={{ ...cardStyle, marginBottom: 28 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Müşteri Hareket Grafiği</h4>
-            <div style={{ display: "flex", gap: 4 }}>
-              {["7 Gün", "30 Gün"].map((t, i) => (
-                <button key={t} style={{ padding: "7px 16px", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500, background: "none", color: i === 0 ? "#2a5298" : "#95a5a6", borderBottom: i === 0 ? "2px solid #2a5298" : "2px solid transparent" }}>
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div style={{ height: 180, background: "linear-gradient(135deg,#f5f7fa,#e8ecf1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📊</div>
-              <p style={{ color: "#95a5a6", fontSize: 13 }}>Grafik verileri yükleniyor…</p>
-            </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 14, fontSize: 11, color: "#bdc3c7" }}>
-            {["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"].map(d => <span key={d}>{d}</span>)}
-          </div>
+          ))}
         </div>
 
         {/* Two column */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-          {/* Activities */}
+          {/* Recent customers */}
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Son Aktiviteler</h4>
-              <a href="#" style={{ fontSize: 12, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>Tümünü Görüntüle</a>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Son Eklenen Müşteriler</h4>
+              <Link href="/yetkili/musteriler" style={{ fontSize: 12, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
             </div>
-            <div>
-              {activities.map((a, i) => (
-                <div key={i} style={{ display: "flex", gap: 14, padding: "14px 0", borderBottom: i < activities.length - 1 ? "1px solid #e8ecf1" : "none" }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 8, background: a.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
-                    {a.icon}
+            {loading ? (
+              <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
+            ) : sonMusteriler.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Henüz müşteri eklenmemiş.</p>
+            ) : (
+              sonMusteriler.map((c, i) => (
+                <div key={c.id} style={{ display: "flex", gap: 14, padding: "13px 0", borderBottom: i < sonMusteriler.length - 1 ? "1px solid #e8ecf1" : "none", alignItems: "center" }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 8, background: "#f0f4ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: "#1e3c72", flexShrink: 0 }}>
+                    {c.name[0]?.toUpperCase()}
                   </div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50", marginBottom: 2 }}>{a.label}</div>
-                    <div style={{ fontSize: 12, color: "#95a5a6", marginBottom: 2 }}>{a.desc}</div>
-                    <div style={{ fontSize: 11, color: "#bdc3c7" }}>{a.time}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50" }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: "#95a5a6" }}>{c.city ?? "—"}</div>
                   </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6, background: c.muhasebeci_id ? "#d4edda" : "#fff3cd", color: c.muhasebeci_id ? "#155724" : "#856404" }}>
+                    {c.muhasebeci_id ? "Atandı" : "Atanmadı"}
+                  </span>
                 </div>
-              ))}
-            </div>
+              ))
+            )}
           </div>
 
-          {/* Accountants table */}
+          {/* Accountants */}
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>En Aktif Muhasebeciler</h4>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Muhasebeciler</h4>
               <Link href="/yetkili/muhasebeciler" style={{ fontSize: 12, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
             </div>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
-                  {["Muhasebeci", "Müşteri", "Performans", "Durum"].map(h => (
-                    <th key={h} style={{ padding: "10px 12px", textAlign: "left", ...labelStyle }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {accountants.map((a, i) => (
-                  <tr key={i} style={{ borderBottom: i < accountants.length - 1 ? "1px solid #e8ecf1" : "none" }}
-                    className="hover:bg-[#f9fafc] transition-colors">
-                    <td style={{ padding: "12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{ width: 30, height: 30, borderRadius: 6, background: a.grad, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600, fontSize: 11, flexShrink: 0 }}>
-                          {a.initials}
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50" }}>{a.name}</div>
-                          <div style={{ fontSize: 11, color: "#95a5a6" }}>{a.title}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ padding: "12px", fontSize: 13, color: "#2c3e50" }}>{a.clients}</td>
-                    <td style={{ padding: "12px", fontSize: 13, color: "#2c3e50" }}>{a.perf}</td>
-                    <td style={{ padding: "12px" }}>
-                      <span style={{
-                        padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                        background: a.status === "Müsait" ? "#d4edda" : "#fff3cd",
-                        color: a.status === "Müsait" ? "#155724" : "#856404",
-                      }}>{a.status}</span>
-                    </td>
+            {loading ? (
+              <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
+            ) : topMuh.length === 0 ? (
+              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Henüz muhasebeci eklenmemiş.</p>
+            ) : (
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
+                    {["Muhasebeci", "Müşteri", "Durum"].map((h) => (
+                      <th key={h} style={{ padding: "10px 12px", textAlign: "left", ...labelStyle }}>{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {topMuh.map((a, i) => (
+                    <tr key={a.id} style={{ borderBottom: i < topMuh.length - 1 ? "1px solid #e8ecf1" : "none" }} className="hover:bg-[#f9fafc] transition-colors">
+                      <td style={{ padding: "12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <div style={{ width: 30, height: 30, borderRadius: 6, background: GRADS[i % 4], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600, fontSize: 11, flexShrink: 0 }}>
+                            {initials(a.full_name)}
+                          </div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50" }}>{a.full_name}</div>
+                        </div>
+                      </td>
+                      <td style={{ padding: "12px", fontSize: 13, color: "#2c3e50" }}>{a.musteri_sayisi}</td>
+                      <td style={{ padding: "12px" }}>
+                        <span style={{ padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600, background: a.is_active ? "#d4edda" : "#fff3cd", color: a.is_active ? "#155724" : "#856404" }}>
+                          {a.is_active ? "Aktif" : "Pasif"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </main>
@@ -201,7 +218,7 @@ export default function YetkiliPage() {
       <footer style={{ background: "#fff", borderTop: "1px solid #e8ecf1", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <p style={{ fontSize: 12, color: "#95a5a6" }}>LedgerFlow © 2026 LedgerFlow Accounting SaaS. Tüm hakları saklıdır.</p>
         <div style={{ display: "flex", gap: 20 }}>
-          {["Kullanım Koşulları", "Gizlilik Politikası", "Güvenlik"].map(l => (
+          {["Kullanım Koşulları", "Gizlilik Politikası", "Güvenlik"].map((l) => (
             <a key={l} href="#" style={{ fontSize: 12, color: "#95a5a6", textDecoration: "none" }}>{l}</a>
           ))}
         </div>
