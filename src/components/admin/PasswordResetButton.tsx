@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { KeyRound, Loader2, Check, X } from "lucide-react";
-import { resetUserPassword } from "@/app/admin/buros/actions";
+import { resetUserPassword } from "@/lib/admin-buros-actions";
 
 export function PasswordResetButton({ userId, label }: { userId: string; label: string }) {
   const [open, setOpen] = useState(false);
