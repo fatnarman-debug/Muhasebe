@@ -226,12 +226,35 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           const ore = String(Math.round((invoice.total - kronor) * 100)).padStart(2, "0");
           const check = luhn(`${kronor}${ore}`);
           const bg = company.bankgiro.replace(/\D/g, "");
+          const mono = { fontFamily: "Courier-Bold" as const, fontSize: 11, color: "#111827" };
+          const hd = { fontSize: 6.5, color: "#6b7280" };
+          const bar = { borderLeftWidth: 0.8, borderLeftColor: "#111827" };
           return (
             <View style={styles.giro} fixed>
-              <Text style={[styles.giroLabel, { marginBottom: 2 }]}>Referensnr · Kronor · öre · Bankgiro (OCR-rad)</Text>
-              <Text style={{ fontFamily: "Courier-Bold", fontSize: 10, color: "#111827" }}>
-                {`# ${ref} # ${kronor} ${ore} ${check} > ${bg}#41#`}
-              </Text>
+              {/* Başlıklar (değerlerin üstünde hizalı) */}
+              <View style={{ flexDirection: "row", alignItems: "flex-end", marginBottom: 2, height: 10 }}>
+                <View style={{ width: 38 }} />
+                <Text style={[hd, { width: 170, textAlign: "center" }]}>Referensnr</Text>
+                <View style={{ width: 16 }} />
+                <Text style={[hd, bar, { width: 58, textAlign: "center", paddingLeft: 4 }]}>Kronor</Text>
+                <Text style={[hd, bar, { width: 34, textAlign: "center", paddingLeft: 4 }]}>öre</Text>
+                <View style={{ ...bar, width: 1, height: 9 }} />
+                <View style={{ flex: 1 }} />
+                <Text style={[hd, { textAlign: "right" }]}>Bankgiro</Text>
+              </View>
+              {/* OCR optik satırı */}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={[mono, { width: 18 }]}>H</Text>
+                <Text style={[mono, { width: 20 }]}>#</Text>
+                <Text style={[mono, { width: 170, textAlign: "center" }]}>{ref}</Text>
+                <Text style={[mono, { width: 16, textAlign: "center" }]}>#</Text>
+                <Text style={[mono, { width: 58, textAlign: "center" }]}>{kronor}</Text>
+                <Text style={[mono, { width: 34, textAlign: "center" }]}>{ore}</Text>
+                <Text style={[mono, { width: 22, textAlign: "center" }]}>{check}</Text>
+                <Text style={[mono, { width: 16 }]}>{">"}</Text>
+                <View style={{ flex: 1 }} />
+                <Text style={[mono, { textAlign: "right" }]}>{bg}#41#</Text>
+              </View>
             </View>
           );
         })()}
