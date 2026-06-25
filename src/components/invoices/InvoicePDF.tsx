@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
   sumCell: { width: 90, fontSize: 9, textAlign: "right", color: "#374151" },
   attRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 8 },
   attText: { fontSize: 13, fontFamily: "Helvetica-Bold" },
-  giro: { position: "absolute", bottom: 24, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 8, flexDirection: "row", justifyContent: "space-between" },
-  giroLabel: { fontSize: 7, color: "#6b7280" },
+  giro: { position: "absolute", bottom: 24, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 6 },
+  giroLabel: { fontSize: 6.5, color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 },
   giroVal: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
 });
 
@@ -111,7 +111,8 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           <View style={{ maxWidth: "62%" }}>
             {company.logo_url ? <Image src={company.logo_url} style={styles.logo} /> : <Text style={styles.companyName}>{company.name}</Text>}
             <Text style={styles.companyLine}>
-              {company.name}, {company.address_line1}, {company.postal_code} {company.city}
+              {company.address_line1}, {company.postal_code} {company.city}
+              {company.org_no ? ` · Org.nr ${company.org_no}` : ""}
             </Text>
           </View>
           <View>
@@ -227,14 +228,9 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           const bg = company.bankgiro.replace(/\D/g, "");
           return (
             <View style={styles.giro} fixed>
-              <View style={{ flexDirection: "row", marginBottom: 3 }}>
-                <Text style={[styles.giroLabel, { flex: 1 }]}>Referensnr</Text>
-                <Text style={[styles.giroLabel, { width: 70, textAlign: "right" }]}>Kronor</Text>
-                <Text style={[styles.giroLabel, { width: 36, textAlign: "right" }]}>öre</Text>
-                <Text style={[styles.giroLabel, { width: 120, textAlign: "right" }]}>Bankgiro</Text>
-              </View>
-              <Text style={{ fontFamily: "Courier-Bold", fontSize: 12, color: "#111827", letterSpacing: 1 }}>
-                {`#  ${ref}  #   ${kronor}  ${ore}  ${check}  >          ${bg}#41#`}
+              <Text style={[styles.giroLabel, { marginBottom: 2 }]}>Referensnr · Kronor · öre · Bankgiro (OCR-rad)</Text>
+              <Text style={{ fontFamily: "Courier-Bold", fontSize: 10, color: "#111827" }}>
+                {`# ${ref} # ${kronor} ${ore} ${check} > ${bg}#41#`}
               </Text>
             </View>
           );
