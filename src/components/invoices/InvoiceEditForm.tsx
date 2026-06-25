@@ -26,11 +26,12 @@ interface Props {
   customer: Customer;
   lines: InvoiceLine[];
   allCustomers: Pick<Customer, "id" | "name" | "payment_terms_days">[];
+  getRedirectPath?: (id: string) => string;
 }
 
 const emptyLine = (): EditLine => ({ description: "", quantity: 1, unit: "st", unit_price: 0, vat_rate: 25 });
 
-export function InvoiceEditForm({ invoice, company, customer, lines: initialLines, allCustomers }: Props) {
+export function InvoiceEditForm({ invoice, company, customer, lines: initialLines, allCustomers, getRedirectPath }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -125,7 +126,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
     const { error: linesErr } = await supabase.from("invoice_lines").insert(linePayloads);
     if (linesErr) { setError(linesErr.message); setLoading(false); return; }
 
-    router.push(`/dashboard/invoices/${invoice.id}`);
+    router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
     router.refresh();
   }
 

@@ -96,7 +96,11 @@ export default function KonsultFakturorPage() {
                 {list.map((inv, i) => {
                   const [bg, color, label] = STATUS[inv.status] ?? ["#f3f4f6", "#6b7280", inv.status];
                   return (
-                    <tr key={inv.id} style={{ borderBottom: i < list.length - 1 ? "1px solid #f9fafb" : "none" }}>
+                    <tr key={inv.id}
+                      onClick={() => router.push(`/konsult/fakturor/${inv.id}`)}
+                      style={{ borderBottom: i < list.length - 1 ? "1px solid #f9fafb" : "none", cursor: "pointer" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "")}>
                       <td style={{ padding: "13px 18px" }}>
                         <code style={{ fontSize: 12, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace" }}>{inv.invoice_number}</code>
                       </td>
