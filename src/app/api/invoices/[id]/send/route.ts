@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoicePDF } from "@/components/invoices/InvoicePDF";
+import { generateInvoiceQr } from "@/lib/invoice-qr";
 import { Resend } from "resend";
 import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
 import { createElement } from "react";
@@ -23,8 +24,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
   if (!invoice) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const company = invoice.client_companies as unknown as ClientCompany & { user_id: string };
-  if (company?.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  // Yetki RLS ile sağlanıyor (sahip veya atanan muhasebeci); ek sahip kontrolü konsult'u engellerdi.
+  const company = invoice.client_companies as unknown as ClientCompany & { user_id: string; invoice_template?: string };
 
   const customer = invoice.customers as unknown as Customer;
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
@@ -35,9 +36,10 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   }
 
   // Generate PDF
+  const qrDataUrl = await generateInvoiceQr(inv, company);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pdfBuffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl }) as any
   );
 
   const formattedTotal = new Intl.NumberFormat("sv-SE", {

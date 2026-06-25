@@ -69,9 +69,10 @@ interface Props {
   customer: Customer;
   lines: InvoiceLine[];
   template?: string;
+  qrDataUrl?: string | null;
 }
 
-export function InvoicePDF({ invoice, company, customer, lines, template }: Props) {
+export function InvoicePDF({ invoice, company, customer, lines, template, qrDataUrl }: Props) {
   const tpl = PDF_TEMPLATES[template ?? ""] ?? PDF_TEMPLATES["klasik-standart"];
   const accent = tpl.accent;
 
@@ -169,8 +170,15 @@ export function InvoicePDF({ invoice, company, customer, lines, template }: Prop
           </View>
         ))}
 
-        {/* 6) Toplam */}
-        <View style={styles.sumWrap}>
+        {/* 6) Toplam (+ banka QR'ı, sola) */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14 }}>
+          {qrDataUrl ? (
+            <View style={{ alignItems: "center", width: 110 }}>
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              <Image src={qrDataUrl} style={{ width: 96, height: 96 }} />
+              <Text style={{ fontSize: 7, color: "#6b7280", marginTop: 3, textAlign: "center" }}>Skanna i bankappen{"\n"}för att betala</Text>
+            </View>
+          ) : <View />}
           <View style={styles.sumBox}>
             <View style={styles.sumHead}>
               <Text style={[styles.sumLabel, { fontSize: 8, color: "#6b7280" }]}> </Text>

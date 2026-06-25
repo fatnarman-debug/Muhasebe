@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoicePDF } from "@/components/invoices/InvoicePDF";
+import { generateInvoiceQr } from "@/lib/invoice-qr";
 import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
 import { createElement } from "react";
 
@@ -27,9 +28,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
   const inv = invoice as unknown as Invoice;
 
+  const qrDataUrl = await generateInvoiceQr(inv, company);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl }) as any
   );
 
   return new NextResponse(buffer as unknown as BodyInit, {
