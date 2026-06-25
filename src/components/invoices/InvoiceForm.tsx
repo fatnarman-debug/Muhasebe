@@ -21,6 +21,9 @@ interface InvoiceLine {
 
 interface Props {
   clientCompanies: (Pick<ClientCompany, "id" | "name" | "invoice_prefix" | "next_invoice_number" | "payment_terms_days" | "default_vat_rate"> & { customers: Pick<Customer, "id" | "name" | "payment_terms_days">[] })[];
+  // Kaydetme sonrası yönlendirme — varsayılan dashboard fatura detayı.
+  // Konsult akışı kendi liste sayfasına yönlendirmek için override eder.
+  getRedirectPath?: (invoiceId: string) => string;
 }
 
 const emptyLine = (): InvoiceLine => ({
@@ -31,7 +34,7 @@ const emptyLine = (): InvoiceLine => ({
   vat_rate: 25,
 });
 
-export function InvoiceForm({ clientCompanies }: Props) {
+export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -180,7 +183,7 @@ export function InvoiceForm({ clientCompanies }: Props) {
       .update({ next_invoice_number: (selectedCompany?.next_invoice_number ?? 1) + 1 })
       .eq("id", clientCompanyId);
 
-    router.push(`/dashboard/invoices/${invoice.id}`);
+    router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
     router.refresh();
   }
 
