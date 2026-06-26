@@ -9,12 +9,12 @@ export default function YetkiliNewClientPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e3c72" }}>Yeni Müşteri Firma</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Yeni Müşteri Firma</h1>
             <p style={{ color: "#95a5a6", fontSize: 13, marginTop: 4 }}>
               Logo, fatura şablonu (10 seçenek) ve fatura numarası başlangıcı dahil firma bilgileri.
             </p>
           </div>
-          <Link href="/yetkili/musteriler" style={{ fontSize: 13, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>
+          <Link href="/yetkili/musteriler" style={{ fontSize: 13, color: "#111827", fontWeight: 600, textDecoration: "none" }}>
             ← Listeye dön
           </Link>
         </div>

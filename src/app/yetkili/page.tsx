@@ -74,14 +74,14 @@ export default function YetkiliPage() {
   return (
     <>
       {/* Topbar */}
-      <header style={{ background: "#fff", borderBottom: "1px solid #e8ecf1", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
+      <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e3c72" }}>Genel Bakış</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Genel Bakış</h1>
         <div className="flex items-center gap-3">
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
             <Bell size={18} />
           </button>
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
             <HelpCircle size={18} />
           </button>
           <div style={{ width: 38, height: 38, borderRadius: 8, background: GRADS[0], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 13 }}>
@@ -95,7 +95,7 @@ export default function YetkiliPage() {
         {/* Welcome */}
         <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <div>
-            <h2 style={{ fontSize: 26, fontWeight: 700, color: "#1e3c72", marginBottom: 6 }}>
+            <h2 style={{ fontSize: 26, fontWeight: 700, color: "#111827", marginBottom: 6 }}>
               Hoş geldiniz{name ? `, ${name}` : ""}
             </h2>
             <p style={{ color: "#95a5a6", fontSize: 14 }}>
@@ -103,7 +103,7 @@ export default function YetkiliPage() {
             </p>
             <p style={{ color: "#7f8c8d", fontSize: 13, marginTop: 4 }}>Dükkanınızın güncel durumu aşağıda özetlenmiştir.</p>
             <Link href="/yetkili/musteriler"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 16, padding: "10px 20px", borderRadius: 8, background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 16, padding: "10px 20px", borderRadius: 8, background: "#111827", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
               + Müşteri Ekle &amp; Ata
             </Link>
           </div>
@@ -126,12 +126,12 @@ export default function YetkiliPage() {
             <div key={i} style={cardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <s.icon size={18} color="#2a5298" />
+                  <s.icon size={18} color="#111827" />
                   <span style={labelStyle}>{s.label}</span>
                 </div>
                 <span style={{ background: s.badgeBg, color: s.badgeColor, fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>{s.badge}</span>
               </div>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#1e3c72", marginBottom: 8 }}>
+              <div style={{ fontSize: 34, fontWeight: 700, color: "#111827", marginBottom: 8 }}>
                 {loading ? <Loader2 size={26} className="animate-spin" color="#bdc3c7" /> : s.value}
               </div>
               <p style={{ fontSize: 12, color: "#95a5a6" }}>{s.hint}</p>
@@ -145,7 +145,7 @@ export default function YetkiliPage() {
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Son Eklenen Müşteriler</h4>
-              <Link href="/yetkili/musteriler" style={{ fontSize: 12, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
+              <Link href="/yetkili/musteriler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
             </div>
             {loading ? (
               <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
@@ -153,8 +153,8 @@ export default function YetkiliPage() {
               <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Henüz müşteri eklenmemiş.</p>
             ) : (
               sonMusteriler.map((c, i) => (
-                <div key={c.id} style={{ display: "flex", gap: 14, padding: "13px 0", borderBottom: i < sonMusteriler.length - 1 ? "1px solid #e8ecf1" : "none", alignItems: "center" }}>
-                  <div style={{ width: 38, height: 38, borderRadius: 8, background: "#f0f4ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: "#1e3c72", flexShrink: 0 }}>
+                <div key={c.id} style={{ display: "flex", gap: 14, padding: "13px 0", borderBottom: i < sonMusteriler.length - 1 ? "1px solid #f3f4f6" : "none", alignItems: "center" }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 8, background: "#eef2ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: "#4338ca", flexShrink: 0 }}>
                     {c.name[0]?.toUpperCase()}
                   </div>
                   <div style={{ flex: 1 }}>
@@ -173,7 +173,7 @@ export default function YetkiliPage() {
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Muhasebeciler</h4>
-              <Link href="/yetkili/muhasebeciler" style={{ fontSize: 12, color: "#2a5298", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
+              <Link href="/yetkili/muhasebeciler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
             </div>
             {loading ? (
               <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
@@ -182,7 +182,7 @@ export default function YetkiliPage() {
             ) : (
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
-                  <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
+                  <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
                     {["Muhasebeci", "Müşteri", "Durum"].map((h) => (
                       <th key={h} style={{ padding: "10px 12px", textAlign: "left", ...labelStyle }}>{h}</th>
                     ))}
@@ -190,7 +190,7 @@ export default function YetkiliPage() {
                 </thead>
                 <tbody>
                   {topMuh.map((a, i) => (
-                    <tr key={a.id} style={{ borderBottom: i < topMuh.length - 1 ? "1px solid #e8ecf1" : "none" }} className="hover:bg-[#f9fafc] transition-colors">
+                    <tr key={a.id} style={{ borderBottom: i < topMuh.length - 1 ? "1px solid #f3f4f6" : "none" }} className="hover:bg-[#f9fafb] transition-colors">
                       <td style={{ padding: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <div style={{ width: 30, height: 30, borderRadius: 6, background: GRADS[i % 4], display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600, fontSize: 11, flexShrink: 0 }}>
@@ -215,7 +215,7 @@ export default function YetkiliPage() {
       </main>
 
       {/* Footer */}
-      <footer style={{ background: "#fff", borderTop: "1px solid #e8ecf1", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <footer style={{ background: "#fff", borderTop: "1px solid #f3f4f6", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <p style={{ fontSize: 12, color: "#95a5a6" }}>LedgerFlow © 2026 LedgerFlow Accounting SaaS. Tüm hakları saklıdır.</p>
         <div style={{ display: "flex", gap: 20 }}>
           {["Kullanım Koşulları", "Gizlilik Politikası", "Güvenlik"].map((l) => (

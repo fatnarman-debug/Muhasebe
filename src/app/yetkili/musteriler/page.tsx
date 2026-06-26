@@ -6,7 +6,7 @@ import { Bell, HelpCircle, Search, Filter, CheckCircle, Plus, Loader2 } from "lu
 
 const cardStyle = { background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
 const labelStyle = { fontSize: 12, fontWeight: 600, color: "#7f8c8d", textTransform: "uppercase" as const, letterSpacing: "0.5px" };
-const inputStyle = { border: "1px solid #e8ecf1", borderRadius: 8, padding: "9px 14px", fontSize: 13, color: "#2c3e50", background: "#fff", outline: "none" };
+const inputStyle = { border: "1px solid #f3f4f6", borderRadius: 8, padding: "9px 14px", fontSize: 13, color: "#2c3e50", background: "#fff", outline: "none" };
 
 type Muhasebeci = { id: string; full_name: string };
 type Musteri = {
@@ -103,14 +103,14 @@ export default function MusterilerPage() {
   return (
     <>
       {/* Topbar */}
-      <header style={{ background: "#fff", borderBottom: "1px solid #e8ecf1", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
+      <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e3c72" }}>Müşteri Yönetimi</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Müşteri Yönetimi</h1>
         <div className="flex items-center gap-3">
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Bell size={17} color="#2c3e50" />
           </button>
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <HelpCircle size={17} color="#2c3e50" />
           </button>
           <div style={{ width: 38, height: 38, borderRadius: 8, background: "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 12 }}>AY</div>
@@ -123,7 +123,7 @@ export default function MusterilerPage() {
           {[
             { label: "Toplam Müşteri", value: list.length, badge: "Kayıtlı", badgeBg: "#d4edda", badgeColor: "#155724" },
             { label: "Aktif Müşteri", value: aktif, badge: "Aktif", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
-            { label: "Atanmış", value: assigned, badge: "Muhasebeci", badgeBg: "#e8f0fe", badgeColor: "#1e3c72" },
+            { label: "Atanmış", value: assigned, badge: "Muhasebeci", badgeBg: "#eef2ff", badgeColor: "#4338ca" },
             { label: "Atanmamış", value: unassigned, badge: "Bekliyor", badgeBg: "#fff3cd", badgeColor: "#856404" },
           ].map((s, i) => (
             <div key={i} style={{ ...cardStyle, padding: 20 }}>
@@ -131,7 +131,7 @@ export default function MusterilerPage() {
                 <span style={labelStyle}>{s.label}</span>
                 <span style={{ background: s.badgeBg, color: s.badgeColor, fontSize: 11, fontWeight: 600, padding: "4px 8px", borderRadius: 6 }}>{s.badge}</span>
               </div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "#1e3c72" }}>{s.value}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "#111827" }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -142,7 +142,7 @@ export default function MusterilerPage() {
 
         {/* Table card */}
         <div style={cardStyle}>
-          <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+          <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
             <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Müşteri Listesi</h3>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <div style={{ position: "relative" }}>
@@ -157,7 +157,7 @@ export default function MusterilerPage() {
                   {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                 </select>
               </div>
-              <button onClick={() => router.push("/yetkili/musteriler/new")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+              <button onClick={() => router.push("/yetkili/musteriler/new")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "#111827", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
                 <Plus size={13} /> Yeni Müşteri
               </button>
             </div>
@@ -169,7 +169,7 @@ export default function MusterilerPage() {
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
-                  <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
+                  <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
                     {["Müşteri", "Org.nr", "Şehir", "Muhasebeci", "Durum", "Ata / Değiştir"].map((h) => (
                       <th key={h} style={{ padding: "12px 16px", textAlign: "left", ...labelStyle, whiteSpace: "nowrap" as const }}>{h}</th>
                     ))}
@@ -181,24 +181,24 @@ export default function MusterilerPage() {
                       {list.length === 0 ? "Henüz müşteri yok. “Yeni Müşteri” ile ekleyin." : "Arama kriterlerine uyan müşteri bulunamadı."}
                     </td></tr>
                   ) : filtered.map((c, i) => (
-                    <tr key={c.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid #e8ecf1" : "none" }} className="hover:bg-[#f9fafc] transition-colors">
+                    <tr key={c.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid #f3f4f6" : "none" }} className="hover:bg-[#f9fafb] transition-colors">
                       <td style={{ padding: "12px 16px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: 8, background: "#f0f4ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#1e3c72", flexShrink: 0 }}>
+                          <div style={{ width: 32, height: 32, borderRadius: 8, background: "#eef2ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#4338ca", flexShrink: 0 }}>
                             {c.name[0]?.toUpperCase()}
                           </div>
                           <span style={{ fontSize: 13, fontWeight: 600, color: "#2c3e50", whiteSpace: "nowrap" }}>{c.name}</span>
                         </div>
                       </td>
                       <td style={{ padding: "12px 16px" }}>
-                        <code style={{ fontSize: 11, color: "#7f8c8d", background: "#f5f7fa", padding: "3px 8px", borderRadius: 4 }}>{c.org_no}</code>
+                        <code style={{ fontSize: 11, color: "#7f8c8d", background: "#f8f9fb", padding: "3px 8px", borderRadius: 4 }}>{c.org_no}</code>
                       </td>
                       <td style={{ padding: "12px 16px", fontSize: 12, color: "#95a5a6" }}>{c.city ?? "—"}</td>
                       <td style={{ padding: "12px 16px", fontSize: 13, color: c.muhasebeci_id ? "#155724" : "#bdc3c7", fontWeight: c.muhasebeci_id ? 600 : 400 }}>
                         {c.muhasebeci_name || <span style={{ fontStyle: "italic" }}>Atanmamış</span>}
                       </td>
                       <td style={{ padding: "12px 16px" }}>
-                        <span style={{ background: c.is_active ? "#d4edda" : "#f5f7fa", color: c.is_active ? "#155724" : "#7f8c8d", padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
+                        <span style={{ background: c.is_active ? "#d4edda" : "#f8f9fb", color: c.is_active ? "#155724" : "#7f8c8d", padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
                           {c.is_active ? "Aktif" : "Pasif"}
                         </span>
                       </td>
@@ -208,7 +208,7 @@ export default function MusterilerPage() {
                             value={c.muhasebeci_id ?? ""}
                             disabled={savingId === c.id || accountants.length === 0}
                             onChange={(e) => handleAssign(c, e.target.value)}
-                            style={{ border: "1px solid #e8ecf1", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#2c3e50", background: "#fff", cursor: "pointer", outline: "none" }}>
+                            style={{ border: "1px solid #f3f4f6", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#2c3e50", background: "#fff", cursor: "pointer", outline: "none" }}>
                             <option value="">Atanmamış</option>
                             {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                           </select>
@@ -222,7 +222,7 @@ export default function MusterilerPage() {
             </div>
           )}
 
-          <div style={{ padding: "12px 24px", borderTop: "1px solid #e8ecf1", background: "#f9fafc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "12px 24px", borderTop: "1px solid #f3f4f6", background: "#f9fafb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: 12, color: "#95a5a6" }}>{filtered.length} müşteri gösteriliyor</span>
             {accountants.length === 0 && (
               <span style={{ fontSize: 11, color: "#c0392b" }}>Atama için önce muhasebeci ekleyin.</span>

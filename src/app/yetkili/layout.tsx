@@ -3,13 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, UserCheck, Settings, LogOut, Building2 } from "lucide-react";
+
+const M = ({ name, fill = false, size = 20 }: { name: string; fill?: boolean; size?: number }) => (
+  <span className="material-symbols-outlined select-none leading-none"
+    style={{ fontVariationSettings: `'FILL' ${fill ? 1 : 0},'wght' 400,'GRAD' 0,'opsz' ${size}`, fontSize: size }}>
+    {name}
+  </span>
+);
 
 const NAV = [
-  { href: "/yetkili",               label: "Genel Bakış",   icon: LayoutDashboard, exact: true },
-  { href: "/yetkili/muhasebeciler", label: "Muhasebeciler", icon: Users },
-  { href: "/yetkili/musteriler",    label: "Müşteriler",    icon: UserCheck },
-  { href: "/yetkili/ayarlar",       label: "Ayarlar",       icon: Settings },
+  { href: "/yetkili",               label: "Genel Bakış",   icon: "dashboard",        exact: true },
+  { href: "/yetkili/muhasebeciler", label: "Muhasebeciler", icon: "group" },
+  { href: "/yetkili/musteriler",    label: "Müşteriler",    icon: "badge" },
+  { href: "/yetkili/ayarlar",       label: "Ayarlar",       icon: "settings" },
 ];
 
 function Sidebar({ email }: { email?: string }) {
@@ -26,60 +32,70 @@ function Sidebar({ email }: { email?: string }) {
   }
 
   return (
-    <aside
-      style={{ background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)", boxShadow: "4px 0 12px rgba(30,60,114,0.15)" }}
-      className="w-[280px] h-screen flex flex-col shrink-0 fixed left-0 top-0 z-50 overflow-y-auto"
-    >
-      <div className="h-16 flex items-center px-6 border-b border-white/10">
+    <aside className="h-screen w-60 fixed left-0 top-0 z-50 flex flex-col"
+      style={{ background: "#ffffff", borderRight: "1px solid #e5e7eb" }}>
+
+      {/* Logo */}
+      <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid #f3f4f6" }}>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl" style={{ background: "rgba(255,255,255,0.15)" }}>
-            💰
+          <div style={{ width: 36, height: 36, borderRadius: 9, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+            <M name="storefront" fill size={18} />
           </div>
           <div>
-            <div className="text-white font-bold text-base leading-tight">LedgerFlow</div>
-            <div className="text-white/50 text-[10px] uppercase tracking-widest leading-tight font-semibold">Dükkan Yetkilisi</div>
+            <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>LedgerFlow</div>
+            <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
+              Dükkan Yetkilisi
+            </div>
           </div>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      {/* Yetkili info chip */}
+      {email && (
+        <div style={{ margin: "12px 10px 0", background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 10, padding: "10px 12px" }}>
+          <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }} className="truncate">{email}</p>
+          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Büro Yetkilisi</p>
+        </div>
+      )}
+
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto" style={{ padding: "12px 10px" }}>
+        <p style={{ fontSize: 10, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", padding: "8px 10px 6px" }}>
+          Menü
+        </p>
         {NAV.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              style={active ? { background: "rgba(255,255,255,0.2)" } : undefined}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                active ? "text-white" : "text-white/75 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              <item.icon className="w-[18px] h-[18px] shrink-0" />
-              {item.label}
+            <Link key={item.href} href={item.href}
+              className="flex items-center gap-2.5 rounded-lg transition-colors mb-0.5 relative"
+              style={{ padding: "9px 12px", background: active ? "#f3f4f6" : "transparent", color: active ? "#111827" : "#6b7280", fontWeight: active ? 600 : 400 }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "#f9fafb"; }}
+              onMouseLeave={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
+              {active && (
+                <span style={{ position: "absolute", left: 10, width: 3, height: 20, background: "#111827", borderRadius: 9999 }} />
+              )}
+              <M name={item.icon} fill={active} size={18} />
+              <span style={{ fontSize: 14 }}>{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {email && (
-        <div className="mx-3 mb-1 rounded-lg px-3 py-2.5" style={{ background: "rgba(255,255,255,0.08)" }}>
-          <div className="text-white text-xs font-semibold truncate">{email}</div>
-          <div className="text-white/55 text-[10px] uppercase tracking-wide font-semibold mt-0.5">Büro Yetkilisi</div>
-        </div>
-      )}
-      <div className="px-3 pb-5 pt-3 border-t border-white/10 space-y-1">
-        <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white/75 hover:bg-white/10 hover:text-white transition-all">
-          <svg className="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          Yardım Merkezi
+      {/* Footer */}
+      <div style={{ borderTop: "1px solid #f3f4f6", padding: "10px" }}>
+        <a href="#" className="flex items-center gap-2.5 rounded-lg transition-colors"
+          style={{ padding: "9px 12px", color: "#6b7280" }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#f9fafb"; (e.currentTarget as HTMLElement).style.color = "#111827"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#6b7280"; }}>
+          <M name="help_outline" size={18} />
+          <span style={{ fontSize: 14 }}>Yardım Merkezi</span>
         </a>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white/75 hover:bg-white/10 hover:text-white transition-all w-full text-left"
-        >
-          <LogOut className="w-[18px] h-[18px] shrink-0" />
-          Oturumu Kapat
+        <button onClick={handleLogout} className="flex items-center gap-2.5 rounded-lg w-full text-left transition-colors"
+          style={{ padding: "9px 12px", color: "#6b7280", background: "none", border: "none", cursor: "pointer", marginTop: 2 }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#fef2f2"; (e.currentTarget as HTMLElement).style.color = "#dc2626"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#6b7280"; }}>
+          <M name="logout" size={18} />
+          <span style={{ fontSize: 14 }}>Oturumu Kapat</span>
         </button>
       </div>
     </aside>
@@ -113,19 +129,17 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
 
   if (checking) {
     return (
-      <div className="flex h-screen items-center justify-center" style={{ background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)" }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-          <p className="text-white/60 text-sm">Yükleniyor…</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#f8f9fb" }}>
+        <div style={{ width: 30, height: 30, borderRadius: "50%", border: "3px solid #e5e7eb", borderTopColor: "#111827", animation: "spin 0.7s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#f5f7fa" }}>
+    <div className="flex min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
       <Sidebar email={email} />
-      <div className="flex-1 ml-[280px] flex flex-col min-h-screen">
+      <div className="flex-1 ml-60 flex flex-col min-h-screen">
         {children}
       </div>
     </div>

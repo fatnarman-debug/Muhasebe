@@ -6,7 +6,7 @@ import { Bell, HelpCircle, Plus, Trash2, Eye, EyeOff, Loader2 } from "lucide-rea
 const cardStyle = { background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" };
 const labelStyle = { fontSize: 12, fontWeight: 600, color: "#7f8c8d", textTransform: "uppercase" as const, letterSpacing: "0.5px" };
 const inputStyle = {
-  width: "100%", border: "1px solid #e8ecf1", borderRadius: 8,
+  width: "100%", border: "1px solid #f3f4f6", borderRadius: 8,
   padding: "10px 14px", fontSize: 13, color: "#2c3e50",
   background: "#fff", outline: "none",
 };
@@ -106,14 +106,14 @@ export default function MuhasebecilerPage() {
   return (
     <>
       {/* Topbar */}
-      <header style={{ background: "#fff", borderBottom: "1px solid #e8ecf1", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
+      <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e3c72" }}>Muhasebeciler</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Muhasebeciler</h1>
         <div className="flex items-center gap-3">
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Bell size={17} color="#2c3e50" />
           </button>
-          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f5f7fa", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <HelpCircle size={17} color="#2c3e50" />
           </button>
           <div style={{ width: 38, height: 38, borderRadius: 8, background: "linear-gradient(135deg,#667eea,#764ba2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 12 }}>AY</div>
@@ -133,7 +133,7 @@ export default function MuhasebecilerPage() {
                 <span style={labelStyle}>{s.label}</span>
                 <span style={{ background: s.badgeBg, color: s.badgeColor, fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6 }}>{s.badge}</span>
               </div>
-              <div style={{ fontSize: 32, fontWeight: 700, color: "#1e3c72" }}>{s.value}</div>
+              <div style={{ fontSize: 32, fontWeight: 700, color: "#111827" }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -147,7 +147,7 @@ export default function MuhasebecilerPage() {
         {/* Add form */}
         {showForm && (
           <div style={{ ...cardStyle, marginBottom: 24, overflow: "hidden" }}>
-            <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Yeni Muhasebeci Kaydı</h3>
               <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#95a5a6", fontSize: 20 }}>×</button>
             </div>
@@ -178,11 +178,11 @@ export default function MuhasebecilerPage() {
                 </div>
               )}
             </div>
-            <div style={{ padding: "14px 24px", background: "#f5f7fa", borderTop: "1px solid #e8ecf1", display: "flex", justifyContent: "flex-end", gap: 10 }}>
-              <button onClick={() => setShowForm(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #e8ecf1", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
+            <div style={{ padding: "14px 24px", background: "#f8f9fb", borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button onClick={() => setShowForm(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
                 İptal
               </button>
-              <button onClick={handleAdd} disabled={!canSave || saving} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: !canSave || saving ? "#e8ecf1" : "linear-gradient(135deg,#2a5298,#1e3c72)", color: !canSave || saving ? "#95a5a6" : "#fff", cursor: !canSave || saving ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={handleAdd} disabled={!canSave || saving} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: !canSave || saving ? "#f3f4f6" : "#111827", color: !canSave || saving ? "#95a5a6" : "#fff", cursor: !canSave || saving ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
                 {saving && <Loader2 size={14} className="animate-spin" />}
                 Kaydet
               </button>
@@ -192,10 +192,10 @@ export default function MuhasebecilerPage() {
 
         {/* Table */}
         <div style={cardStyle}>
-          <div style={{ padding: "16px 24px", borderBottom: "1px solid #e8ecf1", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Kayıtlı Muhasebeciler</h3>
             {!showForm && (
-              <button onClick={() => setShowForm(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#2a5298,#1e3c72)", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+              <button onClick={() => setShowForm(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 8, border: "none", background: "#111827", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
                 <Plus size={14} /> Yeni Muhasebeci
               </button>
             )}
@@ -213,7 +213,7 @@ export default function MuhasebecilerPage() {
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
-                  <tr style={{ background: "#f5f7fa", borderBottom: "1px solid #e8ecf1" }}>
+                  <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
                     {["#", "Muhasebeci", "Benzersiz Kod", "Müşteri Sayısı", "Durum", "İşlemler"].map((h) => (
                       <th key={h} style={{ padding: "14px 16px", textAlign: "left", ...labelStyle }}>{h}</th>
                     ))}
@@ -221,8 +221,8 @@ export default function MuhasebecilerPage() {
                 </thead>
                 <tbody>
                   {list.map((m, i) => (
-                    <tr key={m.id} style={{ borderBottom: i < list.length - 1 ? "1px solid #e8ecf1" : "none" }}
-                      className="hover:bg-[#f9fafc] transition-colors">
+                    <tr key={m.id} style={{ borderBottom: i < list.length - 1 ? "1px solid #f3f4f6" : "none" }}
+                      className="hover:bg-[#f9fafb] transition-colors">
                       <td style={{ padding: "14px 16px", fontSize: 12, color: "#bdc3c7", fontWeight: 600 }}>{String(i + 1).padStart(2, "0")}</td>
                       <td style={{ padding: "14px 16px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -236,7 +236,7 @@ export default function MuhasebecilerPage() {
                         </div>
                       </td>
                       <td style={{ padding: "14px 16px" }}>
-                        <code style={{ fontSize: 12, fontWeight: 700, color: "#1e3c72", background: "#f0f4ff", padding: "4px 10px", borderRadius: 6 }}>{m.benzersiz_kod}</code>
+                        <code style={{ fontSize: 12, fontWeight: 700, color: "#4338ca", background: "#eef2ff", padding: "4px 10px", borderRadius: 6 }}>{m.benzersiz_kod}</code>
                       </td>
                       <td style={{ padding: "14px 16px", fontSize: 13, color: "#2c3e50" }}>{m.musteri_sayisi} müşteri</td>
                       <td style={{ padding: "14px 16px" }}>
@@ -245,7 +245,7 @@ export default function MuhasebecilerPage() {
                         </span>
                       </td>
                       <td style={{ padding: "14px 16px" }}>
-                        <button onClick={() => setDeleteTarget(m)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 6, border: "1px solid #e8ecf1", background: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#e74c3c" }}
+                        <button onClick={() => setDeleteTarget(m)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 6, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#e74c3c" }}
                           className="hover:bg-red-50 transition-colors">
                           <Trash2 size={13} /> Sil
                         </button>
@@ -292,11 +292,11 @@ export default function MuhasebecilerPage() {
                 </>
               )}
             </div>
-            <div style={{ padding: "14px 28px 20px", display: "flex", justifyContent: "flex-end", gap: 10, borderTop: "1px solid #e8ecf1", background: "#f9fafc" }}>
-              <button onClick={() => { setDeleteTarget(null); setTransferTo(""); }} disabled={deleting} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #e8ecf1", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
+            <div style={{ padding: "14px 28px 20px", display: "flex", justifyContent: "flex-end", gap: 10, borderTop: "1px solid #f3f4f6", background: "#f9fafb" }}>
+              <button onClick={() => { setDeleteTarget(null); setTransferTo(""); }} disabled={deleting} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
                 İptal
               </button>
-              <button onClick={handleDeleteConfirm} disabled={deleting} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: deleting ? "#e8ecf1" : "linear-gradient(90deg,#e74c3c,#c0392b)", color: deleting ? "#95a5a6" : "#fff", cursor: deleting ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={handleDeleteConfirm} disabled={deleting} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: deleting ? "#f3f4f6" : "linear-gradient(90deg,#e74c3c,#c0392b)", color: deleting ? "#95a5a6" : "#fff", cursor: deleting ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
                 {deleting && <Loader2 size={14} className="animate-spin" />}
                 Sil
               </button>
