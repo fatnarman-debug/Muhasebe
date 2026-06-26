@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { InvoicePDF } from "@/components/invoices/InvoicePDF";
 import { generateInvoiceQr } from "@/lib/invoice-qr";
+import { logEmail, logError } from "@/lib/app-logs";
 import { Resend } from "resend";
 import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
 import { createElement } from "react";
@@ -89,8 +90,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   });
 
   if (sendError) {
+    await logEmail({ kind: "reminder", status: "failed", toEmail: customer.email, subject: `PÅMINNELSE: Faktura ${inv.invoice_number}`, invoiceId: inv.id, invoiceNumber: inv.invoice_number, companyName: company.name, errorMessage: sendError.message });
+    await logError({ scope: "invoice.remind", message: sendError.message, detail: { invoiceId: inv.id }, userId: user.id });
     return NextResponse.json({ error: sendError.message }, { status: 500 });
   }
+
+  await logEmail({ kind: "reminder", status: "sent", toEmail: customer.email, subject: `PÅMINNELSE: Faktura ${inv.invoice_number}`, invoiceId: inv.id, invoiceNumber: inv.invoice_number, companyName: company.name });
 
   // Mark as overdue if not already
   if (inv.status === "sent") {

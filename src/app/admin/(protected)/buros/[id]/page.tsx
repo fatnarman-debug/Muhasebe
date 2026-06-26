@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { ArrowLeft, Building2, Users, UserCheck, FileText } from "lucide-react";
+import { ArrowLeft, Building2, Users, UserCheck, FileText, Clock } from "lucide-react";
 import { getAdminSession } from "@/lib/admin-session";
 import { PasswordResetButton } from "@/components/admin/PasswordResetButton";
 import { AccountLifecycleControls } from "@/components/admin/AccountLifecycleControls";
@@ -43,13 +43,25 @@ export default async function AdminBuroDetailPage({ params }: { params: Promise<
   const { data: invoices } = companyIds.length
     ? await supabase
         .from("invoices")
-        .select("id, invoice_number, status, total, client_company_id, customers(name)")
+        .select("id, invoice_number, status, total, client_company_id, created_at, sent_at, paid_at, customers(name)")
         .in("client_company_id", companyIds)
         .order("created_at", { ascending: false })
-        .limit(10)
+        .limit(25)
     : { data: [] };
 
   const companyName = new Map((companies ?? []).map((c) => [c.id, c.name]));
+
+  // "Son hareketler" — fatura zaman damgalarından türetilen aktivite akışı (ek tablo yok)
+  type Ev = { at: string; label: string; kind: "created" | "sent" | "paid"; inv: string };
+  const events: Ev[] = [];
+  for (const inv of (invoices ?? []) as Array<{ invoice_number: string; created_at?: string; sent_at?: string; paid_at?: string }>) {
+    if (inv.created_at) events.push({ at: inv.created_at, kind: "created", label: "Fatura oluşturuldu", inv: inv.invoice_number });
+    if (inv.sent_at)    events.push({ at: inv.sent_at,    kind: "sent",    label: "Fatura gönderildi",   inv: inv.invoice_number });
+    if (inv.paid_at)    events.push({ at: inv.paid_at,    kind: "paid",    label: "Ödeme alındı",        inv: inv.invoice_number });
+  }
+  events.sort((a, b) => b.at.localeCompare(a.at));
+  const recentEvents = events.slice(0, 12);
+  const EV_DOT: Record<Ev["kind"], string> = { created: "bg-slate-400", sent: "bg-sky-500", paid: "bg-emerald-500" };
 
   return (
     <div className="space-y-6">
@@ -155,6 +167,30 @@ export default async function AdminBuroDetailPage({ params }: { params: Promise<
           </div>
         </section>
       </div>
+
+      {/* Son hareketler (türetilmiş aktivite akışı) */}
+      <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-5 py-3.5 border-b border-slate-100 flex items-center gap-2">
+          <Clock className="w-4 h-4 text-slate-400" />
+          <h2 className="text-sm font-semibold text-slate-700">Son hareketler</h2>
+        </div>
+        {recentEvents.length === 0 ? (
+          <p className="px-5 py-6 text-sm text-slate-400">Henüz hareket yok.</p>
+        ) : (
+          <ul className="divide-y divide-slate-100">
+            {recentEvents.map((e, i) => (
+              <li key={i} className="px-5 py-3 flex items-center gap-3">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${EV_DOT[e.kind]}`} />
+                <span className="text-sm text-slate-700">{e.label}</span>
+                <span className="text-xs font-mono text-slate-400">{e.inv}</span>
+                <span className="ml-auto text-xs text-slate-400 whitespace-nowrap">
+                  {new Date(e.at).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short" })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
