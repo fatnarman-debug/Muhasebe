@@ -155,7 +155,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Muhasebeci bulunamadı' }, { status: 404 })
   }
 
-  let body: { email?: string; full_name?: string; is_active?: boolean }
+  let body: { email?: string; full_name?: string; is_active?: boolean; password?: string }
   try {
     body = await request.json()
   } catch {
@@ -167,23 +167,51 @@ export async function PATCH(
   if (body.full_name !== undefined) updates.full_name = body.full_name.trim()
   if (body.is_active !== undefined) updates.is_active = body.is_active
 
-  if (Object.keys(updates).length === 0) {
+  const wantsPassword = body.password !== undefined
+  if (Object.keys(updates).length === 0 && !wantsPassword) {
     return NextResponse.json({ error: 'Güncellenecek alan belirtilmedi' }, { status: 400 })
   }
 
-  const { data, error } = await supabase
-    .from('muhasebeciler')
-    .update(updates)
-    .eq('id', id)
-    .select('id, email, full_name, benzersiz_kod, is_active, created_at')
-    .single()
+  const admin = createAdmin()
 
-  if (error) {
-    if (error.code === '23505') {
-      return NextResponse.json({ error: 'Bu email adresi zaten kayıtlı' }, { status: 409 })
-    }
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  // 1) Şifre değişikliği (auth) — istenmişse
+  if (wantsPassword) {
+    const pw = body.password ?? ''
+    if (pw.length < 8) return NextResponse.json({ error: 'Şifre en az 8 karakter olmalıdır' }, { status: 400 })
+    if (!accountant.auth_user_id) return NextResponse.json({ error: 'Bu muhasebecinin giriş hesabı yok' }, { status: 400 })
+    const { error: pwErr } = await admin.auth.admin.updateUserById(accountant.auth_user_id, { password: pw })
+    if (pwErr) return NextResponse.json({ error: pwErr.message }, { status: 500 })
   }
 
-  return NextResponse.json({ muhasebeci: data })
+  // 2) E-posta değişikliği — hem giriş hesabında (auth) hem tabloda olmalı
+  if (updates.email !== undefined && accountant.auth_user_id) {
+    const { error: emErr } = await admin.auth.admin.updateUserById(accountant.auth_user_id, {
+      email: updates.email as string,
+      email_confirm: true,
+    })
+    if (emErr) {
+      const dup = /already|registered|exists/i.test(emErr.message)
+      return NextResponse.json({ error: dup ? 'Bu e-posta başka bir hesapta kayıtlı' : emErr.message }, { status: dup ? 409 : 500 })
+    }
+  }
+
+  // 3) Tablo alanları (varsa)
+  if (Object.keys(updates).length > 0) {
+    const { data, error } = await supabase
+      .from('muhasebeciler')
+      .update(updates)
+      .eq('id', id)
+      .select('id, email, full_name, benzersiz_kod, is_active, created_at')
+      .single()
+
+    if (error) {
+      if (error.code === '23505') {
+        return NextResponse.json({ error: 'Bu email adresi zaten kayıtlı' }, { status: 409 })
+      }
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    return NextResponse.json({ muhasebeci: data })
+  }
+
+  return NextResponse.json({ success: true })
 }
