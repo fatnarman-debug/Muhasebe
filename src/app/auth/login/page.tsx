@@ -108,29 +108,6 @@ export default function LoginPage() {
           </form>
         </div>
 
-        {/* Dev bypass */}
-        <div style={{ marginTop: 20, background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 12, padding: "14px 18px" }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
-            Utvecklingsläge — snabbinloggning
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-            <button onClick={() => router.push("/yetkili")}
-              style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: "9px 14px", fontSize: 13, fontWeight: 600, color: "#111827", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 28, height: 28, borderRadius: 7, background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151" }}>
-                <M name="business_center" size={15} />
-              </span>
-              Byråansvarig — Erik Lindström
-            </button>
-            <button onClick={() => router.push("/konsult")}
-              style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: "9px 14px", fontSize: 13, fontWeight: 600, color: "#111827", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 28, height: 28, borderRadius: 7, background: "#eff1ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b5bdb" }}>
-                <M name="badge" size={15} />
-              </span>
-              Redovisningskonsult — Anna Svensson
-            </button>
-          </div>
-        </div>
-
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
