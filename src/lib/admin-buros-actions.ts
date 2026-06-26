@@ -2,6 +2,7 @@
 
 import { createClient } from "@supabase/supabase-js";
 import { getAdminSession } from "@/lib/admin-session";
+import { logAdminAction } from "@/lib/admin-audit";
 
 function adminClient() {
   return createClient(
@@ -19,6 +20,8 @@ export async function resetUserPassword(userId: string, newPassword: string): Pr
 
   const { error } = await adminClient().auth.admin.updateUserById(userId, { password: newPassword });
   if (error) return { error: error.message };
+
+  await logAdminAction({ action: "user.password_reset", targetType: "user", targetId: userId });
   return { ok: true };
 }
 
@@ -27,5 +30,12 @@ export async function setAccountantActive(muhasebeciId: string, isActive: boolea
   if (!(await getAdminSession())) return { error: "Yetkisiz erişim" };
   const { error } = await adminClient().from("muhasebeciler").update({ is_active: isActive }).eq("id", muhasebeciId);
   if (error) return { error: error.message };
+
+  await logAdminAction({
+    action: isActive ? "accountant.activated" : "accountant.deactivated",
+    targetType: "muhasebeci",
+    targetId: muhasebeciId,
+    metadata: { is_active: isActive },
+  });
   return { ok: true };
 }

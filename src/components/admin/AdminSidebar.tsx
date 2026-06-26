@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Shield, LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag } from "lucide-react";
+import { Shield, LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag, ScrollText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -14,6 +14,7 @@ const NAV = [
   { href: "/admin/plans", label: "Plan Yönetimi", icon: Tag },
   { href: "/admin/email-logs", label: "E-posta Logları", icon: Mail },
   { href: "/admin/errors", label: "Hata Logları", icon: AlertTriangle },
+  { href: "/admin/logs", label: "İşlem Günlüğü", icon: ScrollText },
   { href: "/admin/settings", label: "Ayarlar", icon: Settings },
 ];
 
