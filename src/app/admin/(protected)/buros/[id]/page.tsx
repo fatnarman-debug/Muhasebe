@@ -5,6 +5,7 @@ import { ArrowLeft, Building2, Users, UserCheck, FileText, Clock } from "lucide-
 import { getAdminSession } from "@/lib/admin-session";
 import { PasswordResetButton } from "@/components/admin/PasswordResetButton";
 import { AccountLifecycleControls } from "@/components/admin/AccountLifecycleControls";
+import { BackupControls } from "@/components/admin/BackupControls";
 import { formatSEK } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -167,6 +168,9 @@ export default async function AdminBuroDetailPage({ params }: { params: Promise<
           </div>
         </section>
       </div>
+
+      {/* Yedekleme & Geri Yükleme */}
+      <BackupControls userId={dukkan.user_id} email={owner?.email ?? "—"} />
 
       {/* Son hareketler (türetilmiş aktivite akışı) */}
       <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
