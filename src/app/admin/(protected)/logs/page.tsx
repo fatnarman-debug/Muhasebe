@@ -15,6 +15,7 @@ const ACTION_LABELS: Record<string, { label: string; tone: string }> = {
   "account.deleted":           { label: "Hesap silindi",           tone: "bg-red-50 text-red-700 ring-red-200" },
   "data.export":               { label: "Yedek alındı",            tone: "bg-sky-50 text-sky-700 ring-sky-200" },
   "data.restore":              { label: "Yedek geri yüklendi",     tone: "bg-indigo-50 text-indigo-700 ring-indigo-200" },
+  "data.backup_deleted":       { label: "Yedek silindi",           tone: "bg-slate-100 text-slate-600 ring-slate-200" },
 };
 
 const TARGET_LABELS: Record<string, string> = {
