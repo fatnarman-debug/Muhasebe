@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, Building2, Users, UserCheck, FileText } from "lucide-react";
 import { getAdminSession } from "@/lib/admin-session";
 import { PasswordResetButton } from "@/components/admin/PasswordResetButton";
+import { AccountLifecycleControls } from "@/components/admin/AccountLifecycleControls";
 import { formatSEK } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +34,7 @@ export default async function AdminBuroDetailPage({ params }: { params: Promise<
   if (!dukkan) notFound();
 
   const [{ data: owner }, { data: accountants }, { data: companies }] = await Promise.all([
-    supabase.from("profiles").select("id, email, full_name").eq("id", dukkan.user_id).maybeSingle(),
+    supabase.from("profiles").select("id, email, full_name, frozen_at, frozen_reason").eq("id", dukkan.user_id).maybeSingle(),
     supabase.from("muhasebeciler").select("id, full_name, email, benzersiz_kod, is_active, auth_user_id").eq("dukkan_id", id).order("created_at"),
     supabase.from("client_companies").select("id, name, org_no, is_active").eq("user_id", dukkan.user_id).order("name"),
   ]);
@@ -67,9 +68,16 @@ export default async function AdminBuroDetailPage({ params }: { params: Promise<
             <p className="text-sm text-slate-500">Yetkili: {owner?.full_name ?? "—"} · {owner?.email ?? "—"}</p>
           </div>
         </div>
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end gap-3">
           <span className="text-xs text-slate-400">Büro yetkilisi giriş hesabı</span>
           <PasswordResetButton userId={dukkan.user_id} label={owner?.email ?? "Yetkili"} />
+          <AccountLifecycleControls
+            userId={dukkan.user_id}
+            email={owner?.email ?? "—"}
+            isFrozen={!!owner?.frozen_at}
+            frozenReason={owner?.frozen_reason ?? null}
+            redirectAfterDelete="/admin/buros"
+          />
         </div>
       </div>
 
