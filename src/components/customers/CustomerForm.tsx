@@ -96,11 +96,11 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Klientföretag */}
+      {/* Företag */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Klientföretag</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Företag</h2>
         <div className="space-y-1.5">
-          <Label htmlFor="client_company_id">Välj klientföretag <span className="text-red-500">*</span></Label>
+          <Label htmlFor="client_company_id">Välj företag <span className="text-red-500">*</span></Label>
           <select
             id="client_company_id"
             value={form.client_company_id}

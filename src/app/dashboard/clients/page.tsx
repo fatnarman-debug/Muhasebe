@@ -24,12 +24,12 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Klientföretag</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Mitt företag</h1>
           <p className="text-gray-500 text-sm mt-1">{clients?.length ?? 0} företag</p>
         </div>
         <Link href="/dashboard/clients/new">
           <Button className="gap-2">
-            <Plus className="w-4 h-4" /> Nytt klientföretag
+            <Plus className="w-4 h-4" /> Lägg till företag
           </Button>
         </Link>
       </div>
@@ -53,12 +53,12 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
       {!clients?.length ? (
         <div className="bg-white rounded-xl border border-gray-200 p-16 text-center">
           <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">Inga klientföretag ännu</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Inget företag ännu</h3>
           <p className="text-gray-500 text-sm mb-6">
-            Lägg till de företag du hanterar fakturering för.
+            Lägg till ditt företag som du fakturerar från.
           </p>
           <Link href="/dashboard/clients/new">
-            <Button className="gap-2"><Plus className="w-4 h-4" /> Lägg till första företaget</Button>
+            <Button className="gap-2"><Plus className="w-4 h-4" /> Lägg till företag</Button>
           </Link>
         </div>
       ) : (

@@ -54,17 +54,17 @@ export default async function CustomersPage() {
           <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-1">Inga kunder ännu</h3>
           <p className="text-gray-500 text-sm mb-6">
-            Lägg till kunder som du fakturerar för dina klientföretag.
+            Lägg till kunder som du fakturerar.
           </p>
           {companyIds.length === 0 ? (
             <div className="space-y-2">
               <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 inline-block">
-                Du måste skapa ett klientföretag först.
+                Du måste skapa ditt företag först.
               </p>
               <div>
-                <Link href="/dashboard/clients/new">
+                <Link href="/dashboard/onboarding">
                   <Button variant="outline" className="gap-2 mt-2">
-                    <Building2 className="w-4 h-4" /> Skapa klientföretag
+                    <Building2 className="w-4 h-4" /> Skapa företag
                   </Button>
                 </Link>
               </div>
@@ -82,7 +82,7 @@ export default async function CustomersPage() {
               <tr>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Namn</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Typ</th>
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Klientföretag</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Företag</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Kontakt</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Ort</th>
               </tr>

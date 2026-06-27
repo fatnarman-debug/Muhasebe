@@ -13,7 +13,7 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Redigera klientföretag</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Redigera företag</h1>
         <p className="text-gray-500 text-sm mt-1">{client.name}</p>
       </div>
       <ClientForm initialData={client} />
