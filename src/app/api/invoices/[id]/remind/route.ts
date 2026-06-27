@@ -33,6 +33,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
   const inv = invoice as unknown as Invoice;
 
+  // Offert ödeme talebi değildir → hatırlatma gönderilmez
+  if (inv.doc_type === "offert") {
+    return NextResponse.json({ error: "Offerter kan inte påminnas." }, { status: 400 });
+  }
+
   if (!customer.email) {
     return NextResponse.json({ error: "Kunden har ingen e-postadress." }, { status: 400 });
   }

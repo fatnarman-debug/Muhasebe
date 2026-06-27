@@ -27,12 +27,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const customer = invoice.customers as unknown as Customer;
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
   const inv = invoice as unknown as Invoice;
+  const isOffert = inv.doc_type === "offert";
 
-  const qrDataUrl = await generateInvoiceQr(inv, company);
+  // Offert ödeme talebi değildir → QR üretilmez
+  const qrDataUrl = isOffert ? null : await generateInvoiceQr(inv, company);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl, docType: inv.doc_type }) as any
   );
 
   return new NextResponse(buffer as unknown as BodyInit, {

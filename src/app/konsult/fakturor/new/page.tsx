@@ -12,6 +12,7 @@ type Company = {
   name: string;
   invoice_prefix: string | null;
   next_invoice_number: number;
+  next_offert_number: number;
   payment_terms_days: number;
   default_vat_rate: number;
   customers: { id: string; name: string; payment_terms_days: number | null }[];
@@ -22,6 +23,9 @@ export default function KonsultNewInvoicePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const [initialDocType] = useState<"invoice" | "offert">(() =>
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("type") === "offert" ? "offert" : "invoice"
+  );
 
   useEffect(() => {
     (async () => {
@@ -31,7 +35,7 @@ export default function KonsultNewInvoicePage() {
         // RLS: atanan muhasebeci yalnızca kendisine atanmış firmaları görür
         const { data: comps, error: cErr } = await supabase
           .from("client_companies")
-          .select("id, name, invoice_prefix, next_invoice_number, payment_terms_days, default_vat_rate")
+          .select("id, name, invoice_prefix, next_invoice_number, next_offert_number, payment_terms_days, default_vat_rate")
           .eq("is_active", true)
           .order("name");
         if (cErr) throw new Error(cErr.message);
@@ -68,8 +72,8 @@ export default function KonsultNewInvoicePage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Ny faktura</h1>
-            <p className="text-gray-500 text-sm mt-1">Skapa en faktura för en av dina tilldelade kunder</p>
+            <h1 className="text-2xl font-bold text-gray-900">Ny faktura / offert</h1>
+            <p className="text-gray-500 text-sm mt-1">Skapa en faktura eller offert för en av dina tilldelade kunder</p>
           </div>
           <Link href="/konsult/fakturor" className="text-sm text-gray-500 hover:text-gray-800">← Tillbaka</Link>
         </div>
@@ -93,6 +97,7 @@ export default function KonsultNewInvoicePage() {
             <InvoiceForm
               clientCompanies={companies}
               getRedirectPath={() => "/konsult/fakturor"}
+              initialDocType={initialDocType}
             />
           </>
         )}

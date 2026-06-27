@@ -49,6 +49,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
   );
 
   const isSent = invoice.status === "sent" || invoice.status === "overdue";
+  const isOffert = invoice.doc_type === "offert";
 
   const calcLine = useCallback((l: EditLine) => {
     const lineTotal = Math.round(l.quantity * l.unit_price * 100) / 100;
@@ -78,7 +79,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
     setLoading(true);
 
     const supabase = createClient();
-    const ocrNumber = generateOCR(invoice.invoice_number);
+    const ocrNumber = isOffert ? null : generateOCR(invoice.invoice_number);
 
     // Update invoice
     const { error: invErr } = await supabase
@@ -137,7 +138,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-amber-800 text-sm">Fakturan är redan skickad</p>
+            <p className="font-semibold text-amber-800 text-sm">{isOffert ? "Offerten är redan skickad" : "Fakturan är redan skickad"}</p>
             <p className="text-amber-700 text-sm mt-0.5">
               Ändringar påverkar inte vad kunden redan har fått. Använd <strong>"Spara och skicka om"</strong> för att
               skicka en uppdaterad version till kunden.
@@ -149,7 +150,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
       {/* Header info (read-only) */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturahuvud</h2>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{isOffert ? "Offerthuvud" : "Fakturahuvud"}</h2>
           <span className="font-mono font-bold text-blue-600 text-sm">{invoice.invoice_number}</span>
         </div>
 
@@ -172,16 +173,16 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
 
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label>Fakturanummer</Label>
+            <Label>{isOffert ? "Offertnummer" : "Fakturanummer"}</Label>
             <Input value={invoice.invoice_number} readOnly className="bg-gray-50 font-mono text-gray-500" />
             <p className="text-[10px] text-gray-400">Kan ej ändras</p>
           </div>
           <div className="space-y-1.5">
-            <Label>Fakturadatum</Label>
+            <Label>{isOffert ? "Offertdatum" : "Fakturadatum"}</Label>
             <Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Förfallodatum</Label>
+            <Label>{isOffert ? "Giltigt t.o.m." : "Förfallodatum"}</Label>
             <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
           </div>
         </div>
@@ -201,7 +202,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
       {/* Invoice Lines */}
       <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturarader</h2>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{isOffert ? "Offertrader" : "Fakturarader"}</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

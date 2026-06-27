@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
-import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
+import type { ClientCompany, Customer, Invoice, InvoiceLine, DocumentType } from "@/types/database";
 
 // ── Şablon görselleri: yapı/sıra sabit, yalnızca renk + başlık bandı değişir ──
 type PdfTpl = { accent: string; band: boolean; bandBg?: string; minimal?: boolean };
@@ -80,11 +80,13 @@ interface Props {
   lines: InvoiceLine[];
   template?: string;
   qrDataUrl?: string | null;
+  docType?: DocumentType;
 }
 
-export function InvoicePDF({ invoice, company, customer, lines, template, qrDataUrl }: Props) {
+export function InvoicePDF({ invoice, company, customer, lines, template, qrDataUrl, docType }: Props) {
   const tpl = PDF_TEMPLATES[template ?? ""] ?? PDF_TEMPLATES["klasik-standart"];
   const accent = tpl.accent;
+  const isOffert = (docType ?? invoice.doc_type) === "offert";
 
   const sorted = [...lines].sort((a, b) => a.sort_order - b.sort_order);
   const vatByRate: Record<number, { net: number; vat: number }> = {};
@@ -116,7 +118,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
             </Text>
           </View>
           <View>
-            <Text style={[styles.fakturaTitle, { color: accent }]}>Faktura</Text>
+            <Text style={[styles.fakturaTitle, { color: accent }]}>{isOffert ? "Offert" : "Faktura"}</Text>
             <Text style={styles.sida}>sida 1/1</Text>
           </View>
         </View>
@@ -134,27 +136,32 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         {/* 3) "Att betala" özet bandı (tam genişlik) */}
         <View style={{ marginHorizontal: -40, paddingHorizontal: 40, paddingVertical: 16, backgroundColor: bandBg, flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <View style={{ flex: 1.3 }}>
-            <Text style={[styles.bandLabelSm, { color: bandSub }]}>Att betala (inkl. moms)</Text>
+            <Text style={[styles.bandLabelSm, { color: bandSub }]}>{isOffert ? "Belopp (inkl. moms)" : "Att betala (inkl. moms)"}</Text>
             <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(invoice.total)}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.bandColLabel, { color: bandSub }]}>Förfallodatum</Text>
+            <Text style={[styles.bandColLabel, { color: bandSub }]}>{isOffert ? "Giltigt t.o.m." : "Förfallodatum"}</Text>
             <Text style={[styles.bandColVal, { color: bandFg }]}>{fmtDate(invoice.due_date)}</Text>
           </View>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.bandColLabel, { color: bandSub }]}>Bankgiro</Text>
-            <Text style={[styles.bandColVal, { color: bandFg }]}>{company.bankgiro ?? "—"}</Text>
-          </View>
-          <View style={{ flex: 1.4 }}>
-            <Text style={[styles.bandColLabel, { color: bandSub }]}>OCR/Referensnr.</Text>
-            <Text style={[styles.bandColVal, { color: bandFg }]}>{invoice.ocr_number ?? invoice.invoice_number}</Text>
-          </View>
+          {!isOffert && (
+            <>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.bandColLabel, { color: bandSub }]}>Bankgiro</Text>
+                <Text style={[styles.bandColVal, { color: bandFg }]}>{company.bankgiro ?? "—"}</Text>
+              </View>
+              <View style={{ flex: 1.4 }}>
+                <Text style={[styles.bandColLabel, { color: bandSub }]}>OCR/Referensnr.</Text>
+                <Text style={[styles.bandColVal, { color: bandFg }]}>{invoice.ocr_number ?? invoice.invoice_number}</Text>
+              </View>
+            </>
+          )}
+          {isOffert && <View style={{ flex: 2.4 }} />}
         </View>
 
         {/* 4) Bilgi kutusu */}
         <View style={styles.infoBox}>
           <View style={styles.infoCol}>
-            <View style={styles.infoRow}><Text style={styles.infoKey}>Fakturanummer</Text><Text style={styles.infoVal}>{invoice.invoice_number}</Text></View>
+            <View style={styles.infoRow}><Text style={styles.infoKey}>{isOffert ? "Offertnummer" : "Fakturanummer"}</Text><Text style={styles.infoVal}>{invoice.invoice_number}</Text></View>
             <View style={styles.infoRow}><Text style={styles.infoKey}>Utställare</Text><Text style={styles.infoVal}>{company.name}</Text></View>
             <View style={styles.infoRow}><Text style={styles.infoKey}>Mottagare</Text><Text style={styles.infoVal}>{customer.name}</Text></View>
           </View>
@@ -183,7 +190,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
 
         {/* 6) Toplam (+ banka QR'ı, sola) */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14 }}>
-          {qrDataUrl ? (
+          {qrDataUrl && !isOffert ? (
             <View style={{ alignItems: "center", width: 110 }}>
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image src={qrDataUrl} style={{ width: 96, height: 96 }} />
@@ -214,13 +221,13 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               </View>
             )}
             <View style={styles.attRow}>
-              <Text style={[styles.attText, { color: accent }]}>Att betala {fmt(invoice.total)}</Text>
+              <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : "Att betala"} {fmt(invoice.total)}</Text>
             </View>
           </View>
         </View>
 
-        {/* 7) Bankgiro OCR optik satırı (typ 41) — en altta, makine-okur format */}
-        {company.bankgiro && (() => {
+        {/* 7) Bankgiro OCR optik satırı (typ 41) — yalnızca faturada, offert'te yok */}
+        {company.bankgiro && !isOffert && (() => {
           const ref = invoice.ocr_number || invoice.invoice_number.replace(/\D/g, "");
           const kronor = Math.floor(invoice.total);
           const ore = String(Math.round((invoice.total - kronor) * 100)).padStart(2, "0");

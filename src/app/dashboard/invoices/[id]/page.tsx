@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatSEK, formatDate, getInvoiceStatusLabel, getInvoiceStatusColor } from "@/lib/utils";
 import { InvoiceStatusActions } from "@/components/invoices/InvoiceStatusActions";
+import { OfferActions } from "@/components/invoices/OfferActions";
 import type { Customer, ClientCompany, InvoiceLine } from "@/types/database";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,6 +31,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
 
   const customer = invoice.customers as unknown as Customer;
   const lines = (invoice.invoice_lines as unknown as InvoiceLine[])?.sort((a, b) => a.sort_order - b.sort_order) ?? [];
+  const isOffert = invoice.doc_type === "offert";
 
   // VAT breakdown
   const vatByRate: Record<number, number> = {};
@@ -40,9 +42,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       {/* Top bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/invoices">
+          <Link href={isOffert ? "/dashboard/teklifler" : "/dashboard/invoices"}>
             <Button variant="ghost" size="sm" className="gap-1.5 text-gray-500">
-              <ArrowLeft className="w-4 h-4" /> Fakturor
+              <ArrowLeft className="w-4 h-4" /> {isOffert ? "Offerter" : "Fakturor"}
             </Button>
           </Link>
           <span className="text-gray-300">/</span>
@@ -59,11 +61,23 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               </Button>
             </Link>
           )}
-          <InvoiceStatusActions
-            invoiceId={id}
-            currentStatus={invoice.status}
-            customerEmail={customer?.email}
-          />
+          {isOffert ? (
+            <OfferActions
+              offer={{
+                id: invoice.id, status: invoice.status, client_company_id: invoice.client_company_id, customer_id: invoice.customer_id,
+                subtotal: invoice.subtotal, vat_amount: invoice.vat_amount, total: invoice.total,
+                your_reference: invoice.your_reference, our_reference: invoice.our_reference, notes: invoice.notes,
+              }}
+              lines={lines}
+              redirectBase="/dashboard/invoices"
+            />
+          ) : (
+            <InvoiceStatusActions
+              invoiceId={id}
+              currentStatus={invoice.status}
+              customerEmail={customer?.email}
+            />
+          )}
         </div>
       </div>
 
@@ -91,14 +105,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
             <div className="text-right">
-              <p className="text-3xl font-bold text-gray-900 mb-1">FAKTURA</p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">{isOffert ? "OFFERT" : "FAKTURA"}</p>
               <p className="font-mono text-lg font-semibold text-blue-600">{invoice.invoice_number}</p>
             </div>
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-8">
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Faktureras till</p>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{isOffert ? "Offert till" : "Faktureras till"}</p>
               <p className="font-semibold text-gray-900">{customer?.name}</p>
               {customer?.address_line1 && (
                 <>
@@ -111,14 +125,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             </div>
             <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Fakturadatum</span>
+                <span className="text-gray-500">{isOffert ? "Offertdatum" : "Fakturadatum"}</span>
                 <span className="font-medium">{formatDate(invoice.invoice_date)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Förfallodatum</span>
+                <span className="text-gray-500">{isOffert ? "Giltigt t.o.m." : "Förfallodatum"}</span>
                 <span className="font-medium">{formatDate(invoice.due_date)}</span>
               </div>
-              {invoice.ocr_number && (
+              {!isOffert && invoice.ocr_number && (
                 <div className="flex justify-between">
                   <span className="text-gray-500">OCR</span>
                   <span className="font-mono font-semibold">{invoice.ocr_number}</span>
@@ -130,7 +144,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <span className="font-medium">{invoice.your_reference}</span>
                 </div>
               )}
-              {company?.bankgiro && (
+              {!isOffert && company?.bankgiro && (
                 <div className="flex justify-between">
                   <span className="text-gray-500">Bankgiro</span>
                   <span className="font-medium">{company.bankgiro}</span>
@@ -181,7 +195,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </div>
               ))}
               <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-base text-gray-900">
-                <span>Totalt att betala</span>
+                <span>{isOffert ? "Summa" : "Totalt att betala"}</span>
                 <span className="tabular-nums">{formatSEK(invoice.total)}</span>
               </div>
               {invoice.paid_amount > 0 && (
@@ -208,17 +222,28 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      {/* Payment info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-start gap-3">
-        <Clock className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
-        <div className="text-sm">
-          <p className="font-semibold text-blue-900 mb-1">Betalningsinformation</p>
-          <p className="text-blue-700">
-            Betala senast {formatDate(invoice.due_date)} med OCR-nummer <strong className="font-mono">{invoice.ocr_number}</strong>
-            {company?.bankgiro && <> till Bankgiro <strong>{company.bankgiro}</strong></>}.
-          </p>
+      {/* Payment info — endast faktura */}
+      {!isOffert && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-start gap-3">
+          <Clock className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
+          <div className="text-sm">
+            <p className="font-semibold text-blue-900 mb-1">Betalningsinformation</p>
+            <p className="text-blue-700">
+              Betala senast {formatDate(invoice.due_date)} med OCR-nummer <strong className="font-mono">{invoice.ocr_number}</strong>
+              {company?.bankgiro && <> till Bankgiro <strong>{company.bankgiro}</strong></>}.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
+      {isOffert && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 flex items-start gap-3">
+          <Clock className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+          <div className="text-sm">
+            <p className="font-semibold text-amber-900 mb-1">Offert</p>
+            <p className="text-amber-700">Detta är en offert (ej betalningskrav). Giltig t.o.m. {formatDate(invoice.due_date)}.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

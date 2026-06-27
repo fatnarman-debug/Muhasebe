@@ -2,13 +2,15 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { InvoiceForm } from "@/components/invoices/InvoiceForm";
 
-export default async function NewInvoicePage() {
+export default async function NewInvoicePage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
+  const { type } = await searchParams;
+  const initialDocType = type === "offert" ? "offert" : "invoice";
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data: companies } = await supabase
     .from("client_companies")
-    .select("id, name, invoice_prefix, next_invoice_number, payment_terms_days, default_vat_rate")
+    .select("id, name, invoice_prefix, next_invoice_number, next_offert_number, payment_terms_days, default_vat_rate")
     .eq("user_id", user!.id)
     .eq("is_active", true)
     .order("name");
@@ -32,10 +34,10 @@ export default async function NewInvoicePage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Ny faktura</h1>
-        <p className="text-gray-500 text-sm mt-1">Fyll i uppgifterna nedan och spara eller skicka direkt</p>
+        <h1 className="text-2xl font-bold text-gray-900">Ny faktura / offert</h1>
+        <p className="text-gray-500 text-sm mt-1">Välj dokumenttyp, fyll i uppgifterna och spara eller skicka</p>
       </div>
-      <InvoiceForm clientCompanies={companiesWithCustomers} />
+      <InvoiceForm clientCompanies={companiesWithCustomers} initialDocType={initialDocType} />
     </div>
   );
 }

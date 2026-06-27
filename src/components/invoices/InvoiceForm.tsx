@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Save, Plus, Trash2, Send, Package, Search } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, Send, Package, Search, FileText, FileSpreadsheet } from "lucide-react";
 import { formatSEK, generateOCR, toDateInput, addDays } from "@/lib/utils";
-import type { ClientCompany, Customer, Article } from "@/types/database";
+import type { ClientCompany, Customer, Article, DocumentType } from "@/types/database";
 
 interface InvoiceLine {
   description: string;
@@ -20,10 +20,12 @@ interface InvoiceLine {
 }
 
 interface Props {
-  clientCompanies: (Pick<ClientCompany, "id" | "name" | "invoice_prefix" | "next_invoice_number" | "payment_terms_days" | "default_vat_rate"> & { customers: Pick<Customer, "id" | "name" | "payment_terms_days">[] })[];
+  clientCompanies: (Pick<ClientCompany, "id" | "name" | "invoice_prefix" | "next_invoice_number" | "next_offert_number" | "payment_terms_days" | "default_vat_rate"> & { customers: Pick<Customer, "id" | "name" | "payment_terms_days">[] })[];
   // Kaydetme sonrası yönlendirme — varsayılan dashboard fatura detayı.
   // Konsult akışı kendi liste sayfasına yönlendirmek için override eder.
   getRedirectPath?: (invoiceId: string) => string;
+  // Belge türü başlangıç değeri (faktura | offert). Toggle ile değiştirilebilir.
+  initialDocType?: DocumentType;
 }
 
 const emptyLine = (): InvoiceLine => ({
@@ -34,10 +36,12 @@ const emptyLine = (): InvoiceLine => ({
   vat_rate: 25,
 });
 
-export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
+export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType = "invoice" }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [docType, setDocType] = useState<DocumentType>(initialDocType);
+  const isOffert = docType === "offert";
 
   const firstCompany = clientCompanies[0];
   const [clientCompanyId, setClientCompanyId] = useState(firstCompany?.id ?? "");
@@ -57,10 +61,11 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
   const selectedCompany = clientCompanies.find((c) => c.id === clientCompanyId);
   const customers = selectedCompany?.customers ?? [];
 
-  const invoiceNumber = selectedCompany
-    ? `${selectedCompany.invoice_prefix ?? "FAK"}-${String(selectedCompany.next_invoice_number ?? 1).padStart(4, "0")}`
-    : "";
-  const ocrNumber = invoiceNumber ? generateOCR(invoiceNumber) : "";
+  const seqNo = isOffert ? (selectedCompany?.next_offert_number ?? 1) : (selectedCompany?.next_invoice_number ?? 1);
+  const numPrefix = isOffert ? "OFF" : (selectedCompany?.invoice_prefix ?? "FAK");
+  const invoiceNumber = selectedCompany ? `${numPrefix}-${String(seqNo).padStart(4, "0")}` : "";
+  // Offert ödeme talebi değildir → OCR üretilmez
+  const ocrNumber = !isOffert && invoiceNumber ? generateOCR(invoiceNumber) : "";
 
   // Recalc due date and reset customer when company changes
   useEffect(() => {
@@ -131,7 +136,8 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
       client_company_id: clientCompanyId,
       customer_id: customerId,
       invoice_number: invoiceNumber,
-      ocr_number: ocrNumber,
+      ocr_number: isOffert ? null : ocrNumber,
+      doc_type: docType,
       status,
       invoice_date: invoiceDate,
       due_date: dueDate,
@@ -180,7 +186,9 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
 
     await supabase
       .from("client_companies")
-      .update({ next_invoice_number: (selectedCompany?.next_invoice_number ?? 1) + 1 })
+      .update(isOffert
+        ? { next_offert_number: (selectedCompany?.next_offert_number ?? 1) + 1 }
+        : { next_invoice_number: (selectedCompany?.next_invoice_number ?? 1) + 1 })
       .eq("id", clientCompanyId);
 
     router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
@@ -189,9 +197,21 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Dokumenttyp — Faktura / Offert */}
+      <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+        <button type="button" onClick={() => setDocType("invoice")}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-colors ${!isOffert ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-800"}`}>
+          <FileText className="w-4 h-4" /> Faktura
+        </button>
+        <button type="button" onClick={() => setDocType("offert")}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-colors ${isOffert ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-800"}`}>
+          <FileSpreadsheet className="w-4 h-4" /> Offert
+        </button>
+      </div>
+
       {/* Header */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturahuvud</h2>
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{isOffert ? "Offerthuvud" : "Fakturahuvud"}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Klientföretag <span className="text-red-500">*</span></Label>
@@ -223,15 +243,15 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
 
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1.5">
-            <Label>Fakturanummer</Label>
+            <Label>{isOffert ? "Offertnummer" : "Fakturanummer"}</Label>
             <Input value={invoiceNumber} readOnly className="bg-gray-50 font-mono" />
           </div>
           <div className="space-y-1.5">
-            <Label>Fakturadatum</Label>
+            <Label>{isOffert ? "Offertdatum" : "Fakturadatum"}</Label>
             <Input type="date" value={invoiceDate} onChange={(e) => setInvoiceDate(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Förfallodatum</Label>
+            <Label>{isOffert ? "Giltigt t.o.m." : "Förfallodatum"}</Label>
             <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
           </div>
         </div>
@@ -251,7 +271,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
       {/* Invoice Lines */}
       <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturarader</h2>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{isOffert ? "Offertrader" : "Fakturarader"}</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -431,7 +451,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath }: Props) {
         </Button>
         <Button onClick={() => handleSubmit("sent")} disabled={loading} className="gap-2">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          Skicka faktura
+          {isOffert ? "Skicka offert" : "Skicka faktura"}
         </Button>
         <Button type="button" variant="ghost" onClick={() => router.back()}>Avbryt</Button>
       </div>

@@ -1,7 +1,8 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 export type SubscriptionTier = "free" | "start" | "growth" | "pro";
-export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled" | "credit";
+export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled" | "credit" | "accepted" | "declined";
+export type DocumentType = "invoice" | "offert";
 export type CustomerType = "company" | "individual";
 export type PaymentMethod = "bankgiro" | "plusgiro" | "swish" | "bank_transfer" | "cash" | "other";
 export type RotRutType = "rot" | "rut";
@@ -39,6 +40,7 @@ export interface ClientCompany {
   logo_url: string | null;
   invoice_prefix: string | null;
   next_invoice_number: number;
+  next_offert_number: number;
   payment_terms_days: number;
   default_vat_rate: number;
   notes: string | null;
@@ -90,6 +92,8 @@ export interface Invoice {
   invoice_number: string;
   ocr_number: string | null;
   status: InvoiceStatus;
+  doc_type: DocumentType;
+  source_offer_id: string | null;
   invoice_date: string;
   due_date: string;
   currency: string;

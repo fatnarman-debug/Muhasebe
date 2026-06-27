@@ -39,6 +39,7 @@ export default async function InvoicesPage() {
     .from("invoices")
     .update({ status: "overdue" })
     .in("client_company_id", companyIds)
+    .eq("doc_type", "invoice")
     .eq("status", "sent")
     .lt("due_date", today);
 
@@ -46,6 +47,7 @@ export default async function InvoicesPage() {
     .from("invoices")
     .select("id, invoice_number, invoice_date, due_date, total, status, ocr_number, customers(id, name, email), client_companies(name)")
     .in("client_company_id", companyIds)
+    .eq("doc_type", "invoice")
     .order("invoice_date", { ascending: false });
 
   return (
