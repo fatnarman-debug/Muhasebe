@@ -17,9 +17,11 @@ interface ClientFormProps {
   // Kaydetme sonrası yönlendirme — varsayılan dashboard klient görünümü.
   // Yetkili akışı kendi müşteri listesine yönlendirmek için override eder.
   getRedirectPath?: (id: string) => string;
+  // Oluştur butonu etiketi (privat onboarding "Skapa mitt företag" vb.)
+  createLabel?: string;
 }
 
-export function ClientForm({ initialData, getRedirectPath }: ClientFormProps) {
+export function ClientForm({ initialData, getRedirectPath, createLabel }: ClientFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -245,8 +247,8 @@ export function ClientForm({ initialData, getRedirectPath }: ClientFormProps) {
       {/* Fatura Şablonu */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <div>
-          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fatura Şablonu</h2>
-          <p className="text-xs text-gray-400 mt-0.5">Bu şirket için oluşturulacak tüm faturalarda kullanılacak tasarım şablonu.</p>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturamall</h2>
+          <p className="text-xs text-gray-400 mt-0.5">Designmallen som används på alla fakturor för detta företag.</p>
         </div>
         <InvoiceTemplateSelector
           value={form.invoice_template}
@@ -261,7 +263,7 @@ export function ClientForm({ initialData, getRedirectPath }: ClientFormProps) {
       <div className="flex gap-3">
         <Button type="submit" disabled={loading} className="gap-2">
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          {initialData ? "Spara ändringar" : "Skapa klientföretag"}
+          {initialData ? "Spara ändringar" : (createLabel ?? "Skapa klientföretag")}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Avbryt

@@ -15,7 +15,7 @@ export default async function NewInvoicePage({ searchParams }: { searchParams: P
     .eq("is_active", true)
     .order("name");
 
-  if (!companies?.length) redirect("/dashboard/clients/new");
+  if (!companies?.length) redirect("/dashboard/onboarding");
 
   // Load customers for each company
   const companyIds = companies.map((c) => c.id);

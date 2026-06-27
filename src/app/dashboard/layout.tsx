@@ -117,9 +117,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         const role = user.user_metadata?.role;
         if (role === "byraansvarig") { router.replace("/yetkili"); return; }
         if (role === "konsult") { router.replace("/konsult"); return; }
+
         setName(user.user_metadata?.full_name || user.email || "");
         setEmail(user.email ?? null);
         setChecking(false);
+
+        // Privat ilk kurulum: hiç şirket yoksa onboarding sihirbazına (engellemeyen yönlendirme)
+        const { count } = await supabase
+          .from("client_companies")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        if ((count ?? 0) === 0 && window.location.pathname !== "/dashboard/onboarding") {
+          router.replace("/dashboard/onboarding");
+        }
       } catch {
         router.replace("/auth/login");
       }
