@@ -388,16 +388,19 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
           <Button type="button" variant="outline" size="sm" onClick={addLine} className="gap-1.5 text-xs">
             <Plus className="w-3.5 h-3.5" /> Lägg till rad
           </Button>
-          <Button
-            type="button"
-            variant={showPicker ? "default" : "outline"}
-            size="sm"
-            onClick={() => { setShowPicker((v) => !v); setArticleSearch(""); }}
-            className="gap-1.5 text-xs"
-          >
-            <Package className="w-3.5 h-3.5" />
-            {showPicker ? "Stäng artiklar" : "Välj artikel"}
-          </Button>
+          {/* Artikelväljaren visas bara om företaget har sparade artiklar */}
+          {articles.length > 0 && (
+            <Button
+              type="button"
+              variant={showPicker ? "default" : "outline"}
+              size="sm"
+              onClick={() => { setShowPicker((v) => !v); setArticleSearch(""); }}
+              className="gap-1.5 text-xs"
+            >
+              <Package className="w-3.5 h-3.5" />
+              {showPicker ? "Stäng artiklar" : "Välj artikel"}
+            </Button>
+          )}
         </div>
       </section>
 
