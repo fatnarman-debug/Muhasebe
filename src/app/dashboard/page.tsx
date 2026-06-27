@@ -19,7 +19,7 @@ export default async function DashboardPage() {
     ] = await Promise.all([
       supabase.from("client_companies").select("*", { count: "exact", head: true }).eq("user_id", user!.id).eq("is_active", true),
       supabase.from("customers").select("id, client_company_id, client_companies!inner(user_id)", { count: "exact", head: true }).eq("client_companies.user_id", user!.id),
-      supabase.from("invoices").select("status, total, amount_due, invoice_date").order("created_at", { ascending: false }).limit(100),
+      supabase.from("invoices").select("status, total, amount_due, invoice_date").eq("doc_type", "invoice").order("created_at", { ascending: false }).limit(100),
     ]);
 
     clientCount = cc ?? 0;
@@ -31,19 +31,19 @@ export default async function DashboardPage() {
   }
 
   const stats = [
-    { label: "Müşteri Şirket", value: clientCount, icon: Building2, href: "/dashboard/clients", color: "bg-blue-50 text-blue-600" },
-    { label: "Müşteri", value: customerCount, icon: Users, href: "/dashboard/customers", color: "bg-indigo-50 text-indigo-600" },
-    { label: "Tahsil Edilen", value: formatSEK(paid), icon: TrendingUp, href: "/dashboard/invoices", color: "bg-teal-50 text-teal-700" },
-    { label: "Açık Alacak", value: formatSEK(open), icon: Clock, href: "/dashboard/invoices?status=sent", color: "bg-amber-50 text-amber-600" },
-    { label: "Gecikmiş", value: formatSEK(overdue), icon: AlertCircle, href: "/dashboard/invoices?status=overdue", color: "bg-red-50 text-red-600" },
-    { label: "Taslak", value: draft, icon: FileText, href: "/dashboard/invoices?status=draft", color: "bg-slate-50 text-slate-600" },
+    { label: "Mitt företag", value: clientCount, icon: Building2, href: "/dashboard/clients", color: "bg-blue-50 text-blue-600" },
+    { label: "Kunder", value: customerCount, icon: Users, href: "/dashboard/customers", color: "bg-indigo-50 text-indigo-600" },
+    { label: "Betalt", value: formatSEK(paid), icon: TrendingUp, href: "/dashboard/invoices", color: "bg-teal-50 text-teal-700" },
+    { label: "Obetalt", value: formatSEK(open), icon: Clock, href: "/dashboard/invoices?status=sent", color: "bg-amber-50 text-amber-600" },
+    { label: "Förfallet", value: formatSEK(overdue), icon: AlertCircle, href: "/dashboard/invoices?status=overdue", color: "bg-red-50 text-red-600" },
+    { label: "Utkast", value: draft, icon: FileText, href: "/dashboard/invoices?status=draft", color: "bg-slate-50 text-slate-600" },
   ];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Genel Bakış</h1>
-        <p className="text-slate-500 text-sm mt-1">Hoş geldiniz — 24 Haziran 2026</p>
+        <h1 className="text-2xl font-bold text-slate-900">Översikt</h1>
+        <p className="text-slate-500 text-sm mt-1">Välkommen tillbaka</p>
       </div>
 
       {/* Stats grid */}
@@ -67,16 +67,16 @@ export default async function DashboardPage() {
 
       {/* Quick actions */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <h2 className="text-base font-semibold text-slate-900 mb-4">Hızlı İşlemler</h2>
+        <h2 className="text-base font-semibold text-slate-900 mb-4">Snabbåtgärder</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <FileText className="w-4 h-4" /> Yeni Fatura
+          <Link href="/dashboard/invoices/new" className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            <FileText className="w-4 h-4" /> Ny faktura
           </Link>
-          <Link href="/dashboard/clients/new" className="inline-flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <Building2 className="w-4 h-4" /> Yeni Müşteri Şirketi
+          <Link href="/dashboard/invoices/new?type=offert" className="inline-flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            <FileText className="w-4 h-4" /> Ny offert
           </Link>
           <Link href="/dashboard/customers" className="inline-flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-            <Users className="w-4 h-4" /> Müşteri Ekle
+            <Users className="w-4 h-4" /> Ny kund
           </Link>
         </div>
       </div>
