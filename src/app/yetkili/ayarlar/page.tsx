@@ -13,18 +13,18 @@ export default function YetkiliAyarlarPage() {
   const [tab, setTab] = useState<Tab>("buro");
 
   const TABS: [Tab, string, typeof User][] = [
-    ["buro", "Büro", Store],
+    ["buro", "Byrå", Store],
     ["profil", "Profil", User],
-    ["sifre", "Şifre", KeyRound],
-    ["muhasebeci", "Muhasebeciler", Users],
+    ["sifre", "Lösenord", KeyRound],
+    ["muhasebeci", "Konsulter", Users],
   ];
 
   return (
     <main className="flex-1 overflow-y-auto" style={{ padding: 32 }}>
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Ayarlar</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Büro ve hesap yönetimi</p>
+          <h1 className="text-2xl font-bold text-slate-900">Inställningar</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Byrå- och kontohantering</p>
         </div>
 
         <div className="flex gap-1 border-b border-slate-200 overflow-x-auto">
@@ -77,22 +77,22 @@ function BuroTab() {
     });
     const json = await res.json().catch(() => ({}));
     setSaving(false);
-    if (!res.ok) { setError(json.error ?? "Kaydedilemedi"); return; }
+    if (!res.ok) { setError(json.error ?? "Kunde inte sparas"); return; }
     setInitial(name); setSaved(true); setTimeout(() => setSaved(false), 3000);
   }
 
   return (
     <form onSubmit={save} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
-      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Büro bilgileri</h2>
+      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Byråuppgifter</h2>
       <div className="space-y-1.5">
-        <Label htmlFor="dukkan">Dükkan / büro adı</Label>
-        <Input id="dukkan" value={name} disabled={loading} onChange={(e) => setName(e.target.value)} placeholder="Büro adı" />
-        <p className="text-xs text-slate-400">Sidebar ve panel başlıklarında görünen ad.</p>
+        <Label htmlFor="dukkan">Byrånamn</Label>
+        <Input id="dukkan" value={name} disabled={loading} onChange={(e) => setName(e.target.value)} placeholder="Byråns namn" />
+        <p className="text-xs text-slate-400">Namnet som visas i sidofältet och rubriker.</p>
       </div>
       {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
       <Button type="submit" disabled={saving || loading || !name.trim() || name === initial} className="gap-2">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-        {saved ? "Kaydedildi!" : "Kaydet"}
+        {saved ? "Sparat!" : "Spara"}
       </Button>
     </form>
   );
@@ -119,19 +119,19 @@ function ProfilTab() {
 
   return (
     <form onSubmit={save} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
-      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Hesap bilgileri</h2>
+      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Kontouppgifter</h2>
       <div className="space-y-1.5">
-        <Label htmlFor="email">E-posta</Label>
+        <Label htmlFor="email">E-post</Label>
         <Input id="email" type="email" value={email} disabled className="bg-slate-50 text-slate-500" />
-        <p className="text-xs text-slate-400">E-posta buradan değiştirilemez.</p>
+        <p className="text-xs text-slate-400">E-posten kan inte ändras här.</p>
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="fullName">Ad soyad</Label>
-        <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Adınız" />
+        <Label htmlFor="fullName">Namn</Label>
+        <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Ditt namn" />
       </div>
       <Button type="submit" disabled={saving} className="gap-2">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-        {saved ? "Kaydedildi!" : "Kaydet"}
+        {saved ? "Sparat!" : "Spara"}
       </Button>
     </form>
   );
@@ -147,8 +147,8 @@ function SifreTab() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault(); setError("");
-    if (next !== confirm) { setError("Şifreler eşleşmiyor."); return; }
-    if (next.length < 8) { setError("Şifre en az 8 karakter olmalıdır."); return; }
+    if (next !== confirm) { setError("Lösenorden matchar inte."); return; }
+    if (next.length < 8) { setError("Lösenordet måste vara minst 8 tecken."); return; }
     setSaving(true);
     const { error: err } = await createClient().auth.updateUser({ password: next });
     setSaving(false);
@@ -158,19 +158,19 @@ function SifreTab() {
 
   return (
     <form onSubmit={save} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
-      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Şifre değiştir</h2>
+      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Byt lösenord</h2>
       <div className="space-y-1.5">
-        <Label htmlFor="next">Yeni şifre</Label>
+        <Label htmlFor="next">Nytt lösenord</Label>
         <Input id="next" type="password" value={next} onChange={(e) => setNext(e.target.value)} required minLength={8} />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="confirm">Yeni şifre (tekrar)</Label>
+        <Label htmlFor="confirm">Bekräfta nytt lösenord</Label>
         <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
       </div>
       {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{error}</p>}
       <Button type="submit" disabled={saving} className="gap-2">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <KeyRound className="w-4 h-4" />}
-        {saved ? "Şifre güncellendi!" : "Şifreyi güncelle"}
+        {saved ? "Lösenord uppdaterat!" : "Uppdatera lösenord"}
       </Button>
     </form>
   );
@@ -212,23 +212,23 @@ function MuhasebeciTab() {
     });
     const json = await res.json().catch(() => ({}));
     setBusy("");
-    if (!res.ok) { setNoteFor(a.id, false, json.error ?? "Kaydedilemedi"); return; }
+    if (!res.ok) { setNoteFor(a.id, false, json.error ?? "Kunde inte sparas"); return; }
     setList((p) => p.map((x) => (x.id === a.id ? { ...x, email } : x)));
-    setNoteFor(a.id, true, "E-posta güncellendi.");
+    setNoteFor(a.id, true, "E-post uppdaterad.");
   }
 
   async function savePw(a: Acc) {
     const password = pws[a.id] ?? "";
-    if (password.length < 8) { setNoteFor(a.id, false, "Şifre en az 8 karakter olmalı."); return; }
+    if (password.length < 8) { setNoteFor(a.id, false, "Lösenordet måste vara minst 8 tecken."); return; }
     setBusy(`pw:${a.id}`);
     const res = await fetch(`/api/yetkili/muhasebeciler/${a.id}`, {
       method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }),
     });
     const json = await res.json().catch(() => ({}));
     setBusy("");
-    if (!res.ok) { setNoteFor(a.id, false, json.error ?? "Şifre güncellenemedi"); return; }
+    if (!res.ok) { setNoteFor(a.id, false, json.error ?? "Lösenordet kunde inte uppdateras"); return; }
     setPws((p) => ({ ...p, [a.id]: "" }));
-    setNoteFor(a.id, true, "Şifre güncellendi.");
+    setNoteFor(a.id, true, "Lösenord uppdaterat.");
   }
 
   if (loading) return <div className="flex justify-center py-12 text-slate-400"><Loader2 className="w-5 h-5 animate-spin" /></div>;
@@ -236,10 +236,10 @@ function MuhasebeciTab() {
   return (
     <div className="space-y-4">
       <p className="text-xs text-slate-500">
-        Muhasebecilerin <strong>giriş e-postasını</strong> ve <strong>şifresini</strong> buradan değiştirebilirsin. Değişiklik anında geçerli olur.
+        Här kan du ändra konsulternas <strong>inloggnings-e-post</strong> och <strong>lösenord</strong>. Ändringen gäller direkt.
       </p>
       {list.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 text-sm text-slate-400">Henüz muhasebeci yok.</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-sm text-slate-400">Inga konsulter ännu.</div>
       ) : list.map((a) => (
         <div key={a.id} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
           <div className="flex items-center justify-between">
@@ -248,27 +248,27 @@ function MuhasebeciTab() {
               <code className="text-[11px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">{a.benzersiz_kod}</code>
             </div>
             <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${a.is_active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
-              {a.is_active ? "Aktif" : "Pasif"}
+              {a.is_active ? "Aktiv" : "Inaktiv"}
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 items-end">
             <div className="space-y-1">
-              <Label className="text-xs">E-posta</Label>
+              <Label className="text-xs">E-post</Label>
               <Input value={emails[a.id] ?? ""} onChange={(e) => setEmails((p) => ({ ...p, [a.id]: e.target.value }))} type="email" />
             </div>
             <Button type="button" variant="outline" disabled={busy !== "" || (emails[a.id] ?? "").trim() === a.email} onClick={() => saveEmail(a)} className="gap-1.5">
-              {busy === `email:${a.id}` ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Kaydet
+              {busy === `email:${a.id}` ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Spara
             </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 items-end">
             <div className="space-y-1">
-              <Label className="text-xs">Yeni şifre</Label>
-              <Input value={pws[a.id] ?? ""} onChange={(e) => setPws((p) => ({ ...p, [a.id]: e.target.value }))} type="password" placeholder="En az 8 karakter" />
+              <Label className="text-xs">Nytt lösenord</Label>
+              <Input value={pws[a.id] ?? ""} onChange={(e) => setPws((p) => ({ ...p, [a.id]: e.target.value }))} type="password" placeholder="Minst 8 tecken" />
             </div>
             <Button type="button" disabled={busy !== "" || (pws[a.id] ?? "").length < 8} onClick={() => savePw(a)} className="gap-1.5">
-              {busy === `pw:${a.id}` ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <KeyRound className="w-3.5 h-3.5" />} Şifre belirle
+              {busy === `pw:${a.id}` ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <KeyRound className="w-3.5 h-3.5" />} Sätt lösenord
             </Button>
           </div>
 

@@ -66,9 +66,9 @@ export default function YetkiliPage() {
   const sonMusteriler = musteriler.slice(0, 5); // API zaten created_at desc döndürüyor
 
   const stats = [
-    { icon: Users, label: "Toplam Muhasebeci", value: toplamMuh, hint: "Dükkanınıza kayıtlı uzmanlar.", badge: `${muhasebeciler.filter((m) => m.is_active).length} aktif`, badgeBg: "#d4edda", badgeColor: "#155724" },
-    { icon: UserCheck, label: "Toplam Müşteri", value: toplamMus, hint: "Kayıtlı müşteri firmalar.", badge: "Kayıtlı", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
-    { icon: UserPlus, label: "Atanmamış Müşteri", value: atanmamis, hint: "Henüz muhasebeci atanmamış.", badge: atanmamis > 0 ? "Bekliyor" : "Tamam", badgeBg: atanmamis > 0 ? "#fff3cd" : "#d4edda", badgeColor: atanmamis > 0 ? "#856404" : "#155724" },
+    { icon: Users, label: "Antal konsulter", value: toplamMuh, hint: "Konsulter i din byrå.", badge: `${muhasebeciler.filter((m) => m.is_active).length} aktiva`, badgeBg: "#d4edda", badgeColor: "#155724" },
+    { icon: UserCheck, label: "Antal kunder", value: toplamMus, hint: "Registrerade kundföretag.", badge: "Registrerad", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
+    { icon: UserPlus, label: "Otilldelade kunder", value: atanmamis, hint: "Ingen konsult tilldelad ännu.", badge: atanmamis > 0 ? "Väntar" : "Klart", badgeBg: atanmamis > 0 ? "#fff3cd" : "#d4edda", badgeColor: atanmamis > 0 ? "#856404" : "#155724" },
   ];
 
   return (
@@ -76,7 +76,7 @@ export default function YetkiliPage() {
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Genel Bakış</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Översikt</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
             <Bell size={18} />
@@ -96,15 +96,15 @@ export default function YetkiliPage() {
         <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <div>
             <h2 style={{ fontSize: 26, fontWeight: 700, color: "#111827", marginBottom: 6 }}>
-              Hoş geldiniz{name ? `, ${name}` : ""}
+              Välkommen{name ? `, ${name}` : ""}
             </h2>
             <p style={{ color: "#95a5a6", fontSize: 14 }}>
-              {dukkan ? `${dukkan} — ` : ""}Dükkan Yetkilisi
+              {dukkan ? `${dukkan} — ` : ""}Byråansvarig
             </p>
-            <p style={{ color: "#7f8c8d", fontSize: 13, marginTop: 4 }}>Dükkanınızın güncel durumu aşağıda özetlenmiştir.</p>
+            <p style={{ color: "#7f8c8d", fontSize: 13, marginTop: 4 }}>Din byrås aktuella status sammanfattas nedan.</p>
             <Link href="/yetkili/musteriler"
               style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 16, padding: "10px 20px", borderRadius: 8, background: "#111827", color: "#fff", fontSize: 13, fontWeight: 600, textDecoration: "none" }}>
-              + Müşteri Ekle &amp; Ata
+              + Lägg till &amp; tilldela kund
             </Link>
           </div>
           <div style={{ textAlign: "center" }}>
@@ -112,13 +112,13 @@ export default function YetkiliPage() {
               {name ? initials(name) : "—"}
             </div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#2c3e50" }}>{name || "—"}</div>
-            <div style={{ fontSize: 12, color: "#95a5a6" }}>Dükkan Yetkilisi</div>
+            <div style={{ fontSize: 12, color: "#95a5a6" }}>Byråansvarig</div>
           </div>
         </div>
 
         {/* Summary label */}
-        <h3 style={{ fontSize: 17, fontWeight: 600, color: "#2c3e50", marginBottom: 6 }}>Dükkan Özeti</h3>
-        <p style={{ color: "#95a5a6", fontSize: 13, marginBottom: 24 }}>Anlık durum göstergeleri.</p>
+        <h3 style={{ fontSize: 17, fontWeight: 600, color: "#2c3e50", marginBottom: 6 }}>Byråöversikt</h3>
+        <p style={{ color: "#95a5a6", fontSize: 13, marginBottom: 24 }}>Aktuella nyckeltal.</p>
 
         {/* Stats cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 28 }}>
@@ -144,13 +144,13 @@ export default function YetkiliPage() {
           {/* Recent customers */}
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Son Eklenen Müşteriler</h4>
-              <Link href="/yetkili/musteriler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Senast tillagda kunder</h4>
+              <Link href="/yetkili/musteriler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Visa alla</Link>
             </div>
             {loading ? (
               <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
             ) : sonMusteriler.length === 0 ? (
-              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Henüz müşteri eklenmemiş.</p>
+              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Inga kunder tillagda ännu.</p>
             ) : (
               sonMusteriler.map((c, i) => (
                 <div key={c.id} style={{ display: "flex", gap: 14, padding: "13px 0", borderBottom: i < sonMusteriler.length - 1 ? "1px solid #f3f4f6" : "none", alignItems: "center" }}>
@@ -162,7 +162,7 @@ export default function YetkiliPage() {
                     <div style={{ fontSize: 12, color: "#95a5a6" }}>{c.city ?? "—"}</div>
                   </div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 6, background: c.muhasebeci_id ? "#d4edda" : "#fff3cd", color: c.muhasebeci_id ? "#155724" : "#856404" }}>
-                    {c.muhasebeci_id ? "Atandı" : "Atanmadı"}
+                    {c.muhasebeci_id ? "Tilldelad" : "Ej tilldelad"}
                   </span>
                 </div>
               ))
@@ -172,18 +172,18 @@ export default function YetkiliPage() {
           {/* Accountants */}
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Muhasebeciler</h4>
-              <Link href="/yetkili/muhasebeciler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Tümünü Gör</Link>
+              <h4 style={{ fontSize: 16, fontWeight: 600, color: "#2c3e50" }}>Konsulter</h4>
+              <Link href="/yetkili/muhasebeciler" style={{ fontSize: 12, color: "#111827", fontWeight: 600, textDecoration: "none" }}>Visa alla</Link>
             </div>
             {loading ? (
               <div style={{ padding: 24, textAlign: "center", color: "#bdc3c7" }}><Loader2 size={18} className="animate-spin" /></div>
             ) : topMuh.length === 0 ? (
-              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Henüz muhasebeci eklenmemiş.</p>
+              <p style={{ fontSize: 13, color: "#95a5a6", padding: "12px 0" }}>Inga konsulter tillagda ännu.</p>
             ) : (
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
-                    {["Muhasebeci", "Müşteri", "Durum"].map((h) => (
+                    {["Konsult", "Kunder", "Status"].map((h) => (
                       <th key={h} style={{ padding: "10px 12px", textAlign: "left", ...labelStyle }}>{h}</th>
                     ))}
                   </tr>
@@ -202,7 +202,7 @@ export default function YetkiliPage() {
                       <td style={{ padding: "12px", fontSize: 13, color: "#2c3e50" }}>{a.musteri_sayisi}</td>
                       <td style={{ padding: "12px" }}>
                         <span style={{ padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600, background: a.is_active ? "#d4edda" : "#fff3cd", color: a.is_active ? "#155724" : "#856404" }}>
-                          {a.is_active ? "Aktif" : "Pasif"}
+                          {a.is_active ? "Aktiv" : "Inaktiv"}
                         </span>
                       </td>
                     </tr>
@@ -216,9 +216,9 @@ export default function YetkiliPage() {
 
       {/* Footer */}
       <footer style={{ background: "#fff", borderTop: "1px solid #f3f4f6", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <p style={{ fontSize: 12, color: "#95a5a6" }}>LedgerFlow © 2026 LedgerFlow Accounting SaaS. Tüm hakları saklıdır.</p>
+        <p style={{ fontSize: 12, color: "#95a5a6" }}>LedgerFlow © 2026 LedgerFlow Accounting SaaS. Alla rättigheter förbehållna.</p>
         <div style={{ display: "flex", gap: 20 }}>
-          {["Kullanım Koşulları", "Gizlilik Politikası", "Güvenlik"].map((l) => (
+          {["Användarvillkor", "Integritetspolicy", "Säkerhet"].map((l) => (
             <a key={l} href="#" style={{ fontSize: 12, color: "#95a5a6", textDecoration: "none" }}>{l}</a>
           ))}
         </div>

@@ -50,10 +50,10 @@ export default function MuhasebecilerPage() {
       try {
         const res = await fetch("/api/yetkili/muhasebeciler");
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || "Liste yüklenemedi");
+        if (!res.ok) throw new Error(json.error || "Listan kunde inte laddas");
         setList(json.muhasebeciler ?? []);
       } catch (e) {
-        setLoadError(e instanceof Error ? e.message : "Liste yüklenemedi");
+        setLoadError(e instanceof Error ? e.message : "Listan kunde inte laddas");
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,7 @@ export default function MuhasebecilerPage() {
   async function handleAdd() {
     setFormError("");
     if (!formAd.trim() || !formEmail.trim() || !formPass.trim()) return;
-    if (formPass.length < 8) { setFormError("Şifre en az 8 karakter olmalıdır."); return; }
+    if (formPass.length < 8) { setFormError("Lösenordet måste vara minst 8 tecken."); return; }
     setSaving(true);
     try {
       const res = await fetch("/api/yetkili/muhasebeciler", {
@@ -72,11 +72,11 @@ export default function MuhasebecilerPage() {
         body: JSON.stringify({ full_name: formAd.trim(), email: formEmail.trim(), password: formPass }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Kayıt başarısız");
+      if (!res.ok) throw new Error(json.error || "Registrering misslyckades");
       setList((p) => [json.muhasebeci, ...p]);
       setFormAd(""); setFormEmail(""); setFormPass(""); setShowForm(false);
     } catch (e) {
-      setFormError(e instanceof Error ? e.message : "Kayıt başarısız");
+      setFormError(e instanceof Error ? e.message : "Registrering misslyckades");
     } finally {
       setSaving(false);
     }
@@ -89,11 +89,11 @@ export default function MuhasebecilerPage() {
       const qs = transferTo ? `?transfer_to=${transferTo}` : "";
       const res = await fetch(`/api/yetkili/muhasebeciler/${deleteTarget.id}${qs}`, { method: "DELETE" });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Silme başarısız");
+      if (!res.ok) throw new Error(json.error || "Borttagning misslyckades");
       setList((p) => p.filter((m) => m.id !== deleteTarget.id));
       setDeleteTarget(null); setTransferTo("");
     } catch (e) {
-      setLoadError(e instanceof Error ? e.message : "Silme başarısız");
+      setLoadError(e instanceof Error ? e.message : "Borttagning misslyckades");
     } finally {
       setDeleting(false);
     }
@@ -108,7 +108,7 @@ export default function MuhasebecilerPage() {
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Muhasebeciler</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Konsulter</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Bell size={17} color="#2c3e50" />
@@ -124,9 +124,9 @@ export default function MuhasebecilerPage() {
         {/* Stats */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 28 }}>
           {[
-            { label: "Toplam Muhasebeci", value: list.length, badge: "Kayıtlı", badgeBg: "#d4edda", badgeColor: "#155724" },
-            { label: "Aktif Muhasebeci", value: aktifSayisi, badge: "Aktif", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
-            { label: "Toplam Müşteri", value: toplamMusteri, badge: "Atanmış", badgeBg: "#fff3cd", badgeColor: "#856404" },
+            { label: "Antal konsulter", value: list.length, badge: "Registrerad", badgeBg: "#d4edda", badgeColor: "#155724" },
+            { label: "Aktiva konsulter", value: aktifSayisi, badge: "Aktiv", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
+            { label: "Antal kunder", value: toplamMusteri, badge: "Tilldelade", badgeBg: "#fff3cd", badgeColor: "#856404" },
           ].map((s, i) => (
             <div key={i} style={{ ...cardStyle, padding: 22 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
@@ -148,28 +148,28 @@ export default function MuhasebecilerPage() {
         {showForm && (
           <div style={{ ...cardStyle, marginBottom: 24, overflow: "hidden" }}>
             <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Yeni Muhasebeci Kaydı</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Ny konsult</h3>
               <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#95a5a6", fontSize: 20 }}>×</button>
             </div>
             <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>
-                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>Ad Soyad</label>
-                <input value={formAd} onChange={(e) => setFormAd(e.target.value)} placeholder="Örn: Selin Caner" style={inputStyle} />
+                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>Namn</label>
+                <input value={formAd} onChange={(e) => setFormAd(e.target.value)} placeholder="T.ex. Anna Svensson" style={inputStyle} />
               </div>
               <div>
-                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>E-posta</label>
-                <input value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="ornek@firma.se" style={inputStyle} />
+                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>E-post</label>
+                <input value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder="namn@byrå.se" style={inputStyle} />
               </div>
               <div style={{ gridColumn: "1/-1" }}>
-                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>Şifre (muhasebeciye verilecek)</label>
+                <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>Lösenord (ges till konsulten)</label>
                 <div style={{ position: "relative" }}>
-                  <input type={showPass ? "text" : "password"} value={formPass} onChange={(e) => setFormPass(e.target.value)} placeholder="En az 8 karakter" style={{ ...inputStyle, paddingRight: 40 }} />
+                  <input type={showPass ? "text" : "password"} value={formPass} onChange={(e) => setFormPass(e.target.value)} placeholder="Minst 8 tecken" style={{ ...inputStyle, paddingRight: 40 }} />
                   <button onClick={() => setShowPass((v) => !v)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#95a5a6" }}>
                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
                 <p style={{ fontSize: 11, color: "#95a5a6", marginTop: 6 }}>
-                  Muhasebeci bu e-posta ve şifre ile <strong>/auth/login</strong> üzerinden giriş yapar. Benzersiz kod otomatik üretilir.
+                  Konsulten loggar in på <strong>/auth/login</strong> med denna e-post och lösenord. Unik kod genereras automatiskt.
                 </p>
               </div>
               {formError && (
@@ -180,11 +180,11 @@ export default function MuhasebecilerPage() {
             </div>
             <div style={{ padding: "14px 24px", background: "#f8f9fb", borderTop: "1px solid #f3f4f6", display: "flex", justifyContent: "flex-end", gap: 10 }}>
               <button onClick={() => setShowForm(false)} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
-                İptal
+                Avbryt
               </button>
               <button onClick={handleAdd} disabled={!canSave || saving} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: !canSave || saving ? "#f3f4f6" : "#111827", color: !canSave || saving ? "#95a5a6" : "#fff", cursor: !canSave || saving ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
                 {saving && <Loader2 size={14} className="animate-spin" />}
-                Kaydet
+                Spara
               </button>
             </div>
           </div>
@@ -193,10 +193,10 @@ export default function MuhasebecilerPage() {
         {/* Table */}
         <div style={cardStyle}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Kayıtlı Muhasebeciler</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Registrerade konsulter</h3>
             {!showForm && (
               <button onClick={() => setShowForm(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 8, border: "none", background: "#111827", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
-                <Plus size={14} /> Yeni Muhasebeci
+                <Plus size={14} /> Ny konsult
               </button>
             )}
           </div>
@@ -207,14 +207,14 @@ export default function MuhasebecilerPage() {
             </div>
           ) : list.length === 0 ? (
             <div style={{ padding: 48, textAlign: "center", color: "#95a5a6", fontSize: 14 }}>
-              Henüz muhasebeci eklenmemiş. “Yeni Muhasebeci” ile başlayın.
+              Inga konsulter ännu. Börja med “Ny konsult”.
             </div>
           ) : (
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
-                    {["#", "Muhasebeci", "Benzersiz Kod", "Müşteri Sayısı", "Durum", "İşlemler"].map((h) => (
+                    {["#", "Konsult", "Unik kod", "Antal kunder", "Status", "Åtgärder"].map((h) => (
                       <th key={h} style={{ padding: "14px 16px", textAlign: "left", ...labelStyle }}>{h}</th>
                     ))}
                   </tr>
@@ -238,16 +238,16 @@ export default function MuhasebecilerPage() {
                       <td style={{ padding: "14px 16px" }}>
                         <code style={{ fontSize: 12, fontWeight: 700, color: "#4338ca", background: "#eef2ff", padding: "4px 10px", borderRadius: 6 }}>{m.benzersiz_kod}</code>
                       </td>
-                      <td style={{ padding: "14px 16px", fontSize: 13, color: "#2c3e50" }}>{m.musteri_sayisi} müşteri</td>
+                      <td style={{ padding: "14px 16px", fontSize: 13, color: "#2c3e50" }}>{m.musteri_sayisi} kunder</td>
                       <td style={{ padding: "14px 16px" }}>
                         <span style={{ padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600, background: m.is_active ? "#d4edda" : "#fff3cd", color: m.is_active ? "#155724" : "#856404" }}>
-                          {m.is_active ? "Aktif" : "Pasif"}
+                          {m.is_active ? "Aktiv" : "Inaktiv"}
                         </span>
                       </td>
                       <td style={{ padding: "14px 16px" }}>
                         <button onClick={() => setDeleteTarget(m)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 14px", borderRadius: 6, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600, color: "#e74c3c" }}
                           className="hover:bg-red-50 transition-colors">
-                          <Trash2 size={13} /> Sil
+                          <Trash2 size={13} /> Ta bort
                         </button>
                       </td>
                     </tr>
@@ -271,22 +271,22 @@ export default function MuhasebecilerPage() {
                   <Trash2 size={20} color="#e74c3c" />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#2c3e50", marginBottom: 6 }}>{deleteTarget.full_name} silinsin mi?</h3>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#2c3e50", marginBottom: 6 }}>Ta bort {deleteTarget.full_name}?</h3>
                   <p style={{ fontSize: 13, color: "#7f8c8d", lineHeight: 1.6 }}>
-                    Bu işlem geri alınamaz; muhasebecinin giriş hesabı da silinir.
+                    Åtgärden kan inte ångras; konsultens inloggning tas också bort.
                     {deleteTarget.musteri_sayisi > 0 && (
-                      <> <strong style={{ color: "#2c3e50" }}>{deleteTarget.musteri_sayisi} müşteri</strong> başka bir muhasebeciye aktarılabilir.</>
+                      <> <strong style={{ color: "#2c3e50" }}>{deleteTarget.musteri_sayisi} kunder</strong> kan överföras till en annan konsult.</>
                     )}
                   </p>
                 </div>
               </div>
               {deleteTarget.musteri_sayisi > 0 && (
                 <>
-                  <label style={{ ...labelStyle, display: "block", marginBottom: 8 }}>Müşterileri şuraya transfer et (opsiyonel)</label>
+                  <label style={{ ...labelStyle, display: "block", marginBottom: 8 }}>Överför kunder till (valfritt)</label>
                   <select value={transferTo} onChange={(e) => setTransferTo(e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
-                    <option value="">— Transfer etme (atamaları kaldır) —</option>
+                    <option value="">— Överför inte (ta bort tilldelningar) —</option>
                     {list.filter((m) => m.id !== deleteTarget.id).map((m) => (
-                      <option key={m.id} value={m.id}>{m.full_name} ({m.musteri_sayisi} müşteri)</option>
+                      <option key={m.id} value={m.id}>{m.full_name} ({m.musteri_sayisi} kunder)</option>
                     ))}
                   </select>
                 </>
@@ -294,11 +294,11 @@ export default function MuhasebecilerPage() {
             </div>
             <div style={{ padding: "14px 28px 20px", display: "flex", justifyContent: "flex-end", gap: 10, borderTop: "1px solid #f3f4f6", background: "#f9fafb" }}>
               <button onClick={() => { setDeleteTarget(null); setTransferTo(""); }} disabled={deleting} style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #f3f4f6", background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#7f8c8d" }}>
-                İptal
+                Avbryt
               </button>
               <button onClick={handleDeleteConfirm} disabled={deleting} style={{ padding: "9px 22px", borderRadius: 8, border: "none", background: deleting ? "#f3f4f6" : "linear-gradient(90deg,#e74c3c,#c0392b)", color: deleting ? "#95a5a6" : "#fff", cursor: deleting ? "not-allowed" : "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
                 {deleting && <Loader2 size={14} className="animate-spin" />}
-                Sil
+                Ta bort
               </button>
             </div>
           </div>

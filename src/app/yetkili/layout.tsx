@@ -12,10 +12,10 @@ const M = ({ name, fill = false, size = 20 }: { name: string; fill?: boolean; si
 );
 
 const NAV = [
-  { href: "/yetkili",               label: "Genel Bakış",   icon: "dashboard",        exact: true },
-  { href: "/yetkili/muhasebeciler", label: "Muhasebeciler", icon: "group" },
-  { href: "/yetkili/musteriler",    label: "Müşteriler",    icon: "badge" },
-  { href: "/yetkili/ayarlar",       label: "Ayarlar",       icon: "settings" },
+  { href: "/yetkili",               label: "Översikt",     icon: "dashboard",        exact: true },
+  { href: "/yetkili/muhasebeciler", label: "Konsulter",    icon: "group" },
+  { href: "/yetkili/musteriler",    label: "Kunder",       icon: "badge" },
+  { href: "/yetkili/ayarlar",       label: "Inställningar", icon: "settings" },
 ];
 
 function Sidebar({ email }: { email?: string }) {
@@ -44,7 +44,7 @@ function Sidebar({ email }: { email?: string }) {
           <div>
             <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>LedgerFlow</div>
             <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
-              Dükkan Yetkilisi
+              Byråansvarig
             </div>
           </div>
         </div>
@@ -54,14 +54,14 @@ function Sidebar({ email }: { email?: string }) {
       {email && (
         <div style={{ margin: "12px 10px 0", background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 10, padding: "10px 12px" }}>
           <p style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }} className="truncate">{email}</p>
-          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Büro Yetkilisi</p>
+          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Byråansvarig</p>
         </div>
       )}
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto" style={{ padding: "12px 10px" }}>
         <p style={{ fontSize: 10, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", padding: "8px 10px 6px" }}>
-          Menü
+          Meny
         </p>
         {NAV.map((item) => {
           const active = isActive(item.href, item.exact);
@@ -88,14 +88,14 @@ function Sidebar({ email }: { email?: string }) {
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#f9fafb"; (e.currentTarget as HTMLElement).style.color = "#111827"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#6b7280"; }}>
           <M name="help_outline" size={18} />
-          <span style={{ fontSize: 14 }}>Yardım Merkezi</span>
+          <span style={{ fontSize: 14 }}>Hjälpcenter</span>
         </a>
         <button onClick={handleLogout} className="flex items-center gap-2.5 rounded-lg w-full text-left transition-colors"
           style={{ padding: "9px 12px", color: "#6b7280", background: "none", border: "none", cursor: "pointer", marginTop: 2 }}
           onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#fef2f2"; (e.currentTarget as HTMLElement).style.color = "#dc2626"; }}
           onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ""; (e.currentTarget as HTMLElement).style.color = "#6b7280"; }}>
           <M name="logout" size={18} />
-          <span style={{ fontSize: 14 }}>Oturumu Kapat</span>
+          <span style={{ fontSize: 14 }}>Logga ut</span>
         </button>
       </div>
     </aside>

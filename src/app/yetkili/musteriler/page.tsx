@@ -39,11 +39,11 @@ export default function MusterilerPage() {
       try {
         const res = await fetch("/api/yetkili/musteriler");
         const json = await res.json();
-        if (!res.ok) throw new Error(json.error || "Liste yüklenemedi");
+        if (!res.ok) throw new Error(json.error || "Listan kunde inte laddas");
         setList(json.musteriler ?? []);
         setAccountants(json.muhasebeciler ?? []);
       } catch (e) {
-        setLoadError(e instanceof Error ? e.message : "Liste yüklenemedi");
+        setLoadError(e instanceof Error ? e.message : "Listan kunde inte laddas");
       } finally {
         setLoading(false);
       }
@@ -75,12 +75,12 @@ export default function MusterilerPage() {
         res = await fetch(`/api/yetkili/musteriler/${musteri.id}/ata`, { method: "DELETE" });
       }
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Atama başarısız");
+      if (!res.ok) throw new Error(json.error || "Tilldelning misslyckades");
       const name = accountants.find((a) => a.id === muhasebeci_id)?.full_name ?? null;
       setList((p) => p.map((m) => (m.id === musteri.id ? { ...m, muhasebeci_id: muhasebeci_id || null, muhasebeci_name: name } : m)));
-      showToast(muhasebeci_id ? "Atama güncellendi" : "Atama kaldırıldı");
+      showToast(muhasebeci_id ? "Tilldelning uppdaterad" : "Tilldelning borttagen");
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Atama başarısız");
+      showToast(e instanceof Error ? e.message : "Tilldelning misslyckades");
     } finally {
       setSavingId(null);
     }
@@ -105,7 +105,7 @@ export default function MusterilerPage() {
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
         className="flex items-center justify-between px-8 h-16 shrink-0">
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Müşteri Yönetimi</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Kundhantering</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Bell size={17} color="#2c3e50" />
@@ -121,10 +121,10 @@ export default function MusterilerPage() {
         {/* KPI cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18, marginBottom: 28 }}>
           {[
-            { label: "Toplam Müşteri", value: list.length, badge: "Kayıtlı", badgeBg: "#d4edda", badgeColor: "#155724" },
-            { label: "Aktif Müşteri", value: aktif, badge: "Aktif", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
-            { label: "Atanmış", value: assigned, badge: "Muhasebeci", badgeBg: "#eef2ff", badgeColor: "#4338ca" },
-            { label: "Atanmamış", value: unassigned, badge: "Bekliyor", badgeBg: "#fff3cd", badgeColor: "#856404" },
+            { label: "Antal kunder", value: list.length, badge: "Registrerad", badgeBg: "#d4edda", badgeColor: "#155724" },
+            { label: "Aktiva kunder", value: aktif, badge: "Aktiv", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
+            { label: "Tilldelade", value: assigned, badge: "Konsult", badgeBg: "#eef2ff", badgeColor: "#4338ca" },
+            { label: "Otilldelade", value: unassigned, badge: "Väntar", badgeBg: "#fff3cd", badgeColor: "#856404" },
           ].map((s, i) => (
             <div key={i} style={{ ...cardStyle, padding: 20 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -143,22 +143,22 @@ export default function MusterilerPage() {
         {/* Table card */}
         <div style={cardStyle}>
           <div style={{ padding: "16px 24px", borderBottom: "1px solid #f3f4f6", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Müşteri Listesi</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Kundlista</h3>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <div style={{ position: "relative" }}>
                 <Search size={14} color="#95a5a6" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }} />
-                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Müşteri veya org.nr..." style={{ ...inputStyle, paddingLeft: 32, width: 220 }} />
+                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Kund eller org.nr…" style={{ ...inputStyle, paddingLeft: 32, width: 220 }} />
               </div>
               <div style={{ position: "relative" }}>
                 <Filter size={13} color="#95a5a6" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }} />
                 <select value={filterAcc} onChange={(e) => setFilterAcc(e.target.value)} style={{ ...inputStyle, paddingLeft: 28, paddingRight: 28, appearance: "none" as const, cursor: "pointer" }}>
-                  <option value="all">Tüm Muhasebeciler</option>
-                  <option value="">Atanmamış</option>
+                  <option value="all">Alla konsulter</option>
+                  <option value="">Otilldelade</option>
                   {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                 </select>
               </div>
               <button onClick={() => router.push("/yetkili/musteriler/new")} style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 8, border: "none", background: "#111827", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
-                <Plus size={13} /> Yeni Müşteri
+                <Plus size={13} /> Ny kund
               </button>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function MusterilerPage() {
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: "#f8f9fb", borderBottom: "1px solid #f3f4f6" }}>
-                    {["Müşteri", "Org.nr", "Şehir", "Muhasebeci", "Durum", "Ata / Değiştir"].map((h) => (
+                    {["Kund", "Org.nr", "Ort", "Konsult", "Status", "Tilldela / ändra"].map((h) => (
                       <th key={h} style={{ padding: "12px 16px", textAlign: "left", ...labelStyle, whiteSpace: "nowrap" as const }}>{h}</th>
                     ))}
                   </tr>
@@ -178,7 +178,7 @@ export default function MusterilerPage() {
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#95a5a6", fontSize: 13 }}>
-                      {list.length === 0 ? "Henüz müşteri yok. “Yeni Müşteri” ile ekleyin." : "Arama kriterlerine uyan müşteri bulunamadı."}
+                      {list.length === 0 ? "Inga kunder ännu. Lägg till med “Ny kund”." : "Inga kunder matchar sökningen."}
                     </td></tr>
                   ) : filtered.map((c, i) => (
                     <tr key={c.id} style={{ borderBottom: i < filtered.length - 1 ? "1px solid #f3f4f6" : "none" }} className="hover:bg-[#f9fafb] transition-colors">
@@ -195,11 +195,11 @@ export default function MusterilerPage() {
                       </td>
                       <td style={{ padding: "12px 16px", fontSize: 12, color: "#95a5a6" }}>{c.city ?? "—"}</td>
                       <td style={{ padding: "12px 16px", fontSize: 13, color: c.muhasebeci_id ? "#155724" : "#bdc3c7", fontWeight: c.muhasebeci_id ? 600 : 400 }}>
-                        {c.muhasebeci_name || <span style={{ fontStyle: "italic" }}>Atanmamış</span>}
+                        {c.muhasebeci_name || <span style={{ fontStyle: "italic" }}>Otilldelad</span>}
                       </td>
                       <td style={{ padding: "12px 16px" }}>
                         <span style={{ background: c.is_active ? "#d4edda" : "#f8f9fb", color: c.is_active ? "#155724" : "#7f8c8d", padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600 }}>
-                          {c.is_active ? "Aktif" : "Pasif"}
+                          {c.is_active ? "Aktiv" : "Inaktiv"}
                         </span>
                       </td>
                       <td style={{ padding: "12px 16px" }}>
@@ -209,7 +209,7 @@ export default function MusterilerPage() {
                             disabled={savingId === c.id || accountants.length === 0}
                             onChange={(e) => handleAssign(c, e.target.value)}
                             style={{ border: "1px solid #f3f4f6", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: "#2c3e50", background: "#fff", cursor: "pointer", outline: "none" }}>
-                            <option value="">Atanmamış</option>
+                            <option value="">Otilldelad</option>
                             {accountants.map((a) => <option key={a.id} value={a.id}>{a.full_name}</option>)}
                           </select>
                           {savingId === c.id && <Loader2 size={13} className="animate-spin" color="#95a5a6" />}
@@ -223,9 +223,9 @@ export default function MusterilerPage() {
           )}
 
           <div style={{ padding: "12px 24px", borderTop: "1px solid #f3f4f6", background: "#f9fafb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 12, color: "#95a5a6" }}>{filtered.length} müşteri gösteriliyor</span>
+            <span style={{ fontSize: 12, color: "#95a5a6" }}>{filtered.length} kunder visas</span>
             {accountants.length === 0 && (
-              <span style={{ fontSize: 11, color: "#c0392b" }}>Atama için önce muhasebeci ekleyin.</span>
+              <span style={{ fontSize: 11, color: "#c0392b" }}>Lägg till en konsult först för tilldelning.</span>
             )}
           </div>
         </div>
