@@ -470,9 +470,9 @@ export default function LandingPage() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Juridik</p>
             <ul className="space-y-2 text-sm text-slate-500">
-              <li><a href="#" className="hover:text-slate-900">Integritetspolicy</a></li>
-              <li><a href="#" className="hover:text-slate-900">Användarvillkor</a></li>
-              <li><a href="#" className="hover:text-slate-900">GDPR</a></li>
+              <li><Link href="/integritetspolicy" className="hover:text-slate-900">Integritetspolicy</Link></li>
+              <li><Link href="/anvandarvillkor" className="hover:text-slate-900">Användarvillkor</Link></li>
+              <li><Link href="/gdpr" className="hover:text-slate-900">GDPR</Link></li>
             </ul>
           </div>
         </div>
