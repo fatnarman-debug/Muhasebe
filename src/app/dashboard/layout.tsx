@@ -20,7 +20,7 @@ const NAV = [
   { href: "/dashboard/settings",  label: "Inställningar",  icon: "settings" },
 ];
 
-function Sidebar({ name, email }: { name: string; email: string | null }) {
+function Sidebar({ name, email, open, onClose }: { name: string; email: string | null; open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -34,7 +34,7 @@ function Sidebar({ name, email }: { name: string; email: string | null }) {
   }
 
   return (
-    <aside className="h-screen w-60 fixed left-0 top-0 z-50 flex flex-col"
+    <aside className={`h-screen w-60 fixed left-0 top-0 z-50 flex flex-col transition-transform duration-200 md:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
       style={{ background: "#ffffff", borderRight: "1px solid #e5e7eb" }}>
 
       {/* Logo */}
@@ -66,7 +66,7 @@ function Sidebar({ name, email }: { name: string; email: string | null }) {
         {NAV.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
-            <Link key={item.href} href={item.href}
+            <Link key={item.href} href={item.href} onClick={onClose}
               className="flex items-center gap-2.5 rounded-lg transition-colors mb-0.5 relative"
               style={{ padding: "9px 12px", background: active ? "#f3f4f6" : "transparent", color: active ? "#111827" : "#6b7280", fontWeight: active ? 600 : 400 }}
               onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "#f9fafb"; }}
@@ -103,6 +103,7 @@ function Sidebar({ name, email }: { name: string; email: string | null }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState<string | null>(null);
 
@@ -147,11 +148,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
-      <Sidebar name={name} email={email} />
-      <main className="flex-1 ml-60 min-h-screen overflow-y-auto" style={{ padding: "28px 32px 48px" }}>
-        {children}
-      </main>
+    <div className="min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
+      {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
+      <Sidebar name={name} email={email} open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <div className="md:ml-60 min-h-screen flex flex-col">
+        {/* Mobil menü-rad */}
+        <div className="md:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-white" style={{ borderBottom: "1px solid #e5e7eb" }}>
+          <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
+            <M name="menu" size={24} />
+          </button>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>LedgerFlow</span>
+        </div>
+        <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-12">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

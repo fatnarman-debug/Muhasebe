@@ -9,9 +9,9 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   if (!session) redirect("/admin/login");
 
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden">
+    <div className="min-h-screen bg-slate-100">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
+      <main className="md:ml-60 min-h-screen p-4 sm:p-6">{children}</main>
     </div>
   );
 }

@@ -18,7 +18,7 @@ const NAV = [
   { href: "/yetkili/ayarlar",       label: "Inställningar", icon: "settings" },
 ];
 
-function Sidebar({ email }: { email?: string }) {
+function Sidebar({ email, open, onClose }: { email?: string; open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,7 +32,7 @@ function Sidebar({ email }: { email?: string }) {
   }
 
   return (
-    <aside className="h-screen w-60 fixed left-0 top-0 z-50 flex flex-col"
+    <aside className={`h-screen w-60 fixed left-0 top-0 z-50 flex flex-col transition-transform duration-200 md:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
       style={{ background: "#ffffff", borderRight: "1px solid #e5e7eb" }}>
 
       {/* Logo */}
@@ -66,7 +66,7 @@ function Sidebar({ email }: { email?: string }) {
         {NAV.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
-            <Link key={item.href} href={item.href}
+            <Link key={item.href} href={item.href} onClick={onClose}
               className="flex items-center gap-2.5 rounded-lg transition-colors mb-0.5 relative"
               style={{ padding: "9px 12px", background: active ? "#f3f4f6" : "transparent", color: active ? "#111827" : "#6b7280", fontWeight: active ? 600 : 400 }}
               onMouseEnter={e => { if (!active) (e.currentTarget as HTMLElement).style.background = "#f9fafb"; }}
@@ -105,6 +105,7 @@ function Sidebar({ email }: { email?: string }) {
 export default function YetkiliLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [email, setEmail] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -137,9 +138,17 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
-      <Sidebar email={email} />
-      <div className="flex-1 ml-60 flex flex-col min-h-screen">
+    <div className="min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
+      {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
+      <Sidebar email={email} open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <div className="md:ml-60 flex flex-col min-h-screen">
+        {/* Mobil menü-rad */}
+        <div className="md:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-white" style={{ borderBottom: "1px solid #e5e7eb" }}>
+          <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
+            <M name="menu" size={24} />
+          </button>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>LedgerFlow</span>
+        </div>
         {children}
       </div>
     </div>

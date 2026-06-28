@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Shield, LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag, ScrollText } from "lucide-react";
+import { Shield, LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag, ScrollText, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -21,6 +22,7 @@ const NAV = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const isActive = (href: string, exact?: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -32,7 +34,19 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="w-60 bg-slate-950 flex flex-col shrink-0">
+    <>
+      {/* Mobil topbar */}
+      <div className="md:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-slate-950 text-white">
+        <button onClick={() => setOpen(true)} aria-label="Meny" className="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-800">
+          <Menu className="w-6 h-6" />
+        </button>
+        <span className="font-bold text-sm">Faktura <span className="text-red-500">Admin</span></span>
+      </div>
+      {open && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setOpen(false)} />}
+      <aside className={cn(
+        "fixed left-0 top-0 h-screen w-60 z-50 bg-slate-950 flex flex-col transition-transform duration-200 md:translate-x-0",
+        open ? "translate-x-0" : "-translate-x-full"
+      )}>
       <div className="h-16 flex items-center px-5 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
@@ -52,6 +66,7 @@ export function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setOpen(false)}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 active ? "bg-red-600 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
@@ -73,6 +88,7 @@ export function AdminSidebar() {
           Çıkış Yap
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
