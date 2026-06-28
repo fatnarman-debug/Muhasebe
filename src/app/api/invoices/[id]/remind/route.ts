@@ -12,7 +12,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { reminderFee = 0 } = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => ({}));
+  // Validera & begränsa avgiften (0–100 000 kr) — förhindrar orimliga/NaN-värden
+  const reminderFee = Math.max(0, Math.min(Number(body?.reminderFee) || 0, 100000));
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -42,6 +44,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Kunden har ingen e-postadress." }, { status: 400 });
   }
 
+  // HTML-escape för all användarstyrd text (förhindrar HTML-injektion i e-post)
+  const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
   // Generate PDF
   const qrDataUrl = await generateInvoiceQr(inv, company);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,23 +74,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         </div>
         <div style="border:2px solid #dc2626;border-top:none;padding:24px;border-radius:0 0 8px 8px;margin-bottom:24px">
           <h2 style="color:#dc2626;margin-top:0">Obetald faktura — ${daysOverdue} dagar försenad</h2>
-          <p>Hej ${customer.name},</p>
+          <p>Hej ${esc(customer.name)},</p>
           <p>Vi har noterat att följande faktura ännu inte betalts. Vänligen reglera betalningen snarast.</p>
 
           <table style="width:100%;border-collapse:collapse;margin:20px 0;background:#fef2f2;border-radius:8px;overflow:hidden">
-            <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">Fakturanummer</td><td style="padding:12px 16px;font-weight:600">${inv.invoice_number}</td></tr>
+            <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">Fakturanummer</td><td style="padding:12px 16px;font-weight:600">${esc(inv.invoice_number)}</td></tr>
             <tr style="background:#fee2e2"><td style="padding:12px 16px;color:#6b7280;font-size:14px">Ursprungligt förfallodatum</td><td style="padding:12px 16px;font-weight:600;color:#dc2626">${formattedDue}</td></tr>
             <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">Fakturabelopp</td><td style="padding:12px 16px;font-weight:600">${new Intl.NumberFormat("sv-SE", { style: "currency", currency: "SEK", minimumFractionDigits: 2 }).format(inv.total)}</td></tr>
             ${reminderFee > 0 ? `<tr style="background:#fee2e2"><td style="padding:12px 16px;color:#6b7280;font-size:14px">Påminnelseavgift</td><td style="padding:12px 16px;font-weight:600;color:#dc2626">+ ${new Intl.NumberFormat("sv-SE", { style: "currency", currency: "SEK", minimumFractionDigits: 2 }).format(reminderFee)}</td></tr>` : ""}
             <tr style="background:#fecaca"><td style="padding:12px 16px;color:#991b1b;font-size:14px;font-weight:700">Totalt att betala</td><td style="padding:12px 16px;font-weight:700;font-size:18px;color:#991b1b">${formattedTotal}</td></tr>
-            ${inv.ocr_number ? `<tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">OCR-nummer</td><td style="padding:12px 16px;font-weight:600;font-family:monospace">${inv.ocr_number}</td></tr>` : ""}
-            ${company.bankgiro ? `<tr style="background:#fef2f2"><td style="padding:12px 16px;color:#6b7280;font-size:14px">Bankgiro</td><td style="padding:12px 16px;font-weight:600">${company.bankgiro}</td></tr>` : ""}
+            ${inv.ocr_number ? `<tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">OCR-nummer</td><td style="padding:12px 16px;font-weight:600;font-family:monospace">${esc(inv.ocr_number)}</td></tr>` : ""}
+            ${company.bankgiro ? `<tr style="background:#fef2f2"><td style="padding:12px 16px;color:#6b7280;font-size:14px">Bankgiro</td><td style="padding:12px 16px;font-weight:600">${esc(company.bankgiro)}</td></tr>` : ""}
           </table>
 
           <p style="color:#4b5563;font-size:13px">Datumet för påminnelsen är ${today}. Kontakta oss omgående om du anser att detta är felaktigt.</p>
           <p style="color:#6b7280;font-size:12px">Originalfakturan finns bifogad som PDF.</p>
         </div>
-        <p style="color:#9ca3af;font-size:11px;text-align:center">${company.name} · ${company.address_line1}, ${company.postal_code} ${company.city}</p>
+        <p style="color:#9ca3af;font-size:11px;text-align:center">${esc(company.name)} · ${esc(company.address_line1)}, ${esc(company.postal_code)} ${esc(company.city)}</p>
       </div>
     `,
     attachments: [{

@@ -15,7 +15,9 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     .order("name");
 
   if (q) {
-    query = query.or(`name.ilike.%${q}%,org_no.ilike.%${q}%`);
+    // Sanera sökterm — ta bort PostgREST-tecken (,()* m.m.) för att undvika filterinjektion
+    const safe = q.replace(/[^\p{L}\p{N}\s-]/gu, "").trim().slice(0, 60);
+    if (safe) query = query.or(`name.ilike.%${safe}%,org_no.ilike.%${safe}%`);
   }
 
   const { data: clients } = await query;

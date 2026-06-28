@@ -17,6 +17,13 @@ export async function uploadLogo(formData: FormData): Promise<{ url: string } | 
     return { error: "Filtypen stöds inte. Använd PNG, JPG, WebP eller SVG." };
   }
 
+  // Verifiera ägarskap: om companyId anges måste företaget tillhöra (eller vara tilldelat) användaren.
+  // RLS på client_companies returnerar bara rader användaren får se.
+  if (companyId) {
+    const { data: owned } = await supabase.from("client_companies").select("id").eq("id", companyId).maybeSingle();
+    if (!owned) return { error: "Åtkomst nekad." };
+  }
+
   const ext = file.name.split(".").pop() ?? "png";
   const path = companyId
     ? `${user.id}/${companyId}/logo.${ext}`
