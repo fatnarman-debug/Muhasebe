@@ -13,6 +13,7 @@ const segments = [
     title: "Skicka din första faktura idag",
     desc: "Fyll i ditt företag en gång – fakturera sedan på under en minut. Inga krångliga inställningar, inga konstiga termer.",
     points: ["Faktura & offert på 60 sek", "ROT/RUT räknas ut automatiskt", "PDF & e-post direkt till kund"],
+    cta: "Skapa konto gratis", href: "/auth/register",
   },
   {
     icon: UserRound,
@@ -20,6 +21,7 @@ const segments = [
     title: "Alla dina kunder på ett ställe",
     desc: "Hantera de kunder du blivit tilldelad, skapa fakturor och offerter åt dem – alltid med rätt mall och rätt uppgifter.",
     points: ["Ser bara dina egna kunder", "Snabb fakturering per kund", "Utkast, redigering & utskick"],
+    cta: "Logga in", href: "/auth/login", subtle: "Konsulter bjuds in av sin byrå",
   },
   {
     icon: Building2,
@@ -27,6 +29,7 @@ const segments = [
     title: "Full kontroll över hela byrån",
     desc: "Bjud in konsulter, tilldela kunder och håll ordning. Roller, behörigheter och krypterad backup ingår.",
     points: ["Roller & behörigheter", "Tilldela kunder till konsulter", "Krypterad backup (AES-256, EU)"],
+    cta: "Skapa byråkonto", href: "/auth/register",
   },
 ];
 
@@ -259,8 +262,9 @@ export default function LandingPage() {
         </div>
         <div className="grid md:grid-cols-3 gap-5 mt-12">
           {segments.map((s) => (
-            <div key={s.tag} className="rounded-2xl border border-slate-200 p-7 hover:border-blue-200 hover:shadow-lg hover:shadow-slate-900/5 transition-all">
-              <span className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 grid place-items-center mb-5">
+            <Link key={s.tag} href={s.href}
+              className="group/seg flex flex-col rounded-2xl border border-slate-200 p-7 hover:border-blue-300 hover:shadow-lg hover:shadow-slate-900/5 transition-all">
+              <span className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 grid place-items-center mb-5 group-hover/seg:bg-blue-100 transition-colors">
                 <s.icon className="w-5 h-5" strokeWidth={1.8} />
               </span>
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{s.tag}</p>
@@ -273,7 +277,14 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-            </div>
+              <div className="mt-auto pt-6">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700">
+                  {s.cta}
+                  <ArrowRight className="w-4 h-4 group-hover/seg:translate-x-0.5 transition-transform" />
+                </span>
+                {"subtle" in s && s.subtle && <p className="text-xs text-slate-400 mt-1.5">{s.subtle}</p>}
+              </div>
+            </Link>
           ))}
         </div>
       </section>
