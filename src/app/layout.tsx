@@ -1,17 +1,51 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Calistoga } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const calistoga = Calistoga({ subsets: ["latin"], weight: "400", variable: "--font-display" });
+
+const SITE_URL = "https://ledgerflow.se"; // TODO: byt till din riktiga domän
 
 export const metadata: Metadata = {
-  title: "LedgerFlow — Faktureringssystem för redovisningsbyråer",
-  description: "Redovisningskonsulter, kunder och fakturor i ett och samma panel.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "LedgerFlow – Fakturering & offert för svenska företag",
+    template: "%s · LedgerFlow",
+  },
+  description:
+    "Skapa proffsiga fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post – byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.",
+  keywords: [
+    "fakturaprogram", "faktureringssystem", "skapa faktura online", "fakturera enskild firma",
+    "offert", "ROT-avdrag faktura", "RUT-avdrag", "bokföringsprogram egenföretagare",
+    "redovisningsbyrå fakturering", "e-faktura", "OCR", "bankgiro", "fakturamall",
+  ],
+  authors: [{ name: "LedgerFlow" }],
+  applicationName: "LedgerFlow",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "sv_SE",
+    url: SITE_URL,
+    siteName: "LedgerFlow",
+    title: "LedgerFlow – Fakturering & offert för svenska företag",
+    description:
+      "Fakturor, offerter, ROT/RUT, OCR & bankgiro – allt på svenska, enligt svensk standard. Gratis att börja.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "LedgerFlow – fakturering för svenska företag" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LedgerFlow – Fakturering & offert för svenska företag",
+    description: "Skapa fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post.",
+    images: ["/og.png"],
+  },
+  robots: { index: true, follow: true },
+  category: "business",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sv" className="h-full">
+    <html lang="sv" className={`h-full ${inter.variable} ${calistoga.variable}`}>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap"
