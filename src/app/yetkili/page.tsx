@@ -75,7 +75,7 @@ export default function YetkiliPage() {
     <>
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-        className="flex items-center justify-between px-8 h-16 shrink-0">
+        className="flex items-center justify-between px-4 sm:px-8 h-16 shrink-0">
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Översikt</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#2c3e50" }}>
@@ -91,7 +91,7 @@ export default function YetkiliPage() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 overflow-y-auto" style={{ padding: 32 }}>
+      <main className="flex-1 overflow-y-auto p-4 sm:p-8">
         {/* Welcome */}
         <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <div>
@@ -121,7 +121,7 @@ export default function YetkiliPage() {
         <p style={{ color: "#95a5a6", fontSize: 13, marginBottom: 24 }}>Aktuella nyckeltal.</p>
 
         {/* Stats cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20, marginBottom: 28 }}>
           {stats.map((s, i) => (
             <div key={i} style={cardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -140,7 +140,7 @@ export default function YetkiliPage() {
         </div>
 
         {/* Two column */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
           {/* Recent customers */}
           <div style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>

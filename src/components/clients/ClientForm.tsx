@@ -111,7 +111,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
             <Label htmlFor="name">Företagsnamn <span className="text-red-500">*</span></Label>
             <Input id="name" placeholder="AB Exempel" value={form.name} onChange={(e) => set("name", e.target.value)} required />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="org_no">Organisationsnummer <span className="text-red-500">*</span></Label>
               <Input id="org_no" placeholder="556123-4567" value={form.org_no} onChange={(e) => set("org_no", e.target.value)} required />
@@ -143,7 +143,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
         <div className="grid gap-4">
           {field("address_line1", "Gatuadress *", "text", "Storgatan 1")}
           {field("address_line2", "C/O, box (valfritt)", "text", "")}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="postal_code">Postnummer <span className="text-red-500">*</span></Label>
               <Input id="postal_code" placeholder="41234" value={form.postal_code} onChange={(e) => set("postal_code", e.target.value)} required />
@@ -159,7 +159,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
       {/* Kontakt */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Kontaktuppgifter</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {field("email", "E-post", "email", "info@foretag.se")}
           {field("phone", "Telefon", "tel", "031-123 45 67")}
         </div>
@@ -168,7 +168,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
       {/* Betalningssätt */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Betalningssätt</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {field("bankgiro", "Bankgiro", "text", "1234-5678")}
           {field("plusgiro", "Plusgiro", "text", "12 34 56-7")}
           {field("swish", "Swish-nummer", "text", "0701234567")}
@@ -180,7 +180,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
       {/* Fakturainställningar */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Fakturainställningar</h2>
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
           <div className="space-y-1.5">
             <Label htmlFor="invoice_prefix">Fakturaprefix</Label>
             <Input
@@ -205,7 +205,7 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label htmlFor="payment_terms_days">Betalningsvillkor (dagar)</Label>
             <Input

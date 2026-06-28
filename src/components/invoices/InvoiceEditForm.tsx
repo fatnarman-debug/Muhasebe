@@ -154,7 +154,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
           <span className="font-mono font-bold text-blue-600 text-sm">{invoice.invoice_number}</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Klientföretag</Label>
             <Input value={company.name} disabled className="bg-gray-50 text-gray-500" />
@@ -171,7 +171,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <Label>{isOffert ? "Offertnummer" : "Fakturanummer"}</Label>
             <Input value={invoice.invoice_number} readOnly className="bg-gray-50 font-mono text-gray-500" />
@@ -187,7 +187,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Er referens</Label>
             <Input placeholder="Kontaktperson hos kund" value={yourReference} onChange={(e) => setYourReference(e.target.value)} />

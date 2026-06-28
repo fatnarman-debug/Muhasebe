@@ -149,7 +149,7 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {isCompany ? (
               <>
                 {field("org_no", "Organisationsnummer", "text", "556123-4567")}
@@ -168,7 +168,7 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
         <div className="grid gap-4">
           {field("address_line1", "Gatuadress *", "text", "Storgatan 1")}
           {field("address_line2", "C/O, box (valfritt)")}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="postal_code">Postnummer <span className="text-red-500">*</span></Label>
               <Input id="postal_code" placeholder="41234" value={form.postal_code} onChange={(e) => set("postal_code", e.target.value)} required />
@@ -184,7 +184,7 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
       {/* Kontakt */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Kontaktuppgifter</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {field("email", "E-post", "email", "info@foretag.se")}
           {field("phone", "Telefon", "tel", "031-123 45 67")}
         </div>
@@ -193,7 +193,7 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
       {/* Betalningsvillkor */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Betalningsvillkor</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label htmlFor="payment_terms_days">Betalningsvillkor (dagar)</Label>
             <Input

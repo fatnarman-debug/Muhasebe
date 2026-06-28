@@ -107,7 +107,7 @@ export default function MuhasebecilerPage() {
     <>
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-        className="flex items-center justify-between px-8 h-16 shrink-0">
+        className="flex items-center justify-between px-4 sm:px-8 h-16 shrink-0">
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Konsulter</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -120,9 +120,9 @@ export default function MuhasebecilerPage() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto" style={{ padding: 32 }}>
+      <main className="flex-1 overflow-y-auto p-4 sm:p-8">
         {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20, marginBottom: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20, marginBottom: 28 }}>
           {[
             { label: "Antal konsulter", value: list.length, badge: "Registrerad", badgeBg: "#d4edda", badgeColor: "#155724" },
             { label: "Aktiva konsulter", value: aktifSayisi, badge: "Aktiv", badgeBg: "#cce5ff", badgeColor: "#0056b3" },
@@ -151,7 +151,7 @@ export default function MuhasebecilerPage() {
               <h3 style={{ fontSize: 15, fontWeight: 600, color: "#2c3e50" }}>Ny konsult</h3>
               <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#95a5a6", fontSize: 20 }}>×</button>
             </div>
-            <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ padding: 24, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
               <div>
                 <label style={{ ...labelStyle, display: "block", marginBottom: 6 }}>Namn</label>
                 <input value={formAd} onChange={(e) => setFormAd(e.target.value)} placeholder="T.ex. Anna Svensson" style={inputStyle} />

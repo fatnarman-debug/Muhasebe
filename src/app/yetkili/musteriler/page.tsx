@@ -104,7 +104,7 @@ export default function MusterilerPage() {
     <>
       {/* Topbar */}
       <header style={{ background: "#fff", borderBottom: "1px solid #f3f4f6", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
-        className="flex items-center justify-between px-8 h-16 shrink-0">
+        className="flex items-center justify-between px-4 sm:px-8 h-16 shrink-0">
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111827" }}>Kundhantering</h1>
         <div className="flex items-center gap-3">
           <button style={{ width: 38, height: 38, borderRadius: 8, background: "#f8f9fb", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -117,9 +117,9 @@ export default function MusterilerPage() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto" style={{ padding: 32 }}>
+      <main className="flex-1 overflow-y-auto p-4 sm:p-8">
         {/* KPI cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18, marginBottom: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 18, marginBottom: 28 }}>
           {[
             { label: "Antal kunder", value: list.length, badge: "Registrerad", badgeBg: "#d4edda", badgeColor: "#155724" },
             { label: "Aktiva kunder", value: aktif, badge: "Aktiv", badgeBg: "#cce5ff", badgeColor: "#0056b3" },

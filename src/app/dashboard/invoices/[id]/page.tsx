@@ -110,7 +110,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-8">
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{isOffert ? "Offert till" : "Faktureras till"}</p>
               <p className="font-semibold text-gray-900">{customer?.name}</p>

@@ -212,7 +212,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
       {/* Header */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{isOffert ? "Offerthuvud" : "Fakturahuvud"}</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Klientföretag <span className="text-red-500">*</span></Label>
             <select
@@ -241,7 +241,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="space-y-1.5">
             <Label>{isOffert ? "Offertnummer" : "Fakturanummer"}</Label>
             <Input value={invoiceNumber} readOnly className="bg-gray-50 font-mono" />
@@ -256,7 +256,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Er referens</Label>
             <Input placeholder="Kontaktperson hos kund" value={yourReference} onChange={(e) => setYourReference(e.target.value)} />
@@ -366,7 +366,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
                 {articles.length === 0 ? "Inga artiklar för detta företag." : "Ingen matchning."}
               </p>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-56 overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-56 overflow-y-auto">
                 {filteredArticles.map((a) => (
                   <button
                     key={a.id}

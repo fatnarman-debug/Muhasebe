@@ -47,7 +47,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <p className="text-xs text-gray-500 mb-1">Inbetalat totalt</p>
           <p className="text-xl font-bold text-green-600">{formatSEK(totalPaid)}</p>
@@ -62,7 +62,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {/* Company info */}
         <div className="col-span-1 space-y-4">
           <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
