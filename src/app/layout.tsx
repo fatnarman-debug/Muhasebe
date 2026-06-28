@@ -5,7 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const calistoga = Calistoga({ subsets: ["latin"], weight: "400", variable: "--font-display" });
 
-const SITE_URL = "https://ledgerflow.se"; // TODO: byt till din riktiga domän
+// Sätt NEXT_PUBLIC_SITE_URL i Coolify till din riktiga domän (annars används fallbacken)
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ledgerflow.se";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

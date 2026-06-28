@@ -1,0 +1,43 @@
+# LedgerFlow
+
+> Faktureringssystem för svenska företag. Skapa fakturor och offerter på minuter – med ROT/RUT, OCR & bankgiro, PDF och e-post. Byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.
+
+LedgerFlow är en svensk SaaS för fakturering och offerter, byggd för svensk standard och svenska regler: bankgiro, OCR-referens (optisk rad typ 41), ROT/RUT-avdrag, F-skatt, e-faktura samt GDPR och datalagring inom EU.
+
+## Funktioner
+- Fakturor och offerter i samma flöde – omvandla en offert till faktura med ett klick
+- ROT- och RUT-avdrag beräknas automatiskt enligt Skatteverkets regler
+- OCR-betalrad och QR-kod så kunden kan betala direkt i sin bankapp
+- 10+ professionella fakturamallar
+- Ladda ner som PDF eller skicka direkt via e-post
+- Betalningspåminnelser med påminnelseavgift
+- Roller och behörigheter i tre nivåer (byrå, konsult, privat) – varje konsult ser bara sina kunder
+- Krypterad säkerhetskopiering (AES-256), lagrad inom EU
+
+## För vem
+- Egenföretagare (enskild firma eller eget AB): fakturera själv på under en minut
+- Redovisningskonsult: hantera tilldelade kunder och fakturera åt dem
+- Redovisningsbyrå: bjud in konsulter, tilldela kunder och behåll full kontroll
+
+## Priser (SEK, exkl. moms, börjar gratis)
+- Gratis – 0 kr: 1 företag, 5 kunder, fakturor och PDF
+- Privat – 99 kr/mån: obegränsade fakturor och offerter, ROT/RUT, 10+ mallar, e-post, påminnelser, OCR och bankgiro
+- Byrå – 299 kr/mån: allt i Privat plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
+
+## Vanliga frågor
+- Är LedgerFlow gratis att börja med? Ja, helt gratis utan kreditkort.
+- Stödjer ni ROT- och RUT-avdrag? Ja, avdraget beräknas automatiskt.
+- Kan kunden betala via OCR och bankgiro? Ja, varje faktura har en OCR-betalrad och QR-kod.
+- Kan jag skicka offerter och omvandla dem till fakturor? Ja, med ett klick.
+- Var lagras min data? Inom EU, krypterat (AES-256), byggt med GDPR i åtanke.
+- Finns det bindningstid? Nej, säg upp när du vill.
+
+## Länkar
+- Startsida: https://ledgerflow.se/
+- Skapa konto (gratis): https://ledgerflow.se/auth/register
+- Logga in: https://ledgerflow.se/auth/login
+
+## Om
+- Språk: Svenska
+- Marknad: Sverige
+- Kategori: Fakturering, fakturaprogram, offert, bokföring för egenföretagare och redovisningsbyråer

@@ -82,20 +82,29 @@ const faqs = [
 ];
 
 /* ─────────────────────────  JSON-LD (SEO)  ───────────────────────── */
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ledgerflow.se";
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
       name: "LedgerFlow",
-      url: "https://ledgerflow.se",
+      url: BASE,
       description: "Faktureringssystem för svenska företag – egenföretagare, konsulter och redovisningsbyråer.",
+    },
+    {
+      "@type": "WebSite",
+      name: "LedgerFlow",
+      url: BASE,
+      inLanguage: "sv-SE",
     },
     {
       "@type": "SoftwareApplication",
       name: "LedgerFlow",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
+      inLanguage: "sv-SE",
+      url: BASE,
       offers: { "@type": "Offer", price: "0", priceCurrency: "SEK" },
       description: "Skapa fakturor och offerter, ROT/RUT, OCR & bankgiro, PDF och e-post – på svenska.",
     },
