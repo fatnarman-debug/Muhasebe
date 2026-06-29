@@ -57,7 +57,10 @@ const styles = StyleSheet.create({
 });
 
 function fmt(n: number) {
-  return new Intl.NumberFormat("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + " kr";
+  // OBS: Intl använder Unicode MINUS SIGN (U+2212) som react-pdf:s Helvetica saknar
+  // glyf för → byt till ASCII-bindestreck så att negativa belopp (kreditfaktura) syns.
+  return (new Intl.NumberFormat("sv-SE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + " kr")
+    .replace(/−/g, "-");
 }
 function fmtDate(d: string) {
   return new Intl.DateTimeFormat("sv-SE").format(new Date(d));
