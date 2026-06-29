@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { formatSEK, formatDate, getInvoiceStatusLabel, getInvoiceStatusColor } from "@/lib/utils";
 import { InvoiceStatusActions } from "@/components/invoices/InvoiceStatusActions";
 import { OfferActions } from "@/components/invoices/OfferActions";
+import { CreditInvoiceAction } from "@/components/invoices/CreditInvoiceAction";
 import type { Customer, ClientCompany, InvoiceLine } from "@/types/database";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -32,6 +33,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const customer = invoice.customers as unknown as Customer;
   const lines = (invoice.invoice_lines as unknown as InvoiceLine[])?.sort((a, b) => a.sort_order - b.sort_order) ?? [];
   const isOffert = invoice.doc_type === "offert";
+  const isCredit = invoice.doc_type === "credit";
 
   // VAT breakdown
   const vatByRate: Record<number, number> = {};
@@ -72,11 +74,14 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               redirectBase="/dashboard/invoices"
             />
           ) : (
-            <InvoiceStatusActions
-              invoiceId={id}
-              currentStatus={invoice.status}
-              customerEmail={customer?.email}
-            />
+            <>
+              <InvoiceStatusActions
+                invoiceId={id}
+                currentStatus={invoice.status}
+                customerEmail={customer?.email}
+              />
+              <CreditInvoiceAction invoiceId={id} status={invoice.status} docType={invoice.doc_type} redirectBase="/dashboard/invoices" />
+            </>
           )}
         </div>
       </div>
@@ -105,7 +110,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
             <div className="text-right">
-              <p className="text-3xl font-bold text-gray-900 mb-1">{isOffert ? "OFFERT" : "FAKTURA"}</p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">{isOffert ? "OFFERT" : isCredit ? "KREDITFAKTURA" : "FAKTURA"}</p>
               <p className="font-mono text-lg font-semibold text-blue-600">{invoice.invoice_number}</p>
             </div>
           </div>
@@ -144,7 +149,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                   <span className="font-medium">{invoice.your_reference}</span>
                 </div>
               )}
-              {!isOffert && company?.bankgiro && (
+              {!isOffert && !isCredit && company?.bankgiro && (
                 <div className="flex justify-between">
                   <span className="text-gray-500">Bankgiro</span>
                   <span className="font-medium">{company.bankgiro}</span>
@@ -195,7 +200,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
                 </div>
               ))}
               <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-base text-gray-900">
-                <span>{isOffert ? "Summa" : "Totalt att betala"}</span>
+                <span>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Totalt att betala"}</span>
                 <span className="tabular-nums">{formatSEK(invoice.total)}</span>
               </div>
               {invoice.paid_amount > 0 && (
@@ -222,8 +227,19 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         )}
       </div>
 
+      {/* Kreditfaktura-info */}
+      {isCredit && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 flex items-start gap-3">
+          <Clock className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+          <div className="text-sm">
+            <p className="font-semibold text-amber-900 mb-1">Kreditfaktura</p>
+            <p className="text-amber-700">Detta är en kreditfaktura som upphäver en tidigare faktura (ej betalningskrav). Belopp återbetalas eller krediteras mot kommande faktura.</p>
+          </div>
+        </div>
+      )}
+
       {/* Payment info — endast faktura */}
-      {!isOffert && (
+      {!isOffert && !isCredit && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-start gap-3">
           <Clock className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
           <div className="text-sm">

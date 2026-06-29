@@ -65,7 +65,9 @@ export default function KonsultFakturorPage() {
   }, []);
 
   const isOffert = tab === "offert";
-  const filtered = list.filter((i) => (i.doc_type ?? "invoice") === tab);
+  // Faktura-fliken visar både fakturor och kreditfakturor; offert-fliken endast offerter.
+  const filtered = list.filter((i) =>
+    isOffert ? i.doc_type === "offert" : (i.doc_type ?? "invoice") !== "offert");
 
   return (
     <>

@@ -35,7 +35,7 @@ export function generateOCR(invoiceNumber: string): string {
 export function getInvoiceStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     draft: "Utkast", sent: "Skickad", paid: "Betald",
-    overdue: "Förfallen", cancelled: "Makulerad", credit: "Kreditfaktura",
+    overdue: "Förfallen", cancelled: "Makulerad", credit: "Kreditfaktura", credited: "Krediterad",
   };
   return labels[status] ?? status;
 }
@@ -44,7 +44,7 @@ export function getInvoiceStatusColor(status: string): string {
   const colors: Record<string, string> = {
     draft: "bg-gray-100 text-gray-700", sent: "bg-blue-100 text-blue-700",
     paid: "bg-green-100 text-green-700", overdue: "bg-red-100 text-red-700",
-    cancelled: "bg-gray-100 text-gray-500", credit: "bg-orange-100 text-orange-700",
+    cancelled: "bg-gray-100 text-gray-500", credit: "bg-orange-100 text-orange-700", credited: "bg-amber-100 text-amber-700",
   };
   return colors[status] ?? "bg-gray-100 text-gray-700";
 }

@@ -28,13 +28,25 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const lines = invoice.invoice_lines as unknown as InvoiceLine[];
   const inv = invoice as unknown as Invoice;
   const isOffert = inv.doc_type === "offert";
+  const isCredit = inv.doc_type === "credit";
 
-  // Offert ödeme talebi değildir → QR üretilmez
-  const qrDataUrl = isOffert ? null : await generateInvoiceQr(inv, company);
+  // Offert & kreditfaktura ödeme talebi değildir → QR üretilmez
+  const qrDataUrl = isOffert || isCredit ? null : await generateInvoiceQr(inv, company);
+
+  // Kreditfaktura: hangi faturayı kredite ettiğine dair görünür referans
+  let creditRef: string | null = null;
+  if (isCredit && inv.credited_invoice_id) {
+    const { data: orig } = await supabase
+      .from("invoices")
+      .select("invoice_number, invoice_date")
+      .eq("id", inv.credited_invoice_id)
+      .maybeSingle();
+    if (orig) creditRef = `Avser faktura ${orig.invoice_number} (${orig.invoice_date})`;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl, docType: inv.doc_type }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl, docType: inv.doc_type, creditRef }) as any
   );
 
   return new NextResponse(buffer as unknown as BodyInit, {

@@ -151,13 +151,17 @@ export function InvoiceStatusActions({ invoiceId, currentStatus, customerEmail }
           Markera betald
         </Button>
       )}
-      <Button
-        size="sm" variant="outline" className="gap-1.5 text-red-600 hover:text-red-700 hover:bg-red-50"
-        onClick={() => updateStatus("cancelled")} disabled={!!loading}
-      >
-        {loading === "cancelled" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
-        Makulera
-      </Button>
+      {/* Makulera endast för utkast — en skickad faktura får inte raderas (bokföringslagen),
+          använd "Skapa kreditfaktura" istället. */}
+      {isDraft && (
+        <Button
+          size="sm" variant="outline" className="gap-1.5 text-red-600 hover:text-red-700 hover:bg-red-50"
+          onClick={() => updateStatus("cancelled")} disabled={!!loading}
+        >
+          {loading === "cancelled" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
+          Makulera utkast
+        </Button>
+      )}
     </div>
   );
 }

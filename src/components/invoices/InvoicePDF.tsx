@@ -81,12 +81,16 @@ interface Props {
   template?: string;
   qrDataUrl?: string | null;
   docType?: DocumentType;
+  creditRef?: string | null;
 }
 
-export function InvoicePDF({ invoice, company, customer, lines, template, qrDataUrl, docType }: Props) {
+export function InvoicePDF({ invoice, company, customer, lines, template, qrDataUrl, docType, creditRef }: Props) {
   const tpl = PDF_TEMPLATES[template ?? ""] ?? PDF_TEMPLATES["klasik-standart"];
   const accent = tpl.accent;
   const isOffert = (docType ?? invoice.doc_type) === "offert";
+  const isCredit = (docType ?? invoice.doc_type) === "credit";
+  const hidePay = isOffert || isCredit; // kredi & offert: ödeme talebi yok → OCR/QR/bankgiro gizli
+  const docTitle = isOffert ? "Offert" : isCredit ? "Kreditfaktura" : "Faktura";
 
   const sorted = [...lines].sort((a, b) => a.sort_order - b.sort_order);
   const vatByRate: Record<number, { net: number; vat: number }> = {};
@@ -118,8 +122,9 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
             </Text>
           </View>
           <View>
-            <Text style={[styles.fakturaTitle, { color: accent }]}>{isOffert ? "Offert" : "Faktura"}</Text>
+            <Text style={[styles.fakturaTitle, { color: accent }]}>{docTitle}</Text>
             <Text style={styles.sida}>sida 1/1</Text>
+            {isCredit && creditRef ? <Text style={{ fontSize: 8, color: "#6b7280", marginTop: 2, textAlign: "right" }}>{creditRef}</Text> : null}
           </View>
         </View>
 
@@ -136,14 +141,14 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         {/* 3) "Att betala" özet bandı (tam genişlik) */}
         <View style={{ marginHorizontal: -40, paddingHorizontal: 40, paddingVertical: 16, backgroundColor: bandBg, flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <View style={{ flex: 1.3 }}>
-            <Text style={[styles.bandLabelSm, { color: bandSub }]}>{isOffert ? "Belopp (inkl. moms)" : "Att betala (inkl. moms)"}</Text>
+            <Text style={[styles.bandLabelSm, { color: bandSub }]}>{isOffert ? "Belopp (inkl. moms)" : isCredit ? "Att kreditera (inkl. moms)" : "Att betala (inkl. moms)"}</Text>
             <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(invoice.total)}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.bandColLabel, { color: bandSub }]}>{isOffert ? "Giltigt t.o.m." : "Förfallodatum"}</Text>
-            <Text style={[styles.bandColVal, { color: bandFg }]}>{fmtDate(invoice.due_date)}</Text>
+            <Text style={[styles.bandColLabel, { color: bandSub }]}>{isOffert ? "Giltigt t.o.m." : isCredit ? "Krediteringsdatum" : "Förfallodatum"}</Text>
+            <Text style={[styles.bandColVal, { color: bandFg }]}>{fmtDate(isCredit ? invoice.invoice_date : invoice.due_date)}</Text>
           </View>
-          {!isOffert && (
+          {!hidePay && (
             <>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.bandColLabel, { color: bandSub }]}>Bankgiro</Text>
@@ -155,7 +160,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               </View>
             </>
           )}
-          {isOffert && <View style={{ flex: 2.4 }} />}
+          {hidePay && <View style={{ flex: 2.4 }} />}
         </View>
 
         {/* 4) Bilgi kutusu */}
@@ -190,7 +195,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
 
         {/* 6) Toplam (+ banka QR'ı, sola) */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginTop: 14 }}>
-          {qrDataUrl && !isOffert ? (
+          {qrDataUrl && !hidePay ? (
             <View style={{ alignItems: "center", width: 110 }}>
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <Image src={qrDataUrl} style={{ width: 96, height: 96 }} />
@@ -221,13 +226,13 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               </View>
             )}
             <View style={styles.attRow}>
-              <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : "Att betala"} {fmt(invoice.total)}</Text>
+              <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Att betala"} {fmt(invoice.total)}</Text>
             </View>
           </View>
         </View>
 
         {/* 7) Bankgiro OCR optik satırı (typ 41) — yalnızca faturada, offert'te yok */}
-        {company.bankgiro && !isOffert && (() => {
+        {company.bankgiro && !hidePay && (() => {
           const ref = invoice.ocr_number || invoice.invoice_number.replace(/\D/g, "");
           const kronor = Math.floor(invoice.total);
           const ore = String(Math.round((invoice.total - kronor) * 100)).padStart(2, "0");

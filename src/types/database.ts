@@ -1,8 +1,8 @@
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
 
 export type SubscriptionTier = "free" | "start" | "growth" | "pro";
-export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled" | "credit" | "accepted" | "declined";
-export type DocumentType = "invoice" | "offert";
+export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue" | "cancelled" | "credit" | "credited" | "accepted" | "declined";
+export type DocumentType = "invoice" | "offert" | "credit";
 export type CustomerType = "company" | "individual";
 export type PaymentMethod = "bankgiro" | "plusgiro" | "swish" | "bank_transfer" | "cash" | "other";
 export type RotRutType = "rot" | "rut";
@@ -94,6 +94,7 @@ export interface Invoice {
   status: InvoiceStatus;
   doc_type: DocumentType;
   source_offer_id: string | null;
+  credited_invoice_id: string | null;
   invoice_date: string;
   due_date: string;
   currency: string;

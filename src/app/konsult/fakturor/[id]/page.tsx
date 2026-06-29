@@ -6,6 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { formatSEK } from "@/lib/utils";
 import { OfferActions } from "@/components/invoices/OfferActions";
+import { CreditInvoiceAction } from "@/components/invoices/CreditInvoiceAction";
 import { Download, Send, Pencil, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 
 type Line = { id: string; description: string; quantity: number; unit: string; unit_price: number; vat_rate: number; line_total: number; vat_amount: number; sort_order: number };
@@ -23,6 +24,7 @@ const STATUS: Record<string, [string, string, string]> = {
   draft: ["#f3f4f6", "#6b7280", "Utkast"], sent: ["#eff1ff", "#3730a3", "Skickad"],
   paid: ["#dcfce7", "#15803d", "Betald"], overdue: ["#fee2e2", "#dc2626", "Försenad"],
   cancelled: ["#f3f4f6", "#9ca3af", "Makulerad"], credit: ["#fef9c3", "#a16207", "Kredit"],
+  credited: ["#fef3c7", "#b45309", "Krediterad"],
   accepted: ["#dcfce7", "#15803d", "Accepterad"], declined: ["#fee2e2", "#dc2626", "Avvisad"],
 };
 
@@ -67,6 +69,7 @@ export default function KonsultInvoiceDetail() {
   const [bg, color, label] = STATUS[inv.status] ?? ["#f3f4f6", "#6b7280", inv.status];
   const isDraft = inv.status === "draft";
   const isOffert = inv.doc_type === "offert";
+  const isCredit = inv.doc_type === "credit";
   const lines = [...(inv.invoice_lines ?? [])].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
@@ -100,6 +103,7 @@ export default function KonsultInvoiceDetail() {
               {inv.status === "sent" ? "Skicka igen" : "Skicka till kund"}
             </button>
           )}
+          <CreditInvoiceAction invoiceId={inv.id} status={inv.status} docType={inv.doc_type} redirectBase="/konsult/fakturor" />
         </div>
       </div>
 
@@ -168,7 +172,7 @@ export default function KonsultInvoiceDetail() {
           <div style={{ width: 260 }}>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 13, color: "#6b7280" }}><span>Netto</span><span>{formatSEK(inv.subtotal)}</span></div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: 13, color: "#6b7280" }}><span>Moms</span><span>{formatSEK(inv.vat_amount)}</span></div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, paddingTop: 8, borderTop: "1px solid #e5e7eb", fontSize: 15, fontWeight: 800, color: "#111827" }}><span>{isOffert ? "Summa" : "Att betala"}</span><span>{formatSEK(inv.total)}</span></div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, paddingTop: 8, borderTop: "1px solid #e5e7eb", fontSize: 15, fontWeight: 800, color: "#111827" }}><span>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Att betala"}</span><span>{formatSEK(inv.total)}</span></div>
           </div>
         </div>
       </div>
