@@ -33,22 +33,34 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const inv = invoice as unknown as Invoice;
 
   const isOffert = inv.doc_type === "offert";
-  const docLabel = isOffert ? "Offert" : "Faktura";        // Offert / Faktura
+  const isCredit = inv.doc_type === "credit";
+  const hidePay = isOffert || isCredit;
+  const docLabel = isOffert ? "Offert" : isCredit ? "Kreditfaktura" : "Faktura";
+  const docLabelLc = isOffert ? "offert" : isCredit ? "kreditfaktura" : "faktura";
   const numLabel = isOffert ? "Offertnummer" : "Fakturanummer";
-  const dateLabel = isOffert ? "Giltigt t.o.m." : "Förfallodatum";
+  const dateLabel = isOffert ? "Giltigt t.o.m." : isCredit ? "Krediteringsdatum" : "Förfallodatum";
 
   if (!customer.email) {
     return NextResponse.json({ error: "Kunden har ingen e-postadress." }, { status: 400 });
   }
 
+  // Kreditfaktura: hangi faturayı kredite ettiğine dair görünür referans (PDF + not)
+  let creditRef: string | null = null;
+  if (isCredit && inv.credited_invoice_id) {
+    const { data: orig } = await supabase
+      .from("invoices").select("invoice_number, invoice_date")
+      .eq("id", inv.credited_invoice_id).maybeSingle();
+    if (orig) creditRef = `Avser faktura ${orig.invoice_number} (${orig.invoice_date})`;
+  }
+
   // HTML-escape för all användarstyrd text i e-postmallen (förhindrar HTML-injektion)
   const esc = (v: unknown) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-  // Generate PDF (offert → ingen QR/betalning)
-  const qrDataUrl = isOffert ? null : await generateInvoiceQr(inv, company);
+  // Generate PDF (offert & kreditfaktura → ingen QR/betalning)
+  const qrDataUrl = hidePay ? null : await generateInvoiceQr(inv, company);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pdfBuffer = await renderToBuffer(
-    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl, docType: inv.doc_type }) as any
+    createElement(InvoicePDF, { invoice: inv, company, customer, lines, template: company.invoice_template, qrDataUrl, docType: inv.doc_type, creditRef }) as any
   );
 
   const formattedTotal = new Intl.NumberFormat("sv-SE", {
@@ -65,16 +77,16 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#111">
         <h2 style="color:#1e40af">${docLabel} ${esc(inv.invoice_number)}</h2>
         <p>Hej ${esc(customer.name)},</p>
-        <p>Bifogat hittar du ${isOffert ? "offert" : "faktura"} <strong>${esc(inv.invoice_number)}</strong> från <strong>${esc(company.name)}</strong>.</p>
+        <p>Bifogat hittar du ${docLabelLc} <strong>${esc(inv.invoice_number)}</strong> från <strong>${esc(company.name)}</strong>.${isCredit && creditRef ? ` ${esc(creditRef)}.` : ""}</p>
         <table style="width:100%;border-collapse:collapse;margin:24px 0;background:#f8fafc;border-radius:8px;overflow:hidden">
           <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">${numLabel}</td><td style="padding:12px 16px;font-weight:600">${esc(inv.invoice_number)}</td></tr>
           <tr style="background:#f1f5f9"><td style="padding:12px 16px;color:#6b7280;font-size:14px">Belopp</td><td style="padding:12px 16px;font-weight:600;font-size:18px;color:#1e40af">${formattedTotal}</td></tr>
-          <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">${dateLabel}</td><td style="padding:12px 16px;font-weight:600;color:#dc2626">${formattedDue}</td></tr>
-          ${!isOffert && inv.ocr_number ? `<tr style="background:#f1f5f9"><td style="padding:12px 16px;color:#6b7280;font-size:14px">OCR-nummer</td><td style="padding:12px 16px;font-weight:600;font-family:monospace">${esc(inv.ocr_number)}</td></tr>` : ""}
-          ${!isOffert && company.bankgiro ? `<tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">Bankgiro</td><td style="padding:12px 16px;font-weight:600">${esc(company.bankgiro)}</td></tr>` : ""}
+          <tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">${dateLabel}</td><td style="padding:12px 16px;font-weight:600;color:${hidePay ? "#111" : "#dc2626"}">${formattedDue}</td></tr>
+          ${!hidePay && inv.ocr_number ? `<tr style="background:#f1f5f9"><td style="padding:12px 16px;color:#6b7280;font-size:14px">OCR-nummer</td><td style="padding:12px 16px;font-weight:600;font-family:monospace">${esc(inv.ocr_number)}</td></tr>` : ""}
+          ${!hidePay && company.bankgiro ? `<tr><td style="padding:12px 16px;color:#6b7280;font-size:14px">Bankgiro</td><td style="padding:12px 16px;font-weight:600">${esc(company.bankgiro)}</td></tr>` : ""}
         </table>
         ${inv.notes ? `<p style="color:#4b5563;font-size:14px">${esc(inv.notes)}</p>` : ""}
-        <p style="color:#6b7280;font-size:13px">${isOffert ? "Offerten" : "Fakturan"} finns bifogad som PDF.</p>
+        <p style="color:#6b7280;font-size:13px">${isOffert ? "Offerten" : isCredit ? "Kreditfakturan" : "Fakturan"} finns bifogad som PDF.</p>
         <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"/>
         <p style="color:#9ca3af;font-size:12px">${esc(company.name)} · ${esc(company.address_line1)}, ${esc(company.postal_code)} ${esc(company.city)}</p>
       </div>
