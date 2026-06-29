@@ -21,8 +21,8 @@ Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk
 
 ## Priser (SEK, exkl. moms, börjar gratis)
 - Gratis – 0 kr: 1 företag, 5 kunder, fakturor och PDF
-- Privat – 99 kr/mån: obegränsade fakturor och offerter, ROT/RUT, 10+ mallar, e-post, påminnelser, OCR och bankgiro
-- Byrå – 299 kr/mån: allt i Privat plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
+- Egen – 69 kr/mån: för egenföretagare. Obegränsade fakturor och offerter, ROT/RUT, 10+ mallar, e-post, påminnelser, OCR, bankgiro och kreditfaktura
+- Byrå – 299 kr/mån: allt i Egen plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
 
 ## Vanliga frågor
 - Är Enkelfaktura gratis att börja med? Ja, helt gratis utan kreditkort.
@@ -33,9 +33,9 @@ Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk
 - Finns det bindningstid? Nej, säg upp när du vill.
 
 ## Länkar
-- Startsida: https://ledgerflow.se/
-- Skapa konto (gratis): https://ledgerflow.se/auth/register
-- Logga in: https://ledgerflow.se/auth/login
+- Startsida: https://enkelfaktura.se/
+- Skapa konto (gratis): https://enkelfaktura.se/auth/register
+- Logga in: https://enkelfaktura.se/auth/login
 
 ## Om
 - Språk: Svenska
