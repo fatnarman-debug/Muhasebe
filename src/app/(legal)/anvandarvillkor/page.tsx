@@ -4,7 +4,7 @@ import { H1, H2, P, UL, Updated, Draft } from "@/components/legal/prose";
 
 export const metadata: Metadata = {
   title: "Användarvillkor",
-  description: "Villkor för användning av LedgerFlow.",
+  description: "Villkor för användning av Enkelfaktura.",
   alternates: { canonical: "/anvandarvillkor" },
 };
 
@@ -16,13 +16,13 @@ export default function AnvandarvillkorPage() {
       <Updated>Senast uppdaterad: [ÅÅÅÅ-MM-DD]</Updated>
 
       <P>
-        Dessa villkor gäller mellan dig (”kunden”, ”du”) och [Företagsnamn AB], org.nr [org.nr] (”LedgerFlow”, ”vi”), när du
-        använder tjänsten LedgerFlow. Genom att skapa ett konto godkänner du villkoren.
+        Dessa villkor gäller mellan dig (”kunden”, ”du”) och [Företagsnamn AB], org.nr [org.nr] (”Enkelfaktura”, ”vi”), när du
+        använder tjänsten Enkelfaktura. Genom att skapa ett konto godkänner du villkoren.
       </P>
 
       <H2>1. Om tjänsten</H2>
       <P>
-        LedgerFlow är ett webbaserat verktyg för att skapa, skicka och hantera fakturor och offerter samt kunder, anpassat
+        Enkelfaktura är ett webbaserat verktyg för att skapa, skicka och hantera fakturor och offerter samt kunder, anpassat
         för svenska företag. Funktionernas omfattning kan variera beroende på vald plan.
       </P>
 
@@ -54,7 +54,7 @@ export default function AnvandarvillkorPage() {
 
       <H2>6. Immateriella rättigheter</H2>
       <P>
-        Tjänsten, dess programvara och innehåll tillhör LedgerFlow. Du behåller alla rättigheter till ditt eget innehåll och
+        Tjänsten, dess programvara och innehåll tillhör Enkelfaktura. Du behåller alla rättigheter till ditt eget innehåll och
         din egen data. Du får en icke-exklusiv rätt att använda tjänsten enligt dessa villkor.
       </P>
 

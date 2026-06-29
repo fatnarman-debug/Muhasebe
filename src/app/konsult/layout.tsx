@@ -86,7 +86,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
               <M name="account_balance" fill size={18} />
             </div>
             <div>
-              <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>LedgerFlow</div>
+              <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>Enkelfaktura</div>
               <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
                 Konsultpanel
               </div>
@@ -155,7 +155,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
           <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
             <M name="menu" size={24} />
           </button>
-          <span style={{ fontWeight: 800, fontSize: 15 }}>LedgerFlow</span>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>Enkelfaktura</span>
         </div>
         {children}
       </main>

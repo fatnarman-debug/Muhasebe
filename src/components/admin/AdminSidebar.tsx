@@ -40,7 +40,7 @@ export function AdminSidebar() {
         <button onClick={() => setOpen(true)} aria-label="Meny" className="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-800">
           <Menu className="w-6 h-6" />
         </button>
-        <span className="font-bold text-sm">Faktura <span className="text-red-500">Admin</span></span>
+        <span className="font-bold text-sm">Enkelfaktura <span className="text-red-500">Admin</span></span>
       </div>
       {open && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setOpen(false)} />}
       <aside className={cn(
@@ -53,7 +53,7 @@ export function AdminSidebar() {
             <Shield className="w-4 h-4 text-white" />
           </div>
           <div>
-            <div className="text-white font-bold text-sm leading-tight">Faktura</div>
+            <div className="text-white font-bold text-sm leading-tight">Enkelfaktura</div>
             <div className="text-red-500 font-bold text-[10px] uppercase tracking-widest leading-tight">Super Admin</div>
           </div>
         </div>

@@ -72,11 +72,11 @@ const plans = [
 const trustChips = ["Bankgiro", "OCR-referens", "ROT/RUT", "F-skatt", "E-faktura", "GDPR · EU-data"];
 
 const faqs = [
-  { q: "Är LedgerFlow gratis att börja med?", a: "Ja. Du kommer igång helt gratis utan kreditkort och kan skicka riktiga fakturor direkt. Uppgradera först när du behöver mer." },
+  { q: "Är Enkelfaktura gratis att börja med?", a: "Ja. Du kommer igång helt gratis utan kreditkort och kan skicka riktiga fakturor direkt. Uppgradera först när du behöver mer." },
   { q: "Stödjer ni ROT- och RUT-avdrag?", a: "Ja. När du markerar arbetskostnad räknas ROT- eller RUT-avdraget ut automatiskt och visas korrekt på fakturan enligt Skatteverkets regler." },
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
   { q: "Kan jag skicka offerter och omvandla dem till fakturor?", a: "Ja. Skapa en offert med egen nummerserie. När kunden accepterar omvandlar du den till en faktura med ett klick – offerten finns kvar i historiken." },
-  { q: "Var lagras min data?", a: "All data lagras inom EU (Supabase, regionen West EU / Irland) och säkerhetskopior krypteras med AES-256. LedgerFlow är byggt med GDPR i åtanke." },
+  { q: "Var lagras min data?", a: "All data lagras inom EU (Supabase, regionen West EU / Irland) och säkerhetskopior krypteras med AES-256. Enkelfaktura är byggt med GDPR i åtanke." },
   { q: "Passar det redovisningsbyråer med flera konsulter?", a: "Ja. Byråplanen låter dig bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara sina egna kunder." },
   { q: "Finns det bindningstid?", a: "Nej. Alla planer börjar gratis och du kan säga upp när du vill. Inga bindningstider, inga dolda avgifter." },
 ];
@@ -88,19 +88,19 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      name: "LedgerFlow",
+      name: "Enkelfaktura",
       url: BASE,
       description: "Faktureringssystem för svenska företag – egenföretagare, konsulter och redovisningsbyråer.",
     },
     {
       "@type": "WebSite",
-      name: "LedgerFlow",
+      name: "Enkelfaktura",
       url: BASE,
       inLanguage: "sv-SE",
     },
     {
       "@type": "SoftwareApplication",
-      name: "LedgerFlow",
+      name: "Enkelfaktura",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       inLanguage: "sv-SE",
@@ -141,7 +141,7 @@ export default function LandingPage() {
             <span className="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center">
               <Receipt className="w-4 h-4" strokeWidth={2} />
             </span>
-            <span className="font-display text-lg text-slate-900">LedgerFlow</span>
+            <span className="font-display text-lg text-slate-900">Enkelfaktura</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-slate-500">
             <a href="#funktioner" className="hover:text-slate-900 transition-colors">Funktioner</a>
@@ -267,7 +267,7 @@ export default function LandingPage() {
         <div className="max-w-xl">
           <p className="text-sm font-semibold text-blue-700 mb-3">För vem</p>
           <h2 className="font-display text-4xl text-slate-950">Ett verktyg, tre sätt att jobba</h2>
-          <p className="text-slate-500 text-lg mt-3">Oavsett om du fakturerar själv eller hanterar hundratals kunder – LedgerFlow växer med dig.</p>
+          <p className="text-slate-500 text-lg mt-3">Oavsett om du fakturerar själv eller hanterar hundratals kunder – Enkelfaktura växer med dig.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5 mt-12">
           {segments.map((s) => (
@@ -342,9 +342,9 @@ export default function LandingPage() {
       <section className="bg-slate-900 text-white py-20">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-[1.1fr_1fr] gap-12 items-center">
           <div>
-            <h2 className="font-display text-3xl sm:text-4xl">Därför väljer svenska företag LedgerFlow</h2>
+            <h2 className="font-display text-3xl sm:text-4xl">Därför väljer svenska företag Enkelfaktura</h2>
             <p className="text-slate-300 mt-4 leading-relaxed max-w-md">
-              Vi har byggt LedgerFlow för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
+              Vi har byggt Enkelfaktura för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
               ROT/RUT, F-skatt och GDPR finns inbyggt från dag ett.
             </p>
             <Link href="/auth/register" className="inline-flex items-center gap-2 mt-7 bg-white text-slate-900 font-semibold px-5 py-3 rounded-xl hover:bg-slate-100 transition-colors">
@@ -448,7 +448,7 @@ export default function LandingPage() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center"><Receipt className="w-4 h-4" /></span>
-              <span className="font-display text-lg text-slate-900">LedgerFlow</span>
+              <span className="font-display text-lg text-slate-900">Enkelfaktura</span>
             </div>
             <p className="text-sm text-slate-400 mt-3 leading-relaxed">Fakturering &amp; offert för svenska företag. Byggt i Sverige, för svenska regler.</p>
           </div>
@@ -478,7 +478,7 @@ export default function LandingPage() {
         </div>
         <div className="border-t border-slate-100">
           <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-slate-400">
-            <span>© 2026 LedgerFlow. Alla rättigheter förbehållna.</span>
+            <span>© 2026 Enkelfaktura. Alla rättigheter förbehållna.</span>
             <span>Byggt i Sverige · för svenska företag</span>
           </div>
         </div>

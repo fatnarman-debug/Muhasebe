@@ -56,7 +56,7 @@ export default function LoginPage() {
             <M name="account_balance" size={20} />
           </div>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
-            LedgerFlow
+            Enkelfaktura
           </span>
         </div>
 

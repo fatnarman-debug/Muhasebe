@@ -69,7 +69,7 @@ function emptyForm() {
     kund: "", kundOrgNr: "", kundAdress: "", kundVatNr: "", kundEmail: "",
     datum: "2026-06-25", forfallodatum: "2026-07-25", betalningsvillkor: "30",
     varRef: "EL-2026", erRef: "",
-    sAljarNamn: "LedgerFlow Redovisning AB", sAljarOrgNr: "556900-0001",
+    sAljarNamn: "Enkelfaktura Redovisning AB", sAljarOrgNr: "556900-0001",
     sAljarVatNr: "SE556900000101", sAljarAdress: "Storgatan 1, 111 20 Stockholm",
     bankgiro: "5050-1234", plusgiro: "", fSkatt: true,
     rows: [{ id:"r1", beskrivning:"", antal:1, apris:0, momssats:25 as VatRate }] as FakturaRow[],

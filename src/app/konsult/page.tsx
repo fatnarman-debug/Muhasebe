@@ -151,7 +151,7 @@ export default function KonsultPage() {
       {/* Footer */}
       <footer style={{ borderTop: "1px solid #e5e7eb", padding: "14px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff" }}>
         <div className="flex items-center gap-2">
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, fontSize: 12, color: "#111827" }}>LedgerFlow</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, fontSize: 12, color: "#111827" }}>Enkelfaktura</span>
           <span style={{ color: "#d1d5db", fontSize: 11 }}>© 2026 · Alla rättigheter förbehållna</span>
         </div>
         <div className="flex gap-5">

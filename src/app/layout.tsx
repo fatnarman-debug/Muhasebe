@@ -12,8 +12,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ledgerflow.se";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "LedgerFlow – Fakturering & offert för svenska företag",
-    template: "%s · LedgerFlow",
+    default: "Enkelfaktura – Fakturering & offert för svenska företag",
+    template: "%s · Enkelfaktura",
   },
   description:
     "Skapa proffsiga fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post – byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.",
@@ -22,22 +22,22 @@ export const metadata: Metadata = {
     "offert", "ROT-avdrag faktura", "RUT-avdrag", "bokföringsprogram egenföretagare",
     "redovisningsbyrå fakturering", "e-faktura", "OCR", "bankgiro", "fakturamall",
   ],
-  authors: [{ name: "LedgerFlow" }],
-  applicationName: "LedgerFlow",
+  authors: [{ name: "Enkelfaktura" }],
+  applicationName: "Enkelfaktura",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "sv_SE",
     url: SITE_URL,
-    siteName: "LedgerFlow",
-    title: "LedgerFlow – Fakturering & offert för svenska företag",
+    siteName: "Enkelfaktura",
+    title: "Enkelfaktura – Fakturering & offert för svenska företag",
     description:
       "Fakturor, offerter, ROT/RUT, OCR & bankgiro – allt på svenska, enligt svensk standard. Gratis att börja.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "LedgerFlow – fakturering för svenska företag" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Enkelfaktura – fakturering för svenska företag" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LedgerFlow – Fakturering & offert för svenska företag",
+    title: "Enkelfaktura – Fakturering & offert för svenska företag",
     description: "Skapa fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post.",
     images: ["/og.png"],
   },

@@ -4,7 +4,7 @@ import { H1, H2, P, UL, Updated, Draft } from "@/components/legal/prose";
 
 export const metadata: Metadata = {
   title: "GDPR & personuppgiftsbiträdesavtal",
-  description: "LedgerFlows roll som personuppgiftsbiträde, biträdesavtal och underbiträden.",
+  description: "Enkelfakturas roll som personuppgiftsbiträde, biträdesavtal och underbiträden.",
   alternates: { canonical: "/gdpr" },
 };
 
@@ -22,7 +22,7 @@ export default function GdprPage() {
       <Updated>Senast uppdaterad: [ÅÅÅÅ-MM-DD]</Updated>
 
       <P>
-        Den här sidan förklarar LedgerFlows roller enligt dataskyddsförordningen (GDPR) och utgör en sammanfattning av det
+        Den här sidan förklarar Enkelfakturas roller enligt dataskyddsförordningen (GDPR) och utgör en sammanfattning av det
         personuppgiftsbiträdesavtal (PUB-avtal) som gäller när du använder tjänsten.
       </P>
 
@@ -33,7 +33,7 @@ export default function GdprPage() {
       </UL>
 
       <H2>Personuppgiftsbiträdesavtal – sammanfattning</H2>
-      <P>När du använder LedgerFlow för att behandla dina kunders personuppgifter gäller följande mellan dig (ansvarig) och oss (biträde):</P>
+      <P>När du använder Enkelfaktura för att behandla dina kunders personuppgifter gäller följande mellan dig (ansvarig) och oss (biträde):</P>
       <UL>
         <li><strong>Föremål och ändamål:</strong> behandling av kunddata för att skapa, skicka och hantera fakturor och offerter på dina instruktioner.</li>
         <li><strong>Typ av uppgifter:</strong> namn, adress, e-post, organisationsnummer eller personnummer samt fakturauppgifter.</li>

@@ -1,8 +1,8 @@
-# LedgerFlow
+# Enkelfaktura
 
 > Faktureringssystem för svenska företag. Skapa fakturor och offerter på minuter – med ROT/RUT, OCR & bankgiro, PDF och e-post. Byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.
 
-LedgerFlow är en svensk SaaS för fakturering och offerter, byggd för svensk standard och svenska regler: bankgiro, OCR-referens (optisk rad typ 41), ROT/RUT-avdrag, F-skatt, e-faktura samt GDPR och datalagring inom EU.
+Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk standard och svenska regler: bankgiro, OCR-referens (optisk rad typ 41), ROT/RUT-avdrag, F-skatt, e-faktura samt GDPR och datalagring inom EU.
 
 ## Funktioner
 - Fakturor och offerter i samma flöde – omvandla en offert till faktura med ett klick
@@ -25,7 +25,7 @@ LedgerFlow är en svensk SaaS för fakturering och offerter, byggd för svensk s
 - Byrå – 299 kr/mån: allt i Privat plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
 
 ## Vanliga frågor
-- Är LedgerFlow gratis att börja med? Ja, helt gratis utan kreditkort.
+- Är Enkelfaktura gratis att börja med? Ja, helt gratis utan kreditkort.
 - Stödjer ni ROT- och RUT-avdrag? Ja, avdraget beräknas automatiskt.
 - Kan kunden betala via OCR och bankgiro? Ja, varje faktura har en OCR-betalrad och QR-kod.
 - Kan jag skicka offerter och omvandla dem till fakturor? Ja, med ett klick.

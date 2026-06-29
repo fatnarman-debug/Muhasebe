@@ -44,7 +44,7 @@ function Sidebar({ name, email, open, onClose }: { name: string; email: string |
             <M name="account_balance" fill size={18} />
           </div>
           <div>
-            <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>LedgerFlow</div>
+            <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>Enkelfaktura</div>
             <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
               Egenföretagare
             </div>
@@ -157,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
             <M name="menu" size={24} />
           </button>
-          <span style={{ fontWeight: 800, fontSize: 15 }}>LedgerFlow</span>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>Enkelfaktura</span>
         </div>
         <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-12">
           {children}

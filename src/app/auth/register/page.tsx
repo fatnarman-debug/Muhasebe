@@ -87,7 +87,7 @@ export default function RegisterPage() {
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
             <FileText className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-bold text-gray-900">Faktura</span>
+          <span className="text-2xl font-bold text-gray-900">Enkelfaktura</span>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">

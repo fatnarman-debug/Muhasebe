@@ -37,7 +37,7 @@ export function CookieBanner() {
       <div className="max-w-3xl mx-auto bg-white border border-slate-200 shadow-xl rounded-2xl p-4 sm:p-5 sm:flex sm:items-center sm:gap-4">
         <p className="text-sm text-slate-600 leading-relaxed flex-1">
           Vi använder nödvändiga cookies för att tjänsten ska fungera och vill gärna använda cookies för statistik
-          för att förbättra LedgerFlow. Läs mer i vår{" "}
+          för att förbättra Enkelfaktura. Läs mer i vår{" "}
           <Link href="/integritetspolicy" className="text-blue-700 underline">integritetspolicy</Link>.
         </p>
         <div className="flex gap-2 mt-3 sm:mt-0 shrink-0">

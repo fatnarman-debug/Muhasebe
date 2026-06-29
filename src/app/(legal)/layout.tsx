@@ -8,7 +8,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center"><Receipt className="w-4 h-4" /></span>
-            <span className="font-bold">LedgerFlow</span>
+            <span className="font-bold">Enkelfaktura</span>
           </Link>
           <Link href="/" className="text-sm text-slate-500 hover:text-slate-900">← Till startsidan</Link>
         </div>
@@ -21,7 +21,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
           <Link href="/integritetspolicy" className="hover:text-slate-700">Integritetspolicy</Link>
           <Link href="/anvandarvillkor" className="hover:text-slate-700">Användarvillkor</Link>
           <Link href="/gdpr" className="hover:text-slate-700">GDPR</Link>
-          <span className="ml-auto">© 2026 LedgerFlow</span>
+          <span className="ml-auto">© 2026 Enkelfaktura</span>
         </div>
       </footer>
     </div>
