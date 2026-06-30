@@ -1,0 +1,62 @@
+name: Nightly DB Backup
+
+# Tar en komplett, krypterad ögonblicksbild av Supabase-databasen varje natt
+# och laddar upp den till Cloudflare R2 (oberoende av Supabase egna backuper).
+# Kör manuellt via "Run workflow" för att testa.
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # 02:00 UTC varje natt (~03-04 svensk tid)
+  workflow_dispatch: {}
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Installera PostgreSQL 17-klient
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: Dumpa databasen (custom format, komprimerad)
+        env:
+          PGCONN: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          STAMP=$(date -u +%Y-%m-%d_%H%M)
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          /usr/lib/postgresql/17/bin/pg_dump "$PGCONN" \
+            --no-owner --no-privileges -Fc -f "backup-$STAMP.dump"
+          ls -lh "backup-$STAMP.dump"
+
+      - name: Kryptera (AES-256)
+        env:
+          GPG_PASSPHRASE: ${{ secrets.BACKUP_GPG_PASSPHRASE }}
+        run: |
+          gpg --batch --yes --passphrase "$GPG_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 \
+            -o "backup-$STAMP.dump.gpg" "backup-$STAMP.dump"
+          rm -f "backup-$STAMP.dump"
+          ls -lh "backup-$STAMP.dump.gpg"
+
+      - name: Ladda upp till Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          # R2 stödjer inte alla S3-checksummor → undvik fel:
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          aws s3 cp "backup-$STAMP.dump.gpg" \
+            "s3://$R2_BUCKET/db/backup-$STAMP.dump.gpg" \
+            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          echo "✅ Uppladdat: db/backup-$STAMP.dump.gpg"
