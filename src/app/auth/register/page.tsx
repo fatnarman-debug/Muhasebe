@@ -100,11 +100,11 @@ export default function RegisterPage() {
               onClick={() => setAccountType("byra")}
               className={`flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition ${
                 accountType === "byra"
-                  ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
+                  ? "border-[#13294B] bg-teal-50 ring-1 ring-[#13294B]"
                   : "border-stone-200 hover:border-stone-300"
               }`}
             >
-              <Building2 className={`w-5 h-5 ${accountType === "byra" ? "text-blue-600" : "text-stone-400"}`} />
+              <Building2 className={`w-5 h-5 ${accountType === "byra" ? "text-teal-700" : "text-stone-400"}`} />
               <span className="text-sm font-semibold text-stone-900">Redovisningsbyrå</span>
               <span className="text-xs text-stone-500 leading-snug">Flera användare, egna konsulter</span>
             </button>
@@ -113,11 +113,11 @@ export default function RegisterPage() {
               onClick={() => setAccountType("privat")}
               className={`flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition ${
                 accountType === "privat"
-                  ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
+                  ? "border-[#13294B] bg-teal-50 ring-1 ring-[#13294B]"
                   : "border-stone-200 hover:border-stone-300"
               }`}
             >
-              <User className={`w-5 h-5 ${accountType === "privat" ? "text-blue-600" : "text-stone-400"}`} />
+              <User className={`w-5 h-5 ${accountType === "privat" ? "text-teal-700" : "text-stone-400"}`} />
               <span className="text-sm font-semibold text-stone-900">Privat användning</span>
               <span className="text-xs text-stone-500 leading-snug">En användare, eget företag</span>
             </button>
@@ -193,7 +193,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-stone-500 mt-4">
             Har du redan ett konto?{" "}
-            <Link href="/auth/login" className="text-blue-600 hover:underline font-medium">
+            <Link href="/auth/login" className="text-teal-700 hover:underline font-medium">
               Logga in
             </Link>
           </p>

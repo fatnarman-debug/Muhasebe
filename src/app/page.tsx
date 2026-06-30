@@ -104,7 +104,7 @@ const jsonLd = {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#faf8f3] text-stone-900 selection:bg-blue-600/15 antialiased">
+    <div className="min-h-screen bg-[#faf8f3] text-stone-900 selection:bg-[#13294B]/15 antialiased">
       <style>{`
         html { scroll-behavior: smooth; }
         .font-display { font-family: var(--font-display), Georgia, "Times New Roman", serif; letter-spacing: -0.015em; }
@@ -132,7 +132,7 @@ export default function LandingPage() {
             <Link href="/auth/login" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors hidden sm:block">
               Logga in
             </Link>
-            <Link href="/auth/register" className="inline-flex items-center gap-1.5 bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
+            <Link href="/auth/register" className="inline-flex items-center gap-1.5 bg-[#13294B] hover:bg-[#1e3a63] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
               Kom igång gratis
             </Link>
           </div>
@@ -141,24 +141,24 @@ export default function LandingPage() {
 
       {/* ───── Hero ───── */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_55%_at_80%_-5%,#fef3e2_0%,transparent_60%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_55%_at_80%_-5%,#e7f6f4_0%,transparent_60%)]" />
         <div className="max-w-6xl mx-auto px-5 sm:px-6 pt-16 sm:pt-20 lg:pt-28 pb-14 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
           {/* Vänster: budskap */}
           <div>
-            <div className="ef-rise inline-flex items-center gap-2 text-xs font-semibold text-amber-800 bg-amber-100/70 border border-amber-200/80 px-3 py-1.5 rounded-full">
+            <div className="ef-rise inline-flex items-center gap-2 text-xs font-semibold text-teal-800 bg-teal-100/70 border border-teal-200/80 px-3 py-1.5 rounded-full">
               <Heart className="w-3.5 h-3.5" strokeWidth={2.4} />
               Gjort för dig som driver eget
             </div>
             <h1 className="ef-rise font-display text-[2.6rem] leading-[1.04] sm:text-6xl text-stone-950 mt-6">
               Fakturering så enkel
-              <br />att du faktiskt <span className="text-blue-700">gör den klar.</span>
+              <br />att du faktiskt <span className="text-teal-700">gör den klar.</span>
             </h1>
             <p className="ef-rise text-lg text-stone-600 leading-relaxed mt-6 max-w-lg" style={{ animationDelay: "120ms" }}>
               Fakturor, offerter, ROT/RUT och påminnelser i ett lugnt och tydligt verktyg.
               Byggt för egenföretagare och redovisningskonsulter – på svenska, enligt svenska regler.
             </p>
             <div className="ef-rise flex flex-col sm:flex-row gap-3 mt-8" style={{ animationDelay: "180ms" }}>
-              <Link href="/auth/register" className="group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3.5 rounded-full shadow-sm shadow-blue-700/20 transition-colors">
+              <Link href="/auth/register" className="group inline-flex items-center justify-center gap-2 bg-[#13294B] hover:bg-[#1e3a63] text-white font-semibold px-6 py-3.5 rounded-full shadow-sm shadow-[#13294B]/20 transition-colors">
                 Skapa konto gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
@@ -167,15 +167,15 @@ export default function LandingPage() {
               </a>
             </div>
             <p className="ef-rise flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-stone-500 mt-6" style={{ animationDelay: "220ms" }}>
-              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-blue-600" /> Inget kreditkort</span>
-              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-blue-600" /> Gratis att börja</span>
-              <span className="inline-flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-600" /> Igång på 5 minuter</span>
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Inget kreditkort</span>
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Gratis att börja</span>
+              <span className="inline-flex items-center gap-1.5"><Clock className="w-4 h-4 text-teal-600" /> Igång på 5 minuter</span>
             </p>
           </div>
 
           {/* Höger: faktura-mockup (ingen stockbild – byggd i kod) */}
           <div className="ef-rise relative" style={{ animationDelay: "150ms" }}>
-            <div className="absolute -inset-6 -z-10 bg-gradient-to-tr from-amber-100/50 via-blue-100/40 to-transparent rounded-[2.5rem] blur-2xl" />
+            <div className="absolute -inset-6 -z-10 bg-gradient-to-tr from-teal-100/50 via-teal-100/40 to-transparent rounded-[2.5rem] blur-2xl" />
             <div className="rounded-[1.6rem] border border-stone-200 bg-white shadow-2xl shadow-stone-900/[0.07] overflow-hidden rotate-[0.6deg]">
               <div className="flex items-center justify-between px-6 pt-6">
                 <div>
@@ -229,7 +229,7 @@ export default function LandingPage() {
             <span className="text-xs font-medium text-stone-400 mr-1">Anpassat för svensk fakturering:</span>
             {trustChips.map((c) => (
               <span key={c} className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 bg-white border border-stone-200 px-2.5 py-1 rounded-full">
-                <Check className="w-3 h-3 text-blue-600" /> {c}
+                <Check className="w-3 h-3 text-teal-600" /> {c}
               </span>
             ))}
           </div>
@@ -239,7 +239,7 @@ export default function LandingPage() {
       {/* ───── För vem ───── */}
       <section id="for-vem" className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="max-w-xl">
-          <p className="text-sm font-semibold text-amber-700 mb-3">För vem</p>
+          <p className="text-sm font-semibold text-teal-700 mb-3">För vem</p>
           <h2 className="font-display text-4xl text-stone-950">Gjort för dig som driver eget</h2>
           <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. Enkelfaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
         </div>
@@ -248,26 +248,26 @@ export default function LandingPage() {
             <Link key={s.tag} href={s.href}
               className={`group/seg flex flex-col rounded-[1.4rem] p-7 sm:p-8 transition-all ${
                 s.primary
-                  ? "bg-stone-900 text-white shadow-xl shadow-stone-900/10 hover:shadow-2xl hover:shadow-stone-900/15"
+                  ? "bg-[#13294B] text-white shadow-xl shadow-stone-900/10 hover:shadow-2xl hover:shadow-stone-900/15"
                   : "bg-white border border-stone-200 hover:border-stone-300 hover:shadow-lg hover:shadow-stone-900/5"
               }`}>
               <span className={`w-12 h-12 rounded-2xl grid place-items-center mb-5 transition-colors ${
-                s.primary ? "bg-white/10 text-amber-300" : "bg-blue-50 text-blue-700 group-hover/seg:bg-blue-100"
+                s.primary ? "bg-white/10 text-teal-300" : "bg-teal-50 text-teal-700 group-hover/seg:bg-teal-100"
               }`}>
                 <s.icon className="w-5 h-5" strokeWidth={1.8} />
               </span>
-              <p className={`text-xs font-semibold uppercase tracking-wide ${s.primary ? "text-amber-300" : "text-blue-700"}`}>{s.tag}</p>
+              <p className={`text-xs font-semibold uppercase tracking-wide ${s.primary ? "text-teal-300" : "text-teal-700"}`}>{s.tag}</p>
               <h3 className={`font-display text-2xl mt-1.5 ${s.primary ? "text-white" : "text-stone-900"}`}>{s.title}</h3>
               <p className={`text-sm leading-relaxed mt-2.5 ${s.primary ? "text-stone-300" : "text-stone-500"}`}>{s.desc}</p>
               <ul className="mt-6 space-y-2.5">
                 {s.points.map((p) => (
                   <li key={p} className={`flex items-start gap-2 text-sm ${s.primary ? "text-stone-200" : "text-stone-700"}`}>
-                    <Check className={`w-4 h-4 mt-0.5 shrink-0 ${s.primary ? "text-amber-300" : "text-blue-600"}`} /> {p}
+                    <Check className={`w-4 h-4 mt-0.5 shrink-0 ${s.primary ? "text-teal-300" : "text-teal-600"}`} /> {p}
                   </li>
                 ))}
               </ul>
               <div className="mt-auto pt-7">
-                <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${s.primary ? "text-white" : "text-blue-700"}`}>
+                <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${s.primary ? "text-white" : "text-teal-700"}`}>
                   {s.cta}
                   <ArrowRight className="w-4 h-4 group-hover/seg:translate-x-0.5 transition-transform" />
                 </span>
@@ -281,7 +281,7 @@ export default function LandingPage() {
             <span className="font-semibold text-stone-900">Driver du en större redovisningsbyrå?</span>{" "}
             Bjud in konsulter, tilldela kunder och styr behörigheter i tre nivåer – Enkelfaktura skalar med er.
           </p>
-          <Link href="/auth/register" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800 shrink-0">
+          <Link href="/auth/register" className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800 shrink-0">
             Skapa byråkonto <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -291,14 +291,14 @@ export default function LandingPage() {
       <section id="funktioner" className="bg-white border-y border-stone-200/70 py-20 sm:py-24">
         <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <div className="max-w-xl">
-            <p className="text-sm font-semibold text-amber-700 mb-3">Funktioner</p>
+            <p className="text-sm font-semibold text-teal-700 mb-3">Funktioner</p>
             <h2 className="font-display text-4xl text-stone-950">Allt du behöver för att få betalt</h2>
             <p className="text-stone-500 text-lg mt-3">Inga moduler att köpa till. Allt som tar dig från jobb till betalning finns med från start.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
             {features.map((f) => (
               <div key={f.title} className="bg-[#faf8f3] rounded-[1.2rem] border border-stone-200/80 p-6 hover:border-stone-300 hover:bg-white transition-colors">
-                <span className="w-11 h-11 rounded-xl bg-stone-900 text-white grid place-items-center mb-4">
+                <span className="w-11 h-11 rounded-xl bg-[#13294B] text-white grid place-items-center mb-4">
                   <f.icon className="w-5 h-5" strokeWidth={1.8} />
                 </span>
                 <h3 className="font-semibold text-stone-900">{f.title}</h3>
@@ -312,14 +312,14 @@ export default function LandingPage() {
       {/* ───── Så funkar det ───── */}
       <section id="sa-funkar" className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="max-w-xl">
-          <p className="text-sm font-semibold text-amber-700 mb-3">Så funkar det</p>
+          <p className="text-sm font-semibold text-teal-700 mb-3">Så funkar det</p>
           <h2 className="font-display text-4xl text-stone-950">Från konto till betalt – fyra steg</h2>
         </div>
         <div className="grid md:grid-cols-4 gap-x-8 gap-y-10 mt-14">
           {steps.map((s, i) => (
             <div key={s.n} className="relative">
               {i < steps.length - 1 && <div className="hidden md:block absolute top-4 left-14 right-0 h-px bg-stone-200" />}
-              <div className="font-display text-5xl text-amber-300 leading-none select-none relative">{s.n}</div>
+              <div className="font-display text-5xl text-teal-300 leading-none select-none relative">{s.n}</div>
               <h3 className="font-semibold text-stone-900 mt-4">{s.title}</h3>
               <p className="text-sm text-stone-500 leading-relaxed mt-1.5">{s.desc}</p>
             </div>
@@ -328,7 +328,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── Varför / trust-band ───── */}
-      <section className="bg-stone-900 text-white py-16 sm:py-20">
+      <section className="bg-[#13294B] text-white py-16 sm:py-20">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 grid md:grid-cols-[1.1fr_1fr] gap-12 items-center">
           <div>
             <h2 className="font-display text-3xl sm:text-4xl">Svensk fakturering, utan krångel</h2>
@@ -347,7 +347,7 @@ export default function LandingPage() {
               { icon: Lock, t: "Tryggt & GDPR", d: "Krypterat, EU-lagrat" },
             ].map((x) => (
               <div key={x.t} className="rounded-[1.2rem] bg-white/5 border border-white/10 p-5">
-                <x.icon className="w-6 h-6 text-amber-300" strokeWidth={1.9} />
+                <x.icon className="w-6 h-6 text-teal-300" strokeWidth={1.9} />
                 <p className="font-semibold mt-3">{x.t}</p>
                 <p className="text-sm text-stone-400 mt-0.5">{x.d}</p>
               </div>
@@ -359,15 +359,15 @@ export default function LandingPage() {
       {/* ───── Priser ───── */}
       <section id="priser" className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="text-center max-w-xl mx-auto">
-          <p className="text-sm font-semibold text-amber-700 mb-3">Priser</p>
+          <p className="text-sm font-semibold text-teal-700 mb-3">Priser</p>
           <h2 className="font-display text-4xl text-stone-950">Börja gratis. Väx när du vill.</h2>
           <p className="text-stone-500 text-lg mt-3">Inga bindningstider, inga dolda avgifter. Säg upp när du vill.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5 mt-12 max-w-4xl mx-auto items-start">
           {plans.map((p) => (
-            <div key={p.name} className={`relative rounded-[1.4rem] p-7 ${p.highlight ? "border-2 border-blue-600 shadow-xl shadow-blue-700/10 bg-white md:-mt-3 md:mb-3" : "border border-stone-200 bg-white"}`}>
+            <div key={p.name} className={`relative rounded-[1.4rem] p-7 ${p.highlight ? "border-2 border-[#13294B] shadow-xl shadow-[#13294B]/10 bg-white md:-mt-3 md:mb-3" : "border border-stone-200 bg-white"}`}>
               {p.highlight && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-bold uppercase tracking-wide bg-blue-600 text-white px-3 py-1 rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-bold uppercase tracking-wide bg-[#13294B] text-white px-3 py-1 rounded-full">
                   Populärast
                 </span>
               )}
@@ -380,13 +380,13 @@ export default function LandingPage() {
               <ul className="space-y-2.5 mt-6 mb-7">
                 {p.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-stone-600">
-                    <Check className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" /> {f}
+                    <Check className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
               <Link href="/auth/register"
                 className={`block text-center text-sm font-semibold py-2.5 rounded-full transition-colors ${
-                  p.highlight ? "bg-blue-600 hover:bg-blue-700 text-white" : "border border-stone-200 hover:bg-stone-50 text-stone-800"
+                  p.highlight ? "bg-[#13294B] hover:bg-[#1e3a63] text-white" : "border border-stone-200 hover:bg-stone-50 text-stone-800"
                 }`}>
                 {p.cta}
               </Link>
@@ -400,7 +400,7 @@ export default function LandingPage() {
       <section id="fragor" className="bg-white border-y border-stone-200/70 py-20 sm:py-24">
         <div className="max-w-3xl mx-auto px-5 sm:px-6">
           <div className="text-center mb-10">
-            <p className="text-sm font-semibold text-amber-700 mb-3">Vanliga frågor</p>
+            <p className="text-sm font-semibold text-teal-700 mb-3">Vanliga frågor</p>
             <h2 className="font-display text-4xl text-stone-950">Allt du undrar över</h2>
           </div>
           <div className="space-y-3">
@@ -422,7 +422,7 @@ export default function LandingPage() {
         <h2 className="font-display text-4xl sm:text-5xl text-stone-950">Redo att skicka din första faktura?</h2>
         <p className="text-stone-500 text-lg mt-4 max-w-md mx-auto">Skapa ett konto gratis idag. Du kan fakturera om fem minuter.</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-          <Link href="/auth/register" className="group inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-7 py-4 rounded-full shadow-sm shadow-blue-700/20 transition-colors text-base">
+          <Link href="/auth/register" className="group inline-flex items-center justify-center gap-2 bg-[#13294B] hover:bg-[#1e3a63] text-white font-semibold px-7 py-4 rounded-full shadow-sm shadow-[#13294B]/20 transition-colors text-base">
             Skapa konto gratis <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <Link href="/auth/login" className="inline-flex items-center justify-center text-stone-700 bg-white border border-stone-200 hover:border-stone-300 font-medium px-7 py-4 rounded-full transition-colors">

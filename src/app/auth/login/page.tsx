@@ -71,7 +71,7 @@ export default function LoginPage() {
                 type="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="din@byrå.se" required autoComplete="email"
                 style={inp}
-                onFocus={e => (e.target.style.borderColor = "#111827")}
+                onFocus={e => (e.target.style.borderColor = "#13294B")}
                 onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
               />
             </div>
@@ -83,7 +83,7 @@ export default function LoginPage() {
                   type={showPass ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••" required autoComplete="current-password"
                   style={{ ...inp, paddingRight: 40 }}
-                  onFocus={e => (e.target.style.borderColor = "#111827")}
+                  onFocus={e => (e.target.style.borderColor = "#13294B")}
                   onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
                 />
                 <button type="button" onClick={() => setShowPass(v => !v)}
@@ -100,7 +100,7 @@ export default function LoginPage() {
             )}
 
             <button type="submit" disabled={loading}
-              style={{ background: "#111827", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              style={{ background: "#13294B", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               {loading && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />}
               {loading ? "Loggar in…" : "Logga in"}
             </button>
