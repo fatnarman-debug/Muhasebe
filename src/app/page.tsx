@@ -50,17 +50,17 @@ const steps = [
 
 const plans = [
   {
-    name: "Gratis", price: "0", period: "kr", note: "För att komma igång",
+    name: "Gratis", price: "0", period: "kr", note: "För att komma igång", yearly: null,
     features: ["1 företag", "5 kunder", "Fakturor & PDF", "3 mallar"],
     cta: "Kom igång", highlight: false,
   },
   {
-    name: "Egen", price: "69", period: "kr/mån", note: "För egenföretagare",
+    name: "Egen", price: "79", period: "kr/mån", note: "För egenföretagare", yearly: "790 kr/år · 2 mån gratis",
     features: ["Obegränsade fakturor & offerter", "ROT/RUT-avdrag", "10+ mallar", "E-post & påminnelser", "OCR, bankgiro & kreditfaktura"],
     cta: "Testa gratis", highlight: true,
   },
   {
-    name: "Byrå", price: "299", period: "kr/mån", note: "För redovisningsbyråer",
+    name: "Byrå", price: "299", period: "kr/mån", note: "För redovisningsbyråer", yearly: "2 990 kr/år · 2 mån gratis",
     features: ["Allt i Egen", "Flera konsulter", "Tilldela kunder", "Roller & behörigheter", "Krypterad backup & support"],
     cta: "Kom igång", highlight: false,
   },
@@ -377,7 +377,8 @@ export default function LandingPage() {
                 <span className="font-display text-4xl text-stone-950">{p.price}</span>
                 <span className="text-sm text-stone-400">{p.period}</span>
               </div>
-              <ul className="space-y-2.5 mt-6 mb-7">
+              <p className="text-xs font-medium text-teal-700 mt-1.5 min-h-4">{p.yearly ? `eller ${p.yearly}` : ""}</p>
+              <ul className="space-y-2.5 mt-5 mb-7">
                 {p.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-stone-600">
                     <Check className="w-4 h-4 text-teal-600 mt-0.5 shrink-0" /> {f}
@@ -393,7 +394,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-stone-400 mt-6">Priser exkl. moms. Alla planer börjar gratis – inget kreditkort krävs.</p>
+        <p className="text-center text-xs text-stone-400 mt-6">Priser exkl. moms. Betala per månad eller år – med årsbetalning får du 2 månader gratis. Alla planer börjar gratis, inget kreditkort krävs.</p>
       </section>
 
       {/* ───── FAQ ───── */}

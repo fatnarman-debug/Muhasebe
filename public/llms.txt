@@ -21,8 +21,9 @@ Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk
 
 ## Priser (SEK, exkl. moms, börjar gratis)
 - Gratis – 0 kr: 1 företag, 5 kunder, fakturor och PDF
-- Egen – 69 kr/mån: för egenföretagare. Obegränsade fakturor och offerter, ROT/RUT, 10+ mallar, e-post, påminnelser, OCR, bankgiro och kreditfaktura
-- Byrå – 299 kr/mån: allt i Egen plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
+- Egen – 79 kr/mån (eller 790 kr/år, 2 månader gratis): för egenföretagare. Obegränsade fakturor och offerter, ROT/RUT, 10+ mallar, e-post, påminnelser, OCR, bankgiro och kreditfaktura
+- Byrå – 299 kr/mån (eller 2 990 kr/år): allt i Egen plus flera konsulter, kundtilldelning, roller och behörigheter, krypterad backup och support
+- Betalning: per månad eller år. Vid årsbetalning får du 2 månader gratis. Inga bindningstider, inga dolda avgifter eller per-faktura-kostnader.
 
 ## Vanliga frågor
 - Är Enkelfaktura gratis att börja med? Ja, helt gratis utan kreditkort.
