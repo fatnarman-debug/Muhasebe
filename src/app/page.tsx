@@ -50,11 +50,6 @@ const steps = [
 
 const plans = [
   {
-    name: "Gratis", price: "0", period: "kr", note: "För att komma igång", yearly: null,
-    features: ["1 företag", "5 kunder", "Fakturor & PDF", "3 mallar"],
-    cta: "Kom igång", highlight: false,
-  },
-  {
     name: "Egen", price: "79", period: "kr/mån", note: "För egenföretagare", yearly: "790 kr/år · 2 mån gratis",
     features: ["Obegränsade fakturor & offerter", "ROT/RUT-avdrag", "10+ mallar", "E-post & påminnelser", "OCR, bankgiro & kreditfaktura"],
     cta: "Testa gratis", highlight: true,
@@ -69,7 +64,7 @@ const plans = [
 const trustChips = ["Bankgiro", "OCR-referens", "ROT/RUT", "F-skatt", "Kreditfaktura", "GDPR · EU-data"];
 
 const faqs = [
-  { q: "Är Enkelfaktura gratis att börja med?", a: "Ja. Du kommer igång helt gratis utan kreditkort och kan skicka riktiga fakturor direkt. Uppgradera först när du behöver mer." },
+  { q: "Är Enkelfaktura gratis att börja med?", a: "Du provar allt gratis i 14 dagar utan kreditkort och kan skicka riktiga fakturor direkt. När provperioden tar slut väljer du en plan för att fortsätta – allt ditt material finns kvar." },
   { q: "Passar det mig som är egenföretagare?", a: "Absolut – det är just dig vi har byggt det för. Driver du enskild firma eller eget AB skapar du din första faktura på under en minut, utan att kunna något om bokföring." },
   { q: "Stödjer ni ROT- och RUT-avdrag?", a: "Ja. När du markerar arbetskostnad räknas ROT- eller RUT-avdraget ut automatiskt och visas korrekt på fakturan enligt Skatteverkets regler." },
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
@@ -360,10 +355,10 @@ export default function LandingPage() {
       <section id="priser" className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="text-center max-w-xl mx-auto">
           <p className="text-sm font-semibold text-teal-700 mb-3">Priser</p>
-          <h2 className="font-display text-4xl text-stone-950">Börja gratis. Väx när du vill.</h2>
-          <p className="text-stone-500 text-lg mt-3">Inga bindningstider, inga dolda avgifter. Säg upp när du vill.</p>
+          <h2 className="font-display text-4xl text-stone-950">Prova gratis i 14 dagar.</h2>
+          <p className="text-stone-500 text-lg mt-3">Full tillgång direkt – inget kreditkort. Inga bindningstider, säg upp när du vill.</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-5 mt-12 max-w-4xl mx-auto items-start">
+        <div className="grid sm:grid-cols-2 gap-5 mt-12 max-w-2xl mx-auto items-start">
           {plans.map((p) => (
             <div key={p.name} className={`relative rounded-[1.4rem] p-7 ${p.highlight ? "border-2 border-[#13294B] shadow-xl shadow-[#13294B]/10 bg-white md:-mt-3 md:mb-3" : "border border-stone-200 bg-white"}`}>
               {p.highlight && (
@@ -394,7 +389,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-stone-400 mt-6">Priser exkl. moms. Betala per månad eller år – med årsbetalning får du 2 månader gratis. Alla planer börjar gratis, inget kreditkort krävs.</p>
+        <p className="text-center text-xs text-stone-400 mt-6">Priser exkl. moms. Betala per månad eller år – med årsbetalning får du 2 månader gratis. Alla konton börjar med 14 dagars gratis prova-på, inget kreditkort krävs.</p>
       </section>
 
       {/* ───── FAQ ───── */}
