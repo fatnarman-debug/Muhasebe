@@ -13,7 +13,12 @@ export interface Profile {
   full_name: string;
   email: string;
   subscription_tier: SubscriptionTier;
+  subscription_status: "trialing" | "active" | "past_due" | "canceled" | "expired";
+  trial_ends_at: string | null;
+  plan: string | null;
+  current_period_end: string | null;
   stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   created_at: string;
   updated_at: string;
 }

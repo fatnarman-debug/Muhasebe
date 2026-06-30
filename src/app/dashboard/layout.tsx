@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { getAccess } from "@/lib/subscription";
+import { TrialBanner } from "@/components/TrialBanner";
 
 const M = ({ name, fill = false, size = 20 }: { name: string; fill?: boolean; size?: number }) => (
   <span className="material-symbols-outlined select-none leading-none"
@@ -106,6 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [menuOpen, setMenuOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState<string | null>(null);
+  const [trial, setTrial] = useState<{ trialing: boolean; daysLeft: number | null }>({ trialing: false, daysLeft: null });
 
   useEffect(() => {
     async function checkAuth() {
@@ -118,6 +121,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         const role = user.user_metadata?.role;
         if (role === "byraansvarig") { router.replace("/yetkili"); return; }
         if (role === "konsult") { router.replace("/konsult"); return; }
+
+        // Prenumeration / provperiod: ingen åtkomst → betalvägg
+        const { data: profile } = await supabase
+          .from("profiles").select("subscription_status, trial_ends_at").eq("id", user.id).maybeSingle();
+        // Fail-open: gå bara till betalvägg om profilen faktiskt lästes och saknar åtkomst.
+        if (profile) {
+          const access = getAccess(profile);
+          if (!access.hasAccess) { router.replace("/uppgradera"); return; }
+          setTrial({ trialing: access.trialing, daysLeft: access.daysLeft });
+        }
 
         setName(user.user_metadata?.full_name || user.email || "");
         setEmail(user.email ?? null);
@@ -152,6 +165,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
       <Sidebar name={name} email={email} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="md:ml-60 min-h-screen flex flex-col">
+        {trial.trialing && trial.daysLeft != null && <TrialBanner daysLeft={trial.daysLeft} />}
         {/* Mobil menü-rad */}
         <div className="md:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-white" style={{ borderBottom: "1px solid #e5e7eb" }}>
           <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
