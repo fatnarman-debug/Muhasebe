@@ -182,7 +182,7 @@ export default function LandingPage() {
             </div>
             <p className="ef-rise flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-stone-500 mt-6" style={{ animationDelay: "220ms" }}>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Inget kreditkort</span>
-              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Gratis att börja</span>
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> 14 dagar gratis</span>
               <span className="inline-flex items-center gap-1.5"><Clock className="w-4 h-4 text-teal-600" /> Igång på 5 minuter</span>
             </p>
           </div>
