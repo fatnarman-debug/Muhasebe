@@ -35,7 +35,7 @@ const features = [
   { icon: ScanLine, title: "OCR & bankgiro", desc: "Maskinläsbar betalrad längst ner och en QR-kod. Kunden skannar i bankappen och betalar rätt belopp direkt." },
   { icon: LayoutTemplate, title: "10+ proffsiga mallar", desc: "Klassiska och moderna mallar. Välj en gång per företag – sedan ser varje faktura lika prydlig ut." },
   { icon: Mail, title: "PDF & e-post", desc: "Ladda ner som PDF eller skicka direkt till kundens inkorg med fakturan bifogad." },
-  { icon: BellRing, title: "Påminnelser", desc: "Skicka betalningspåminnelse med påminnelseavgift när en faktura förfaller – utan att lyfta ett finger." },
+  { icon: BellRing, title: "Påminnelser", desc: "Skicka en proffsig betalningspåminnelse med påminnelseavgift med ett klick. Du väljer själv när – så ingen kund påminns i onödan." },
   { icon: Receipt, title: "Kreditfaktura", desc: "Behöver du ångra en skickad faktura? Skapa en korrekt kreditfaktura med ett klick, enligt bokföringslagen." },
   { icon: Lock, title: "Tryggt & GDPR", desc: "All data lagras inom EU och säkerhetskopior krypteras (AES-256). Byggt med svensk integritet i åtanke." },
 ];
