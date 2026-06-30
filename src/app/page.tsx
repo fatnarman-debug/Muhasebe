@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight, Check, FileText, Receipt, Percent, QrCode, LayoutTemplate, Mail,
-  BellRing, Lock, Users, UserRound, ScanLine, Clock, Heart,
+  BellRing, Lock, Users, UserRound, ScanLine, Clock, Heart, X,
 } from "lucide-react";
 import { Brandmark } from "@/components/Brandmark";
 
@@ -39,6 +39,25 @@ const features = [
   { icon: BellRing, title: "Påminnelser", desc: "Skicka en proffsig betalningspåminnelse med påminnelseavgift med ett klick. Du väljer själv när – så ingen kund påminns i onödan." },
   { icon: Receipt, title: "Kreditfaktura", desc: "Behöver du ångra en skickad faktura? Skapa en korrekt kreditfaktura med ett klick, enligt bokföringslagen." },
   { icon: Lock, title: "Tryggt & GDPR", desc: "All data lagras inom EU och säkerhetskopior krypteras (AES-256). Byggt med svensk integritet i åtanke." },
+];
+
+const usList = [
+  "Obegränsade fakturor & offerter",
+  "Ingen kundgräns",
+  "ROT/RUT räknas ut automatiskt",
+  "OCR, bankgiro & QR-kod ingår",
+  "Kreditfaktura enligt bokföringslagen",
+  "Inga avgifter per skickad faktura",
+  "Svenskt – byggt för svenska regler",
+];
+const themList = [
+  "Ofta begränsat antal eller avgift per faktura",
+  "Gratisnivå ofta max ~5 kunder",
+  "ROT/RUT som tillval eller saknas",
+  "E-faktura/QR ibland mot extra kostnad",
+  "Kredithantering ofta krånglig",
+  "Dolda avgifter, t.ex. ~3 kr per e-faktura",
+  "Ofta en översatt utlandsmall",
 ];
 
 const steps = [
@@ -304,6 +323,49 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ───── Jämförelse / Varför ───── */}
+      <section className="max-w-5xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
+        <div className="text-center max-w-xl mx-auto">
+          <p className="text-sm font-semibold text-teal-700 mb-3">Varför Enkelfaktura</p>
+          <h2 className="font-display text-4xl text-stone-950">Samma jobb – utan krånglet</h2>
+          <p className="text-stone-500 text-lg mt-3">Många fakturaprogram gömmer gränser och avgifter. Vi gör tvärtom – allt ingår, inga överraskningar.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-5 mt-12 items-start">
+          {/* Enkelfaktura */}
+          <div className="rounded-[1.4rem] p-7 sm:p-8 text-white shadow-xl shadow-[#13294B]/10" style={{ background: "#13294B" }}>
+            <div className="flex items-center gap-2.5 mb-6">
+              <Brandmark className="w-8 h-8" />
+              <span className="font-display text-lg">Enkelfaktura</span>
+            </div>
+            <ul className="space-y-3.5">
+              {usList.map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm">
+                  <span className="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0" style={{ background: "#15A39A" }}>
+                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                  </span>
+                  <span className="text-stone-100">{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Vanliga program */}
+          <div className="rounded-[1.4rem] p-7 sm:p-8 bg-white border border-stone-200">
+            <p className="font-display text-lg text-stone-400 mb-6">Vanliga fakturaprogram</p>
+            <ul className="space-y-3.5">
+              {themList.map((t) => (
+                <li key={t} className="flex items-start gap-3 text-sm">
+                  <span className="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0 bg-stone-100">
+                    <X className="w-3.5 h-3.5 text-stone-400" strokeWidth={3} />
+                  </span>
+                  <span className="text-stone-500">{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <p className="text-center text-xs text-stone-400 mt-6">Jämförelsen avser vanligt förekommande villkor hos andra fakturaprogram och kan variera.</p>
+      </section>
+
       {/* ───── Så funkar det ───── */}
       <section id="sa-funkar" className="max-w-6xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="max-w-xl">
@@ -425,6 +487,11 @@ export default function LandingPage() {
             Logga in
           </Link>
         </div>
+        <p className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm text-stone-400 mt-6">
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> 14 dagar gratis</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Inget kreditkort</span>
+          <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Ingen bindningstid</span>
+        </p>
       </section>
 
       {/* ───── Footer ───── */}
