@@ -7,7 +7,8 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Loader2, CheckCircle2, Building2, User } from "lucide-react";
+import { Loader2, CheckCircle2, Building2, User } from "lucide-react";
+import { Brandmark } from "@/components/Brandmark";
 
 type AccountType = "byra" | "privat";
 
@@ -64,11 +65,11 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#faf8f3] px-4">
         <div className="w-full max-w-md text-center">
           <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Konto skapat!</h1>
-          <p className="text-gray-500 mb-6">
+          <h1 className="text-2xl font-bold text-stone-900 mb-2">Konto skapat!</h1>
+          <p className="text-stone-500 mb-6">
             Vi har skickat en bekräftelselänk till <strong>{email}</strong>.<br />
             Klicka på länken för att aktivera ditt konto.
           </p>
@@ -81,46 +82,44 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#faf8f3] px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-            <FileText className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-2xl font-bold text-gray-900">Enkelfaktura</span>
+        <div className="flex items-center justify-center gap-2.5 mb-8">
+          <Brandmark className="w-10 h-10" />
+          <span className="text-2xl font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Skapa konto</h1>
-          <p className="text-gray-500 text-sm mb-6">Gratis i 14 dagar, inget kreditkort krävs</p>
+        <div className="bg-white rounded-3xl shadow-sm shadow-stone-900/5 border border-stone-200 p-8">
+          <h1 className="text-2xl font-bold text-stone-900 mb-1">Skapa konto</h1>
+          <p className="text-stone-500 text-sm mb-6">Gratis i 14 dagar, inget kreditkort krävs</p>
 
           {/* Kontotyp */}
           <div className="grid grid-cols-2 gap-3 mb-5">
             <button
               type="button"
               onClick={() => setAccountType("byra")}
-              className={`flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition ${
+              className={`flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition ${
                 accountType === "byra"
                   ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
-                  : "border-gray-200 hover:border-gray-300"
+                  : "border-stone-200 hover:border-stone-300"
               }`}
             >
-              <Building2 className={`w-5 h-5 ${accountType === "byra" ? "text-blue-600" : "text-gray-400"}`} />
-              <span className="text-sm font-semibold text-gray-900">Redovisningsbyrå</span>
-              <span className="text-xs text-gray-500 leading-snug">Flera användare, egna konsulter</span>
+              <Building2 className={`w-5 h-5 ${accountType === "byra" ? "text-blue-600" : "text-stone-400"}`} />
+              <span className="text-sm font-semibold text-stone-900">Redovisningsbyrå</span>
+              <span className="text-xs text-stone-500 leading-snug">Flera användare, egna konsulter</span>
             </button>
             <button
               type="button"
               onClick={() => setAccountType("privat")}
-              className={`flex flex-col items-start gap-2 rounded-xl border p-4 text-left transition ${
+              className={`flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition ${
                 accountType === "privat"
                   ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
-                  : "border-gray-200 hover:border-gray-300"
+                  : "border-stone-200 hover:border-stone-300"
               }`}
             >
-              <User className={`w-5 h-5 ${accountType === "privat" ? "text-blue-600" : "text-gray-400"}`} />
-              <span className="text-sm font-semibold text-gray-900">Privat användning</span>
-              <span className="text-xs text-gray-500 leading-snug">En användare, eget företag</span>
+              <User className={`w-5 h-5 ${accountType === "privat" ? "text-blue-600" : "text-stone-400"}`} />
+              <span className="text-sm font-semibold text-stone-900">Privat användning</span>
+              <span className="text-xs text-stone-500 leading-snug">En användare, eget företag</span>
             </button>
           </div>
 
@@ -182,17 +181,17 @@ export default function RegisterPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full rounded-full" disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Skapa konto
             </Button>
           </form>
 
-          <p className="text-center text-xs text-gray-400 mt-4">
+          <p className="text-center text-xs text-stone-400 mt-4">
             Genom att registrera dig godkänner du våra användarvillkor och integritetspolicy.
           </p>
 
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p className="text-center text-sm text-stone-500 mt-4">
             Har du redan ett konto?{" "}
             <Link href="/auth/login" className="text-blue-600 hover:underline font-medium">
               Logga in

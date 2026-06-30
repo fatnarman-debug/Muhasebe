@@ -3,6 +3,7 @@ import {
   ArrowRight, Check, FileText, Receipt, Percent, QrCode, LayoutTemplate, Mail,
   BellRing, Lock, Users, UserRound, ScanLine, Clock, Heart,
 } from "lucide-react";
+import { Brandmark } from "@/components/Brandmark";
 
 /* ─────────────────────────  Innehåll (svenska)  ─────────────────────────
    Primär målgrupp: egenföretagare (enskild firma) och enmans­byråer /
@@ -99,15 +100,6 @@ const jsonLd = {
   ],
 };
 
-/* ─────────────────────────  Återanvänd: liten logotyp  ───────────────────────── */
-function Brandmark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`grid place-items-center rounded-xl bg-blue-600 text-white ${className}`}>
-      <Receipt className="w-[55%] h-[55%]" strokeWidth={2.1} />
-    </span>
-  );
-}
-
 /* ─────────────────────────  Sida  ───────────────────────── */
 
 export default function LandingPage() {
@@ -128,7 +120,7 @@ export default function LandingPage() {
         <nav className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <Brandmark className="w-8 h-8" />
-            <span className="font-display text-lg text-stone-900">enkelfaktura</span>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm text-stone-500">
             <a href="#for-vem" className="hover:text-stone-900 transition-colors">För vem</a>
@@ -445,7 +437,7 @@ export default function LandingPage() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5">
               <Brandmark className="w-8 h-8" />
-              <span className="font-display text-lg text-stone-900">enkelfaktura</span>
+              <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
             </div>
             <p className="text-sm text-stone-400 mt-3 leading-relaxed">Fakturering &amp; offert för svenska egenföretagare. Byggt i Sverige, för svenska regler.</p>
           </div>

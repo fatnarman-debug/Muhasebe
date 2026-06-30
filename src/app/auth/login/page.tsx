@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Brandmark } from "@/components/Brandmark";
 
 const M = ({ name, size = 20 }: { name: string; size?: number }) => (
   <span className="material-symbols-outlined select-none leading-none"
@@ -12,8 +13,8 @@ const M = ({ name, size = 20 }: { name: string; size?: number }) => (
 );
 
 const inp: React.CSSProperties = {
-  width: "100%", border: "1px solid #e5e7eb", borderRadius: 9,
-  padding: "10px 13px", fontSize: 14, color: "#111827",
+  width: "100%", border: "1px solid #e7e5e4", borderRadius: 10,
+  padding: "10px 13px", fontSize: 14, color: "#1c1917",
   background: "#fff", outline: "none", boxSizing: "border-box",
 };
 
@@ -47,23 +48,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8f9fb", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
+    <div style={{ minHeight: "100vh", background: "#faf8f3", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 32 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-            <M name="account_balance" size={20} />
-          </div>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, marginBottom: 32 }}>
+          <Brandmark className="w-10 h-10" />
+          <span style={{ fontWeight: 700, fontSize: 23, color: "#13294B", letterSpacing: "-0.02em" }}>
             Enkelfaktura
           </span>
         </div>
 
         {/* Card */}
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "32px 28px" }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 4, letterSpacing: "-0.02em" }}>Logga in</h1>
-          <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 24 }}>Ange dina uppgifter för att fortsätta</p>
+        <div style={{ background: "#fff", border: "1px solid #e7e5e4", borderRadius: 22, boxShadow: "0 1px 4px rgba(28,25,23,0.05)", padding: "32px 28px" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#1c1917", marginBottom: 4, letterSpacing: "-0.02em" }}>Logga in</h1>
+          <p style={{ fontSize: 13, color: "#78716c", marginBottom: 24 }}>Ange dina uppgifter för att fortsätta</p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>

@@ -1,15 +1,11 @@
-<svg width="248" height="48" viewBox="0 0 248 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- icon mark -->
-  <g transform="translate(4 4)">
-    <rect width="40" height="40" rx="10" fill="#2563EB"/>
-    <rect x="11" y="9" width="18" height="22" rx="3" fill="#FFFFFF"/>
-    <rect x="14.5" y="15" width="11" height="2" rx="1" fill="#CBD5E1"/>
-    <rect x="14.5" y="19.5" width="7.5" height="2" rx="1" fill="#CBD5E1"/>
-    <circle cx="27" cy="28" r="6.6" fill="#0F172A" stroke="#2563EB" stroke-width="1.5"/>
-    <path d="M24.2 28.1l1.9 1.9 3.6-4.4" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="300" height="64" viewBox="0 0 300 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(8 8)">
+    <path d="M16 8.5H27L35.5 17V37.4A3.2 3.2 0 0 1 32.3 40.6H16A3.2 3.2 0 0 1 12.8 37.4V11.7A3.2 3.2 0 0 1 16 8.5Z" fill="#FFFFFF" stroke="#13294B" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M27 8.8V17H35.4Z" fill="#AECBE8"/>
+    <path d="M27 8.8V17H35.4" fill="none" stroke="#13294B" stroke-width="2.3" stroke-linejoin="round"/>
+    <path d="M17.6 18.6H26" stroke="#8FB0D6" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M17.6 23.4H22.6" stroke="#8FB0D6" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M14.6 30.8L20.4 37L32 23.4" stroke="#15A39A" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <!-- wordmark -->
-  <text x="56" y="32" font-family="Inter, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="25" letter-spacing="-0.5">
-    <tspan fill="#0F172A" font-weight="700">enkel</tspan><tspan fill="#2563EB" font-weight="500">faktura</tspan>
-  </text>
+  <text x="64" y="42" font-family="Inter, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="30" font-weight="700" letter-spacing="-0.6" fill="#13294B">Enkelfaktura</text>
 </svg>
