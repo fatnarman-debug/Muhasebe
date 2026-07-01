@@ -56,12 +56,11 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
         run: |
+          # Trimma bort ev. blanksteg/radbrytning från secrets (paste-fel)
+          R2_BUCKET=$(printf '%s' "$R2_BUCKET" | tr -d '[:space:]')
+          R2_ACCOUNT_ID=$(printf '%s' "$R2_ACCOUNT_ID" | tr -d '[:space:]')
           KEY="db/backup-$STAMP.dump.gpg"
-          echo "DIAG: key_len=${#AWS_ACCESS_KEY_ID} secret_len=${#AWS_SECRET_ACCESS_KEY} bucket_len=${#R2_BUCKET} acct_len=${#R2_ACCOUNT_ID}"
-          echo "DIAG: (R2 väntar key_len=32, secret_len=64)"
-          EPSTD="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
-          echo "--- head-bucket (auth/läs-test) ---"
-          aws s3api head-bucket --bucket "$R2_BUCKET" --endpoint-url "$EPSTD" && echo "HEAD-OK" || echo "HEAD-FAIL"
+          echo "DIAG efter trim: bucket_len=${#R2_BUCKET} acct_len=${#R2_ACCOUNT_ID}"
           ok=0
           for TAG in std eu; do
             if [ "$TAG" = std ]; then EP="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"; else EP="https://$R2_ACCOUNT_ID.eu.r2.cloudflarestorage.com"; fi
