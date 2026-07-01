@@ -56,7 +56,16 @@ jobs:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
         run: |
-          aws s3 cp "backup-$STAMP.dump.gpg" \
-            "s3://$R2_BUCKET/db/backup-$STAMP.dump.gpg" \
-            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
-          echo "✅ Uppladdat: db/backup-$STAMP.dump.gpg"
+          KEY="db/backup-$STAMP.dump.gpg"
+          echo "Bucket: $R2_BUCKET"
+          ok=0
+          for TAG in std eu; do
+            if [ "$TAG" = std ]; then EP="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"; else EP="https://$R2_ACCOUNT_ID.eu.r2.cloudflarestorage.com"; fi
+            echo "=== Provar endpoint: $TAG ==="
+            if aws s3 cp "backup-$STAMP.dump.gpg" "s3://$R2_BUCKET/$KEY" --endpoint-url "$EP"; then
+              echo "✅ Uppladdat via '$TAG': $KEY"; ok=1; break
+            else
+              echo "❌ '$TAG' misslyckades"
+            fi
+          done
+          [ "$ok" = 1 ] || { echo "Båda endpoints misslyckades – troligen fel nyckel/behörighet."; exit 1; }
