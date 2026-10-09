@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Brandmark } from "@/components/Brandmark";
 
 const M = ({ name, size = 20 }: { name: string; size?: number }) => (
   <span className="material-symbols-outlined select-none leading-none"
@@ -13,8 +12,8 @@ const M = ({ name, size = 20 }: { name: string; size?: number }) => (
 );
 
 const inp: React.CSSProperties = {
-  width: "100%", border: "1px solid #e7e5e4", borderRadius: 10,
-  padding: "10px 13px", fontSize: 14, color: "#1c1917",
+  width: "100%", border: "1px solid #e5e7eb", borderRadius: 9,
+  padding: "10px 13px", fontSize: 14, color: "#111827",
   background: "#fff", outline: "none", boxSizing: "border-box",
 };
 
@@ -34,11 +33,8 @@ export default function LoginPage() {
       const supabase = createClient();
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
       if (authError) { setError("Felaktigt e-post eller lösenord."); setLoading(false); return; }
-      const role = data.user?.user_metadata?.role ?? "konsult";
-      const dest =
-        role === "byraansvarig" ? "/yetkili" :
-        role === "privat"       ? "/dashboard" :
-        "/konsult";
+      const role = data.user?.user_metadata?.role ?? "privat";
+      const dest = role === "byraansvarig" ? "/yetkili" : role === "konsult" ? "/konsult" : "/dashboard";
       router.push(dest);
       router.refresh();
     } catch {
@@ -48,21 +44,23 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#faf8f3", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
+    <div style={{ minHeight: "100vh", background: "#f8f9fb", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
       <div style={{ width: "100%", maxWidth: 420 }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 9, marginBottom: 32 }}>
-          <Brandmark className="w-10 h-10" />
-          <span style={{ fontWeight: 700, fontSize: 23, color: "#13294B", letterSpacing: "-0.02em" }}>
-            Enkelfaktura
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 32 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+            <M name="account_balance" size={20} />
+          </div>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
+            LedgerFlow
           </span>
         </div>
 
         {/* Card */}
-        <div style={{ background: "#fff", border: "1px solid #e7e5e4", borderRadius: 22, boxShadow: "0 1px 4px rgba(28,25,23,0.05)", padding: "32px 28px" }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#1c1917", marginBottom: 4, letterSpacing: "-0.02em" }}>Logga in</h1>
-          <p style={{ fontSize: 13, color: "#78716c", marginBottom: 24 }}>Ange dina uppgifter för att fortsätta</p>
+        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "32px 28px" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 4, letterSpacing: "-0.02em" }}>Logga in</h1>
+          <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 24 }}>Ange dina uppgifter för att fortsätta</p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
@@ -71,7 +69,7 @@ export default function LoginPage() {
                 type="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="din@byrå.se" required autoComplete="email"
                 style={inp}
-                onFocus={e => (e.target.style.borderColor = "#13294B")}
+                onFocus={e => (e.target.style.borderColor = "#111827")}
                 onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
               />
             </div>
@@ -83,7 +81,7 @@ export default function LoginPage() {
                   type={showPass ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••" required autoComplete="current-password"
                   style={{ ...inp, paddingRight: 40 }}
-                  onFocus={e => (e.target.style.borderColor = "#13294B")}
+                  onFocus={e => (e.target.style.borderColor = "#111827")}
                   onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
                 />
                 <button type="button" onClick={() => setShowPass(v => !v)}
@@ -100,11 +98,34 @@ export default function LoginPage() {
             )}
 
             <button type="submit" disabled={loading}
-              style={{ background: "#13294B", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              style={{ background: "#111827", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               {loading && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />}
               {loading ? "Loggar in…" : "Logga in"}
             </button>
           </form>
+        </div>
+
+        {/* Dev bypass */}
+        <div style={{ marginTop: 20, background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 12, padding: "14px 18px" }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: "#92400e", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
+            Utvecklingsläge — snabbinloggning
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            <button onClick={() => router.push("/yetkili")}
+              style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: "9px 14px", fontSize: 13, fontWeight: 600, color: "#111827", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 28, height: 28, borderRadius: 7, background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151" }}>
+                <M name="business_center" size={15} />
+              </span>
+              Byråansvarig — Erik Lindström
+            </button>
+            <button onClick={() => router.push("/konsult")}
+              style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: "9px 14px", fontSize: 13, fontWeight: 600, color: "#111827", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 28, height: 28, borderRadius: 7, background: "#eff1ff", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b5bdb" }}>
+                <M name="badge" size={15} />
+              </span>
+              Redovisningskonsult — Anna Svensson
+            </button>
+          </div>
         </div>
 
       </div>
