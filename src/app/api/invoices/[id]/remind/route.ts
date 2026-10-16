@@ -64,7 +64,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const daysOverdue = Math.floor((Date.now() - new Date(inv.due_date).getTime()) / 86400000);
 
   const { error: sendError } = await resend.emails.send({
-    from: `${company.name} <faktura@resend.dev>`,
+    from: `${company.name} <faktura@send.enkeltfaktura.com>`,
     to: customer.email,
     subject: `PÅMINNELSE: Faktura ${inv.invoice_number} från ${company.name}`,
     html: `

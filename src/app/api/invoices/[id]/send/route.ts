@@ -70,7 +70,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const formattedDue = new Intl.DateTimeFormat("sv-SE").format(new Date(inv.due_date));
 
   const { error: sendError } = await resend.emails.send({
-    from: `${company.name} <faktura@resend.dev>`,
+    from: `${company.name} <faktura@send.enkeltfaktura.com>`,
     to: customer.email,
     subject: `${docLabel} ${inv.invoice_number} från ${company.name}`,
     html: `
