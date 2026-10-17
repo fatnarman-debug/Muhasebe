@@ -191,6 +191,29 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
         : { next_invoice_number: (selectedCompany?.next_invoice_number ?? 1) + 1 })
       .eq("id", clientCompanyId);
 
+    // "Skicka" seçildiyse, faturayı gerçekten e-posta ile gönder.
+    if (status === "sent") {
+      try {
+        const res = await fetch(`/api/invoices/${invoice.id}/send`, { method: "POST" });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          await supabase.from("invoices").update({ status: "draft", sent_at: null }).eq("id", invoice.id);
+          setError(body.error || "Fakturan sparades men kunde inte skickas via e-post. Du kan skicka den igen fran fakturavyn.");
+          setLoading(false);
+          router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
+          router.refresh();
+          return;
+        }
+      } catch {
+        await supabase.from("invoices").update({ status: "draft", sent_at: null }).eq("id", invoice.id);
+        setError("Fakturan sparades men e-postutskicket misslyckades. Forsok skicka igen fran fakturavyn.");
+        setLoading(false);
+        router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
+        router.refresh();
+        return;
+      }
+    }
+
     router.push(getRedirectPath ? getRedirectPath(invoice.id) : `/dashboard/invoices/${invoice.id}`);
     router.refresh();
   }
