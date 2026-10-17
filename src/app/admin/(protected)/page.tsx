@@ -23,7 +23,7 @@ export default async function AdminDashboardPage() {
     supabase.from("client_companies").select("*", { count: "exact", head: true }).eq("is_active", true),
     supabase.from("invoices").select("*", { count: "exact", head: true }),
     supabase.from("invoices").select("total, status"),
-    supabase.from("profiles").select("id, email, full_name, plan_type, created_at").order("created_at", { ascending: false }).limit(10),
+    supabase.from("profiles").select("id, email, full_name, account_type, created_at").order("created_at", { ascending: false }).limit(10),
   ]);
 
   const totalRevenue = (invoiceTotals ?? []).filter(i => i.status === "paid").reduce((s, i) => s + (i.total ?? 0), 0);
@@ -88,8 +88,8 @@ export default async function AdminDashboardPage() {
                   <div className="text-xs text-slate-400">{u.email}</div>
                 </td>
                 <td className="px-5 py-3">
-                  <span className={(u.plan_type === "accountant" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600") + " inline-flex px-2 py-0.5 rounded-full text-xs font-semibold"}>
-                    {u.plan_type === "accountant" ? "Muhasebeci" : "Bireysel"}
+                  <span className={(u.account_type === "buro" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600") + " inline-flex px-2 py-0.5 rounded-full text-xs font-semibold"}>
+                    {u.account_type === "buro" ? "Muhasebeci" : "Bireysel"}
                   </span>
                 </td>
                 <td className="px-5 py-3 text-xs text-slate-500">

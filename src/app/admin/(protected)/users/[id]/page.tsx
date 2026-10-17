@@ -18,7 +18,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
 
   const [{ data: user }, { data: companies }, { data: invoices }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", id).single(),
-    supabase.from("client_companies").select("id, name, org_number, is_active").eq("user_id", id),
+    supabase.from("client_companies").select("id, name, org_no, is_active").eq("user_id", id),
     supabase.from("invoices").select("id, invoice_number, status, total, invoice_date, due_date").in(
       "client_company_id",
       // Will be replaced after companies load — do a separate query below
@@ -69,8 +69,8 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
               <p className="text-slate-500 text-sm">{user.email}</p>
               <p className="text-slate-400 text-xs mt-1">Kayıt: {new Date(user.created_at).toLocaleDateString("sv-SE")}</p>
             </div>
-            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${user.plan_type === "accountant" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
-              {user.plan_type === "accountant" ? "Muhasebeci" : "Bireysel"}
+            <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${user.account_type === "buro" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+              {user.account_type === "buro" ? "Muhasebeci" : "Bireysel"}
             </span>
           </div>
 
@@ -93,7 +93,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
         {/* Plan Change */}
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <h3 className="font-semibold text-slate-900 text-sm mb-3">Plan Yönetimi</h3>
-          <AdminPlanForm userId={id} currentPlan={user.plan_type ?? "individual"} />
+          <AdminPlanForm userId={id} currentPlan={user.account_type ?? "sahsi"} />
         </div>
       </div>
 
@@ -109,7 +109,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
               <div key={c.id} className="px-5 py-3 flex items-center justify-between">
                 <div>
                   <div className="font-medium text-sm text-slate-900">{c.name}</div>
-                  <div className="text-xs text-slate-400">{c.org_number || "Org-no yok"}</div>
+                  <div className="text-xs text-slate-400">{c.org_no || "Org-no yok"}</div>
                 </div>
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${c.is_active ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`}>
                   {c.is_active ? "Aktif" : "Pasif"}
