@@ -88,7 +88,7 @@ const faqs = [
   { q: "Stödjer ni ROT- och RUT-avdrag?", a: "Ja. När du markerar arbetskostnad räknas ROT- eller RUT-avdraget ut automatiskt och visas korrekt på fakturan enligt Skatteverkets regler." },
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
   { q: "Hur gör jag om jag behöver makulera en faktura?", a: "En skickad faktura får inte raderas enligt bokföringslagen. I stället skapar du en kreditfaktura med ett klick – den upphäver originalet med negativa belopp och behåller en obruten nummerserie." },
-  { q: "Var lagras min data?", a: "All data lagras inom EU (Supabase, regionen West EU / Irland) och säkerhetskopior krypteras med AES-256. Enkelfaktura är byggt med GDPR i åtanke." },
+  { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. Enkelfaktura är byggt med GDPR i åtanke." },
   { q: "Funkar det även för en redovisningsbyrå?", a: "Ja. Är ni flera kan byråplanen bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara sina egna kunder." },
   { q: "Finns det bindningstid?", a: "Nej. Alla planer börjar gratis och du kan säga upp när du vill. Inga bindningstider, inga dolda avgifter." },
 ];
