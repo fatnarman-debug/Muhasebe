@@ -16,6 +16,27 @@ const PDF_TEMPLATES: Record<string, PdfTpl> = {
   "modern-creative":    { accent: "#ea580c", band: true, bandBg: "#ea580c" },
 };
 
+
+// GUVENLIK (#2 SSRF): logo_url sunucuda PDF'e render edildigi icin dogrulanmali.
+// Sadece kendi storage domaini (api.enkeltfaktura.com/storage) veya data:image/
+// URL'lerine izin ver. file://, ic IP, dis URL vb. reddedilir -> logo atlanir.
+function safeLogoUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const v = url.trim();
+  // Kendi gomulu data gorseli (base64) guvenli
+  if (/^data:image\/(png|jpe?g|webp|svg\+xml);base64,/i.test(v)) return v;
+  try {
+    const u = new URL(v);
+    if (u.protocol !== "https:") return null;
+    // Sadece kendi storage public yolu
+    const okHost = u.hostname === "api.enkeltfaktura.com";
+    const okPath = u.pathname.startsWith("/storage/v1/object/public/");
+    return okHost && okPath ? v : null;
+  } catch {
+    return null;
+  }
+}
+
 const styles = StyleSheet.create({
   page: { fontFamily: "Helvetica", fontSize: 9, color: "#1a1a1a", paddingTop: 40, paddingBottom: 90, paddingHorizontal: 40, backgroundColor: "#ffffff" },
   logo: { width: 130, height: 44, objectFit: "contain", marginBottom: 6 },
@@ -118,7 +139,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         {/* 1) Üst: logo + firma satırı (sol) · Faktura + sida (sağ) */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <View style={{ maxWidth: "62%" }}>
-            {company.logo_url ? <Image src={company.logo_url} style={styles.logo} /> : <Text style={styles.companyName}>{company.name}</Text>}
+            {safeLogoUrl(company.logo_url) ? <Image src={safeLogoUrl(company.logo_url)!} style={styles.logo} /> : <Text style={styles.companyName}>{company.name}</Text>}
             <Text style={styles.companyLine}>
               {company.address_line1}, {company.postal_code} {company.city}
               {company.org_no ? ` · Org.nr ${company.org_no}` : ""}
