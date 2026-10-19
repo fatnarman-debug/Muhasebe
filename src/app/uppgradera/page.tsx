@@ -62,7 +62,7 @@ export default function UppgraderaPage() {
       }
       throw new Error();
     } catch {
-      setNotice("Betalningen aktiveras inom kort. Hör av dig till support@enkelfaktura.se så hjälper vi dig igång direkt.");
+      setNotice("Betalningen aktiveras inom kort. Hör av dig till support@enkeltfaktura.com så hjälper vi dig igång direkt.");
     } finally {
       setBusy(null);
     }
