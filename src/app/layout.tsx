@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Calistoga } from "next/font/google";
 import "./globals.css";
 import { CookieBanner } from "@/components/CookieBanner";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const calistoga = Calistoga({ subsets: ["latin"], weight: "400", variable: "--font-display" });
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} h-full antialiased`}>
         {children}
         <CookieBanner />
+        <GoogleAnalytics />
       </body>
     </html>
   );

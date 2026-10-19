@@ -26,7 +26,10 @@ export function CookieBanner() {
       localStorage.setItem(KEY, value);
       document.cookie = `${KEY}=${value};path=/;max-age=${60 * 60 * 24 * 365};samesite=lax`;
     } catch { /* ignorera */ }
-    // Framtid: if (value === "all") { /* initiera analytics här */ }
+    // Meddela GoogleAnalytics-komponenten sa att statistik startar/stoppas direkt
+    try {
+      window.dispatchEvent(new Event("lf-consent-change"));
+    } catch { /* ignorera */ }
     setShow(false);
   }
 
