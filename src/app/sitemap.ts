@@ -8,7 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${BASE}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
 
-    // Hubbsida for hantverkare
+    // Hubbsidor
+    { url: `${BASE}/for`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/for/hantverkare`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 
     // Yrkessidor – kommer automatiskt fran src/lib/yrken.ts

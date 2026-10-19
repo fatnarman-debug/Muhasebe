@@ -8,6 +8,16 @@
  */
 
 export type Avdrag = "rot" | "rut" | null;
+export type KategoriId = "bygg" | "hem" | "halsa" | "kreativt" | "konsult";
+
+/** Visningsordning pa hubbsidan /for. */
+export const kategorier: { id: KategoriId; namn: string; ingress: string }[] = [
+  { id: "bygg", namn: "Bygg & hantverk", ingress: "ROT-avdrag räknas ut automatiskt på arbetskostnaden." },
+  { id: "hem", namn: "Hem & trädgård", ingress: "RUT-avdrag med 50 procent på arbetet." },
+  { id: "halsa", namn: "Skönhet & hälsa", ingress: "Återkommande fakturor, klippkort och företagsavtal." },
+  { id: "kreativt", namn: "Kreativt & digitalt", ingress: "Projekt, delbetalningar, licenser och utlägg." },
+  { id: "konsult", namn: "Konsult & rådgivning", ingress: "Timmar, fast pris och specifikation som kunden kräver." },
+];
 
 export type Yrke = {
   slug: string;
@@ -16,6 +26,7 @@ export type Yrke = {
   /** Singular bestamd form, som i "Som snickaren ...". Anvands i brodtext. */
   singular: string;
   avdrag: Avdrag;
+  kategori: KategoriId;
   /** Metabeskrivning, max ~155 tecken. */
   meta: string;
   /** Ingress – ska beskriva yrkets faktiska fakturavardag, inte produkten. */
@@ -35,6 +46,7 @@ export const yrken: Yrke[] = [
     slug: "snickare",
     namn: "snickare",
     singular: "snickaren",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för snickare med automatiskt ROT-avdrag. Dela arbete och material, skicka offert som blir faktura. 14 dagar gratis.",
     lead: "Som snickare blandas arbete och material på nästan varje faktura – och det är bara arbetet som ger ROT-avdrag. Håller du ihop dem på samma rad blir avdraget fel och Skatteverket kan avslå begäran.",
@@ -54,6 +66,7 @@ export const yrken: Yrke[] = [
     slug: "elektriker",
     namn: "elektriker",
     singular: "elektrikern",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för elektriker med ROT-avdrag som räknas ut automatiskt. Separera arbete och materiel, fakturera från bilen. Testa gratis.",
     lead: "Elinstallationer går ofta fort men har mycket materiel: kabel, dosor, centraler, brytare. Avdraget gäller bara arbetet, och felposterad materiel är den vanligaste orsaken till att ett ROT-underlag inte godkänns.",
@@ -73,6 +86,7 @@ export const yrken: Yrke[] = [
     slug: "malare",
     namn: "målare",
     singular: "målaren",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för målare med automatiskt ROT-avdrag. Håll färg och arbete isär, skicka offert och faktura från mobilen. 14 dagar gratis.",
     lead: "Måleri är arbetsintensivt – ofta är arbetskostnaden den största delen av fakturan. Det gör ROT-avdraget extra värt för kunden, och extra viktigt att det räknas rätt.",
@@ -92,6 +106,7 @@ export const yrken: Yrke[] = [
     slug: "rormokare",
     namn: "rörmokare",
     singular: "rörmokaren",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för rörmokare och VVS med ROT-avdrag automatiskt. Separera arbete och material, fakturera direkt efter jobbet.",
     lead: "VVS-jobb är ofta akuta och sällan planerade. Ett läckage ska åtgärdas idag – men fakturan med rätt ROT-underlag ska ändå bli korrekt, även när den skrivs i bilen på väg till nästa kund.",
@@ -111,6 +126,7 @@ export const yrken: Yrke[] = [
     slug: "plattsattare",
     namn: "plattsättare",
     singular: "plattsättaren",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för plattsättare med ROT-avdrag automatiskt. Håll kakel och arbete isär på fakturan. Offert till faktura med ett klick.",
     lead: "Badrumsrenovering är ett av de vanligaste ROT-jobben – och ett av de dyraste. Kunden räknar med avdraget redan i offerten, så underlaget måste hålla hela vägen fram till Skatteverket.",
@@ -130,6 +146,7 @@ export const yrken: Yrke[] = [
     slug: "golvlaggare",
     namn: "golvläggare",
     singular: "golvläggaren",
+    kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för golvläggare med automatiskt ROT-avdrag. Separera golvmaterial och läggning på fakturan. Testa gratis i 14 dagar.",
     lead: "Golvläggning prissätts nästan alltid per kvadratmeter, och materialet står ofta för mer än halva fakturan. Just därför är uppdelningen mellan material och arbete avgörande för att ROT-avdraget ska bli rätt.",
@@ -151,6 +168,7 @@ export const yrken: Yrke[] = [
     slug: "tradgardsmastare",
     namn: "trädgårdsmästare",
     singular: "trädgårdsmästaren",
+    kategori: "hem",
     avdrag: "rut",
     meta: "Fakturaprogram för trädgårdsmästare med RUT-avdrag automatiskt. 50 % på arbetet, växter separat. Fakturera direkt från trädgården.",
     lead: "Trädgårdsarbete ger RUT-avdrag på 50 procent av arbetskostnaden – dubbelt så mycket som ROT. Men gränsen mot vad som räknas är snävare än många tror, och växter ger aldrig avdrag.",
@@ -172,6 +190,7 @@ export const yrken: Yrke[] = [
     slug: "frisor",
     namn: "frisörer",
     singular: "frisören",
+    kategori: "halsa",
     avdrag: null,
     meta: "Fakturaprogram för frisörer och salonger. Fakturera företagskunder, hyr stol eller driv eget – offert, faktura och påminnelser på svenska.",
     lead: "De flesta klippningar betalas i kassan, men inte alla. Stolshyra, företagskunder, bröllop och fotojobb ska faktureras – och då behövs en riktig faktura med F-skatt och korrekt moms, inte ett kvitto.",
@@ -191,6 +210,7 @@ export const yrken: Yrke[] = [
     slug: "massor",
     namn: "massörer",
     singular: "massören",
+    kategori: "halsa",
     avdrag: null,
     meta: "Fakturaprogram för massörer. Fakturera friskvård, företagsavtal och klippkort – med F-skatt, rätt moms och påminnelser. Testa gratis.",
     lead: "Massage säljs sällan styckvis till privatpersoner som vill ha faktura – men desto oftare som friskvård till företag. Då krävs faktura med organisationsnummer, och ofta ett avtal som löper varje månad.",
@@ -210,6 +230,7 @@ export const yrken: Yrke[] = [
     slug: "personlig-tranare",
     namn: "personliga tränare",
     singular: "tränaren",
+    kategori: "halsa",
     avdrag: null,
     meta: "Fakturaprogram för personliga tränare. Fakturera PT-paket, onlinecoaching och företagsavtal med återkommande fakturor och påminnelser.",
     lead: "PT-branschen bygger på paket och abonnemang: tio pass, tre månaders coachning, ett företagsavtal. Det betyder återkommande fakturor till samma personer – och en betalningsuppföljning som annars äter kvällarna.",
@@ -231,6 +252,7 @@ export const yrken: Yrke[] = [
     slug: "fotograf",
     namn: "fotografer",
     singular: "fotografen",
+    kategori: "kreativt",
     avdrag: null,
     meta: "Fakturaprogram för fotografer. Offert, förskott och slutfaktura för bröllop, porträtt och företagsuppdrag – med nyttjanderätt på fakturan.",
     lead: "Fotografjobb bokas långt i förväg och betalas i omgångar: boknings­avgift nu, resten efter leverans. Dessutom säljer du inte bara tid utan också rätten att använda bilderna – och det ska framgå av fakturan.",
@@ -250,6 +272,7 @@ export const yrken: Yrke[] = [
     slug: "webbdesigner",
     namn: "webbdesigners",
     singular: "webbdesignern",
+    kategori: "kreativt",
     avdrag: null,
     meta: "Fakturaprogram för webbdesigners och frilansutvecklare. Fakturera projekt, löpande timmar och förvaltning – med offert som blir faktura.",
     lead: "Webbprojekt har en tydlig början men sällan ett tydligt slut. Scope växer, förvaltning tillkommer, och det som började som ett fast pris blir löpande timmar. Fakturan måste följa med i den rörelsen.",
@@ -269,6 +292,7 @@ export const yrken: Yrke[] = [
     slug: "oversattare",
     namn: "översättare",
     singular: "översättaren",
+    kategori: "kreativt",
     avdrag: null,
     meta: "Fakturaprogram för översättare och tolkar. Fakturera per ord, rad eller timme – till svenska och utländska kunder, med rätt moms.",
     lead: "Översättare fakturerar sällan i timmar. Det blir ord, rader eller tecken – och ofta till kunder i andra länder, där momsreglerna ser helt annorlunda ut än för en svensk kund.",
@@ -290,6 +314,7 @@ export const yrken: Yrke[] = [
     slug: "konsult",
     namn: "konsulter",
     singular: "konsulten",
+    kategori: "konsult",
     avdrag: null,
     meta: "Fakturaprogram för konsulter och frilansare. Fakturera löpande timmar, fast pris och utlägg – med F-skatt och påminnelser. Testa gratis.",
     lead: "Konsultfakturering ser enkel ut: timmar gånger timpris. I praktiken tillkommer utlägg, resor, olika timpriser för olika uppdrag och kunder som vill ha specifikation ner på dagnivå.",
@@ -309,6 +334,7 @@ export const yrken: Yrke[] = [
     slug: "redovisningskonsult",
     namn: "redovisningskonsulter",
     singular: "redovisningskonsulten",
+    kategori: "konsult",
     avdrag: null,
     meta: "Fakturaprogram för redovisningskonsulter. Fakturera flera kunder, löpande bokföring och bokslut – med roller och kunduppdelning för byrån.",
     lead: "Som redovisningskonsult fakturerar du inte bara för egen räkning – du hanterar ofta fakturering åt dina kunder också. Det kräver att kunderna hålls strikt åtskilda, både i underlag och i behörigheter.",
