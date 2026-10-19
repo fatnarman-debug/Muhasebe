@@ -62,7 +62,7 @@ export default function UppgraderaPage() {
       }
       throw new Error();
     } catch {
-      setNotice("Betalningen aktiveras inom kort. Hör av dig till support@enkelfaktura.se så hjälper vi dig igång direkt.");
+      setNotice("Betalningen aktiveras inom kort. Hör av dig till support@enkeltfaktura.com så hjälper vi dig igång direkt.");
     } finally {
       setBusy(null);
     }
@@ -86,7 +86,7 @@ export default function UppgraderaPage() {
       <div className="max-w-3xl mx-auto px-5 sm:px-6 py-12 sm:py-16">
         <div className="flex items-center justify-center gap-2.5 mb-8">
           <Brandmark className="w-9 h-9" />
-          <span className="text-xl font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
+          <span className="text-xl font-bold tracking-tight" style={{ color: "#13294B" }}>EnkeltFaktura</span>
         </div>
 
         <div className="text-center max-w-xl mx-auto">

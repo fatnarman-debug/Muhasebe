@@ -44,7 +44,7 @@ function Sidebar({ email, open, onClose }: { email?: string; open: boolean; onCl
             <M name="storefront" fill size={18} />
           </div>
           <div>
-            <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>Enkelfaktura</div>
+            <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>EnkeltFaktura</div>
             <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
               Byråansvarig
             </div>
@@ -152,6 +152,13 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
+      {/* Material Symbols behovs bara i panelen. Laddas har i stallet for i
+          rot-layouten, sa att landningssidan slipper en render-blockerande
+          begaran till fonts.googleapis.com (~750 ms pa mobil). */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
       {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
       <Sidebar email={email} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="md:ml-60 flex flex-col min-h-screen">
@@ -161,7 +168,7 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
           <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
             <M name="menu" size={24} />
           </button>
-          <span style={{ fontWeight: 800, fontSize: 15 }}>Enkelfaktura</span>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>EnkeltFaktura</span>
         </div>
         {children}
       </div>

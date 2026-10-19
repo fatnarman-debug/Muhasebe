@@ -3,6 +3,7 @@ import {
   ArrowRight, Check, FileText, Receipt, Percent, QrCode, LayoutTemplate, Mail,
   BellRing, Lock, Users, UserRound, ScanLine, Clock, Heart, X,
 } from "lucide-react";
+import { SiteHeader, SiteFooter, SiteStyles } from "@/components/site/SiteChrome";
 import { Brandmark } from "@/components/Brandmark";
 
 /* ─────────────────────────  Innehåll (svenska)  ─────────────────────────
@@ -83,26 +84,26 @@ const plans = [
 const trustChips = ["Bankgiro", "OCR-referens", "ROT/RUT", "F-skatt", "Kreditfaktura", "GDPR · EU-data"];
 
 const faqs = [
-  { q: "Är Enkelfaktura gratis att börja med?", a: "Du provar allt gratis i 14 dagar utan kreditkort och kan skicka riktiga fakturor direkt. När provperioden tar slut väljer du en plan för att fortsätta – allt ditt material finns kvar." },
+  { q: "Är EnkeltFaktura gratis att börja med?", a: "Du provar allt gratis i 14 dagar utan kreditkort och kan skicka riktiga fakturor direkt. När provperioden tar slut väljer du en plan för att fortsätta – allt ditt material finns kvar." },
   { q: "Passar det mig som är egenföretagare?", a: "Absolut – det är just dig vi har byggt det för. Driver du enskild firma eller eget AB skapar du din första faktura på under en minut, utan att kunna något om bokföring." },
   { q: "Stödjer ni ROT- och RUT-avdrag?", a: "Ja. När du markerar arbetskostnad räknas ROT- eller RUT-avdraget ut automatiskt och visas korrekt på fakturan enligt Skatteverkets regler." },
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
   { q: "Hur gör jag om jag behöver makulera en faktura?", a: "En skickad faktura får inte raderas enligt bokföringslagen. I stället skapar du en kreditfaktura med ett klick – den upphäver originalet med negativa belopp och behåller en obruten nummerserie." },
-  { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. Enkelfaktura är byggt med GDPR i åtanke." },
+  { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. EnkeltFaktura är byggt med GDPR i åtanke." },
   { q: "Funkar det även för en redovisningsbyrå?", a: "Ja. Är ni flera kan byråplanen bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara sina egna kunder." },
   { q: "Finns det bindningstid?", a: "Nej. Alla planer börjar gratis och du kan säga upp när du vill. Inga bindningstider, inga dolda avgifter." },
 ];
 
 /* ─────────────────────────  JSON-LD (SEO)  ───────────────────────── */
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkelfaktura.se";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "Organization", name: "Enkelfaktura", url: BASE, description: "Fakturering för svenska egenföretagare och redovisningskonsulter." },
-    { "@type": "WebSite", name: "Enkelfaktura", url: BASE, inLanguage: "sv-SE" },
+    { "@type": "Organization", name: "EnkeltFaktura", url: BASE, description: "Fakturering för svenska egenföretagare och redovisningskonsulter." },
+    { "@type": "WebSite", name: "EnkeltFaktura", url: BASE, inLanguage: "sv-SE" },
     {
       "@type": "SoftwareApplication",
-      name: "Enkelfaktura",
+      name: "EnkeltFaktura",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       inLanguage: "sv-SE",
@@ -119,39 +120,10 @@ const jsonLd = {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#faf8f3] text-stone-900 selection:bg-[#13294B]/15 antialiased">
-      <style>{`
-        html { scroll-behavior: smooth; }
-        .font-display { font-family: var(--font-display), Georgia, "Times New Roman", serif; letter-spacing: -0.015em; }
-        section[id] { scroll-margin-top: 84px; }
-        @keyframes ef-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-        .ef-rise { animation: ef-rise .8s cubic-bezier(.16,1,.3,1) both; }
-        @media (prefers-reduced-motion: reduce) { .ef-rise { animation: none; } html { scroll-behavior: auto; } }
-      `}</style>
+      <SiteStyles />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* ───── Nav ───── */}
-      <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-[#faf8f3]/85 backdrop-blur-md">
-        <nav className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Brandmark className="w-8 h-8" />
-            <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm text-stone-500">
-            <a href="#for-vem" className="hover:text-stone-900 transition-colors">För vem</a>
-            <a href="#funktioner" className="hover:text-stone-900 transition-colors">Funktioner</a>
-            <a href="#priser" className="hover:text-stone-900 transition-colors">Priser</a>
-            <a href="#fragor" className="hover:text-stone-900 transition-colors">Vanliga frågor</a>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <Link href="/auth/login" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors hidden sm:block">
-              Logga in
-            </Link>
-            <Link href="/auth/register" className="inline-flex items-center gap-1.5 bg-[#13294B] hover:bg-[#1e3a63] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors">
-              Kom igång gratis
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <SiteHeader />
 
       {/* ───── Hero ───── */}
       <section className="relative overflow-hidden">
@@ -194,20 +166,20 @@ export default function LandingPage() {
               <div className="flex items-center justify-between px-6 pt-6">
                 <div>
                   <Brandmark className="w-9 h-9 mb-2" />
-                  <p className="text-[11px] text-stone-400 leading-tight">Storgatan 1, 111 20 Stockholm<br />Org.nr 556123-4567</p>
+                  <p className="text-[11px] text-stone-600 leading-tight">Storgatan 1, 111 20 Stockholm<br />Org.nr 556123-4567</p>
                 </div>
                 <div className="text-right">
                   <p className="font-display text-2xl text-stone-900">Faktura</p>
-                  <p className="text-xs text-stone-400">FAK-0042</p>
+                  <p className="text-xs text-stone-600">FAK-0042</p>
                 </div>
               </div>
               <div className="mx-6 mt-5 rounded-2xl bg-stone-50 px-4 py-3 flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-wide text-stone-400">Att betala</p>
+                  <p className="text-[10px] uppercase tracking-wide text-stone-600">Att betala</p>
                   <p className="font-display text-xl text-stone-900">18 750,00 kr</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wide text-stone-400">Förfaller</p>
+                  <p className="text-[10px] uppercase tracking-wide text-stone-600">Förfaller</p>
                   <p className="text-sm font-semibold text-stone-700">2026-07-25</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-white border border-stone-200 grid place-items-center text-stone-300">
@@ -218,11 +190,11 @@ export default function LandingPage() {
                 {[["Webbutveckling, 15 tim", "15 000 kr"], ["Hosting & drift", "1 200 kr"], ["Moms 25 %", "2 550 kr"]].map(([k, v]) => (
                   <div key={k} className="flex items-center justify-between text-sm">
                     <span className="text-stone-500">{k}</span>
-                    <span className="font-medium text-stone-800 tabular-nums" style={{ fontFamily: "'JetBrains Mono', monospace" }}>{v}</span>
+                    <span className="font-medium text-stone-800 tabular-nums" style={{ fontFamily: "var(--font-mono)" }}>{v}</span>
                   </div>
                 ))}
               </div>
-              <div className="px-6 py-3 border-t border-dashed border-stone-200 flex items-center gap-2 text-[11px] text-stone-400" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              <div className="px-6 py-3 border-t border-dashed border-stone-200 flex items-center gap-2 text-[11px] text-stone-600" style={{ fontFamily: "var(--font-mono)" }}>
                 <ScanLine className="w-4 h-4 text-stone-300" /> # 42 00018750 06 &gt; 5050-1234#41#
               </div>
             </div>
@@ -231,7 +203,7 @@ export default function LandingPage() {
               <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center"><Check className="w-4 h-4" /></span>
               <div className="leading-tight">
                 <p className="text-xs font-semibold text-stone-800">Skickad &amp; betald</p>
-                <p className="text-[10px] text-stone-400">via OCR · bankgiro</p>
+                <p className="text-[10px] text-stone-600">via OCR · bankgiro</p>
               </div>
             </div>
           </div>
@@ -240,7 +212,7 @@ export default function LandingPage() {
         {/* Trust-rad */}
         <div className="border-y border-stone-200/70 bg-white/50">
           <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            <span className="text-xs font-medium text-stone-400 mr-1">Anpassat för svensk fakturering:</span>
+            <span className="text-xs font-medium text-stone-600 mr-1">Anpassat för svensk fakturering:</span>
             {trustChips.map((c) => (
               <span key={c} className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 bg-white border border-stone-200 px-2.5 py-1 rounded-full">
                 <Check className="w-3 h-3 text-teal-600" /> {c}
@@ -255,7 +227,7 @@ export default function LandingPage() {
         <div className="max-w-xl">
           <p className="text-sm font-semibold text-teal-700 mb-3">För vem</p>
           <h2 className="font-display text-4xl text-stone-950">Gjort för dig som driver eget</h2>
-          <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. Enkelfaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
+          <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. EnkeltFaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-5 mt-12">
           {personas.map((s) => (
@@ -293,7 +265,7 @@ export default function LandingPage() {
         <div className="mt-5 rounded-[1.4rem] border border-stone-200 bg-white px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
           <p className="text-sm text-stone-600 flex-1">
             <span className="font-semibold text-stone-900">Driver du en större redovisningsbyrå?</span>{" "}
-            Bjud in konsulter, tilldela kunder och styr behörigheter i tre nivåer – Enkelfaktura skalar med er.
+            Bjud in konsulter, tilldela kunder och styr behörigheter i tre nivåer – EnkeltFaktura skalar med er.
           </p>
           <Link href="/auth/register" className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800 shrink-0">
             Skapa byråkonto <ArrowRight className="w-4 h-4" />
@@ -326,16 +298,17 @@ export default function LandingPage() {
       {/* ───── Jämförelse / Varför ───── */}
       <section className="max-w-5xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="text-center max-w-xl mx-auto">
-          <p className="text-sm font-semibold text-teal-700 mb-3">Varför Enkelfaktura</p>
+          <p className="text-sm font-semibold text-teal-700 mb-3">Varför EnkeltFaktura</p>
           <h2 className="font-display text-4xl text-stone-950">Samma jobb – utan krånglet</h2>
           <p className="text-stone-500 text-lg mt-3">Många fakturaprogram gömmer gränser och avgifter. Vi gör tvärtom – allt ingår, inga överraskningar.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-5 mt-12 items-start">
-          {/* Enkelfaktura */}
+          {/* EnkeltFaktura */}
           <div className="rounded-[1.4rem] p-7 sm:p-8 text-white shadow-xl shadow-[#13294B]/10" style={{ background: "#13294B" }}>
             <div className="flex items-center gap-2.5 mb-6">
-              <Brandmark className="w-8 h-8" />
-              <span className="font-display text-lg">Enkelfaktura</span>
+              {/* Vit variant – brandblått syns daligt mot den morka plattan */}
+              <Brandmark className="w-8 h-8" color="#FFFFFF" />
+              <span className="font-display text-lg">EnkeltFaktura</span>
             </div>
             <ul className="space-y-3.5">
               {usList.map((t) => (
@@ -350,12 +323,12 @@ export default function LandingPage() {
           </div>
           {/* Vanliga program */}
           <div className="rounded-[1.4rem] p-7 sm:p-8 bg-white border border-stone-200">
-            <p className="font-display text-lg text-stone-400 mb-6">Vanliga fakturaprogram</p>
+            <p className="font-display text-lg text-stone-600 mb-6">Vanliga fakturaprogram</p>
             <ul className="space-y-3.5">
               {themList.map((t) => (
                 <li key={t} className="flex items-start gap-3 text-sm">
                   <span className="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0 bg-stone-100">
-                    <X className="w-3.5 h-3.5 text-stone-400" strokeWidth={3} />
+                    <X className="w-3.5 h-3.5 text-stone-600" strokeWidth={3} />
                   </span>
                   <span className="text-stone-500">{t}</span>
                 </li>
@@ -363,7 +336,7 @@ export default function LandingPage() {
             </ul>
           </div>
         </div>
-        <p className="text-center text-xs text-stone-400 mt-6">Jämförelsen avser vanligt förekommande villkor hos andra fakturaprogram och kan variera.</p>
+        <p className="text-center text-xs text-stone-600 mt-6">Jämförelsen avser vanligt förekommande villkor hos andra fakturaprogram och kan variera.</p>
       </section>
 
       {/* ───── Så funkar det ───── */}
@@ -376,7 +349,7 @@ export default function LandingPage() {
           {steps.map((s, i) => (
             <div key={s.n} className="relative">
               {i < steps.length - 1 && <div className="hidden md:block absolute top-4 left-14 right-0 h-px bg-stone-200" />}
-              <div className="font-display text-5xl text-teal-300 leading-none select-none relative">{s.n}</div>
+              <div aria-hidden="true" className="font-display text-5xl text-teal-600 leading-none select-none relative">{s.n}</div>
               <h3 className="font-semibold text-stone-900 mt-4">{s.title}</h3>
               <p className="text-sm text-stone-500 leading-relaxed mt-1.5">{s.desc}</p>
             </div>
@@ -390,7 +363,7 @@ export default function LandingPage() {
           <div>
             <h2 className="font-display text-3xl sm:text-4xl">Svensk fakturering, utan krångel</h2>
             <p className="text-stone-300 mt-4 leading-relaxed max-w-md">
-              Vi har byggt Enkelfaktura för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
+              Vi har byggt EnkeltFaktura för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
               ROT/RUT, kreditfaktura och GDPR finns inbyggt från dag ett.
             </p>
             <Link href="/auth/register" className="inline-flex items-center gap-2 mt-7 bg-white text-stone-900 font-semibold px-5 py-3 rounded-full hover:bg-stone-100 transition-colors">
@@ -406,7 +379,7 @@ export default function LandingPage() {
               <div key={x.t} className="rounded-[1.2rem] bg-white/5 border border-white/10 p-5">
                 <x.icon className="w-6 h-6 text-teal-300" strokeWidth={1.9} />
                 <p className="font-semibold mt-3">{x.t}</p>
-                <p className="text-sm text-stone-400 mt-0.5">{x.d}</p>
+                <p className="text-sm text-stone-600 mt-0.5">{x.d}</p>
               </div>
             ))}
           </div>
@@ -429,10 +402,10 @@ export default function LandingPage() {
                 </span>
               )}
               <p className="text-sm font-semibold text-stone-900">{p.name}</p>
-              <p className="text-xs text-stone-400 mt-0.5">{p.note}</p>
+              <p className="text-xs text-stone-600 mt-0.5">{p.note}</p>
               <div className="flex items-baseline gap-1 mt-4">
                 <span className="font-display text-4xl text-stone-950">{p.price}</span>
-                <span className="text-sm text-stone-400">{p.period}</span>
+                <span className="text-sm text-stone-600">{p.period}</span>
               </div>
               <p className="text-xs font-medium text-teal-700 mt-1.5 min-h-4">{p.yearly ? `eller ${p.yearly}` : ""}</p>
               <ul className="space-y-2.5 mt-5 mb-7">
@@ -451,7 +424,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-stone-400 mt-6">Priser exkl. moms. Betala per månad eller år – med årsbetalning får du 2 månader gratis. Alla konton börjar med 14 dagars gratis prova-på, inget kreditkort krävs.</p>
+        <p className="text-center text-xs text-stone-600 mt-6">Priser exkl. moms. Betala per månad eller år – med årsbetalning får du 2 månader gratis. Alla konton börjar med 14 dagars gratis prova-på, inget kreditkort krävs.</p>
       </section>
 
       {/* ───── FAQ ───── */}
@@ -466,7 +439,7 @@ export default function LandingPage() {
               <details key={f.q} className="group bg-[#faf8f3] rounded-2xl border border-stone-200/80 px-5 open:bg-white open:shadow-sm transition-colors">
                 <summary className="flex items-center justify-between gap-4 cursor-pointer py-4 font-semibold text-stone-900 list-none">
                   {f.q}
-                  <span className="text-stone-400 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
+                  <span className="text-stone-600 group-open:rotate-45 transition-transform text-xl leading-none shrink-0">+</span>
                 </summary>
                 <p className="text-sm text-stone-500 leading-relaxed pb-5 -mt-1">{f.a}</p>
               </details>
@@ -487,54 +460,14 @@ export default function LandingPage() {
             Logga in
           </Link>
         </div>
-        <p className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm text-stone-400 mt-6">
+        <p className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm text-stone-600 mt-6">
           <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> 14 dagar gratis</span>
           <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Inget kreditkort</span>
           <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-teal-600" /> Ingen bindningstid</span>
         </p>
       </section>
 
-      {/* ───── Footer ───── */}
-      <footer className="border-t border-stone-200/70 bg-[#faf8f3]">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-2.5">
-              <Brandmark className="w-8 h-8" />
-              <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
-            </div>
-            <p className="text-sm text-stone-400 mt-3 leading-relaxed">Fakturering &amp; offert för svenska egenföretagare. Byggt i Sverige, för svenska regler.</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Produkt</p>
-            <ul className="space-y-2 text-sm text-stone-500">
-              <li><a href="#funktioner" className="hover:text-stone-900">Funktioner</a></li>
-              <li><a href="#priser" className="hover:text-stone-900">Priser</a></li>
-              <li><a href="#fragor" className="hover:text-stone-900">Vanliga frågor</a></li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Kom igång</p>
-            <ul className="space-y-2 text-sm text-stone-500">
-              <li><Link href="/auth/register" className="hover:text-stone-900">Skapa konto</Link></li>
-              <li><Link href="/auth/login" className="hover:text-stone-900">Logga in</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-3">Juridik</p>
-            <ul className="space-y-2 text-sm text-stone-500">
-              <li><Link href="/integritetspolicy" className="hover:text-stone-900">Integritetspolicy</Link></li>
-              <li><Link href="/anvandarvillkor" className="hover:text-stone-900">Användarvillkor</Link></li>
-              <li><Link href="/gdpr" className="hover:text-stone-900">GDPR</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-stone-200/70">
-          <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-stone-400">
-            <span>© 2026 Enkelfaktura. Alla rättigheter förbehållna.</span>
-            <span>Byggt i Sverige · för svenska företag</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

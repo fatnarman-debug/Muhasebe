@@ -124,7 +124,7 @@ export default function KonsultFakturorPage() {
                       onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
                       onMouseLeave={(e) => (e.currentTarget.style.background = "")}>
                       <td style={{ padding: "13px 18px" }}>
-                        <code style={{ fontSize: 12, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace" }}>{inv.invoice_number}</code>
+                        <code style={{ fontSize: 12, fontWeight: 700, color: "#4338ca", fontFamily: "var(--font-mono)" }}>{inv.invoice_number}</code>
                       </td>
                       <td style={{ padding: "13px 18px", fontSize: 13, color: "#111827" }}>{inv.client_companies?.name ?? "—"}</td>
                       <td style={{ padding: "13px 18px", fontSize: 13, color: "#6b7280" }}>{inv.customers?.name ?? "—"}</td>

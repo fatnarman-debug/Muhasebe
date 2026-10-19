@@ -52,7 +52,7 @@ export default function LoginPage() {
           <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
             <M name="account_balance" size={20} />
           </div>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
             LedgerFlow
           </span>
         </div>
