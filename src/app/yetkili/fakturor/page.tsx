@@ -213,7 +213,7 @@ export default function FakturorPage() {
                     onMouseEnter={e=>{ if(selected?.id!==f.id) e.currentTarget.style.background="#f9fafb"; }}
                     onMouseLeave={e=>{ if(selected?.id!==f.id) e.currentTarget.style.background=""; }}>
                     <td style={{ padding:"12px 16px" }}>
-                      <code style={{ fontSize:12, fontWeight:600, color:"#111827", fontFamily:"'JetBrains Mono', monospace" }}>{f.nummer}</code>
+                      <code style={{ fontSize:12, fontWeight:600, color:"#111827", fontFamily:"var(--font-mono)" }}>{f.nummer}</code>
                     </td>
                     <td style={{ padding:"12px 16px" }}>
                       <div>
@@ -249,7 +249,7 @@ export default function FakturorPage() {
         <div style={{ position:"fixed", top:0, right:0, bottom:0, width:360, background:"#fff", borderLeft:"1px solid #e5e7eb", boxShadow:"-4px 0 24px rgba(0,0,0,0.08)", zIndex:50, display:"flex", flexDirection:"column" }}>
           <div style={{ padding:"16px 20px", borderBottom:"1px solid #f3f4f6", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div>
-              <code style={{ fontSize:13, fontWeight:700, color:"#111827", fontFamily:"'JetBrains Mono',monospace" }}>{selected.nummer}</code>
+              <code style={{ fontSize:13, fontWeight:700, color:"#111827", fontFamily:"var(--font-mono)" }}>{selected.nummer}</code>
               <p style={{ fontSize:12, color:"#9ca3af", marginTop:2 }}>{selected.kund}</p>
             </div>
             <button onClick={()=>setSelected(null)} style={{ width:32, height:32, borderRadius:8, border:"none", background:"none", cursor:"pointer", color:"#6b7280", display:"flex", alignItems:"center", justifyContent:"center" }}
@@ -537,7 +537,7 @@ export default function FakturorPage() {
               <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:14 }}>
                 <div>
                   <label style={lbl}>OCR-nummer (auto)</label>
-                  <div style={{ ...inp, background:"#f9fafb", color:"#6b7280", fontFamily:"'JetBrains Mono',monospace", fontSize:12 }}>
+                  <div style={{ ...inp, background:"#f9fafb", color:"#6b7280", fontFamily:"var(--font-mono)", fontSize:12 }}>
                     {nextNr.replace("FKT-","").replace("-","")}
                   </div>
                 </div>

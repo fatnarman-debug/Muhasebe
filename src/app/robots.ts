@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ledgerflow.se";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 
 // Privata app-rutter ska inte indexeras — bara marknadssidan (/) och auth.
 const DISALLOW = ["/dashboard/", "/yetkili/", "/konsult/", "/admin/", "/api/"];

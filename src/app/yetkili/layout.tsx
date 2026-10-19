@@ -152,6 +152,13 @@ export default function YetkiliLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="min-h-screen" style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }}>
+      {/* Material Symbols behovs bara i panelen. Laddas har i stallet for i
+          rot-layouten, sa att landningssidan slipper en render-blockerande
+          begaran till fonts.googleapis.com (~750 ms pa mobil). */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
       {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
       <Sidebar email={email} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="md:ml-60 flex flex-col min-h-screen">

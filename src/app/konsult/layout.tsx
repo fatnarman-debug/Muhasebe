@@ -73,6 +73,14 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
   return (
     <div style={{ background: "#f8f9fb", color: "#111827", fontFamily: "Inter, sans-serif" }} className="min-h-screen">
 
+      {/* Material Symbols behovs bara i panelen. Laddas har i stallet for i
+          rot-layouten, sa att landningssidan slipper en render-blockerande
+          begaran till fonts.googleapis.com (~750 ms pa mobil). */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
+
       {menuOpen && <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)} />}
 
       {/* Sidebar */}
@@ -100,7 +108,7 @@ export default function KonsultLayout({ children }: { children: React.ReactNode 
           <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>Redovisningskonsult</p>
           {konsult.email && <p style={{ fontSize: 10, color: "#c0c4cc", marginTop: 1 }}>{konsult.email}</p>}
           {konsult.kod && (
-            <code style={{ display: "inline-block", marginTop: 6, fontSize: 10, fontWeight: 700, color: "#4338ca", fontFamily: "'JetBrains Mono', monospace", background: "#eef2ff", padding: "2px 7px", borderRadius: 5 }}>
+            <code style={{ display: "inline-block", marginTop: 6, fontSize: 10, fontWeight: 700, color: "#4338ca", fontFamily: "var(--font-mono)", background: "#eef2ff", padding: "2px 7px", borderRadius: 5 }}>
               {konsult.kod}
             </code>
           )}
