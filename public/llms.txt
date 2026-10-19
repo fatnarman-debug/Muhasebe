@@ -1,8 +1,8 @@
-# Enkelfaktura
+# EnkeltFaktura
 
 > Faktureringssystem för svenska företag. Skapa fakturor och offerter på minuter – med ROT/RUT, OCR & bankgiro, PDF och e-post. Byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.
 
-Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk standard och svenska regler: bankgiro, OCR-referens (optisk rad typ 41), ROT/RUT-avdrag, F-skatt, e-faktura samt GDPR och datalagring inom EU.
+EnkeltFaktura är en svensk SaaS för fakturering och offerter, byggd för svensk standard och svenska regler: bankgiro, OCR-referens (optisk rad typ 41), ROT/RUT-avdrag, F-skatt, e-faktura samt GDPR och datalagring inom EU.
 
 ## Funktioner
 - Fakturor och offerter i samma flöde – omvandla en offert till faktura med ett klick
@@ -25,7 +25,7 @@ Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk
 - Betalning: per månad eller år. Vid årsbetalning får du 2 månader gratis. Inga bindningstider, inga dolda avgifter eller per-faktura-kostnader.
 
 ## Vanliga frågor
-- Är Enkelfaktura gratis att börja med? Du provar allt gratis i 14 dagar utan kreditkort; därefter väljer du en plan för att fortsätta.
+- Är EnkeltFaktura gratis att börja med? Du provar allt gratis i 14 dagar utan kreditkort; därefter väljer du en plan för att fortsätta.
 - Stödjer ni ROT- och RUT-avdrag? Ja, avdraget beräknas automatiskt.
 - Kan kunden betala via OCR och bankgiro? Ja, varje faktura har en OCR-betalrad och QR-kod.
 - Kan jag skicka offerter och omvandla dem till fakturor? Ja, med ett klick.
@@ -33,9 +33,9 @@ Enkelfaktura är en svensk SaaS för fakturering och offerter, byggd för svensk
 - Finns det bindningstid? Nej, säg upp när du vill.
 
 ## Länkar
-- Startsida: https://enkelfaktura.se/
-- Skapa konto (gratis): https://enkelfaktura.se/auth/register
-- Logga in: https://enkelfaktura.se/auth/login
+- Startsida: https://enkeltfaktura.com/
+- Skapa konto (gratis): https://enkeltfaktura.com/auth/register
+- Logga in: https://enkeltfaktura.com/auth/login
 
 ## Om
 - Språk: Svenska

@@ -20,8 +20,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com"
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Enkelfaktura – Fakturering & offert för svenska företag",
-    template: "%s · Enkelfaktura",
+    default: "EnkeltFaktura – Fakturering & offert för svenska företag",
+    template: "%s · EnkeltFaktura",
   },
   description:
     "Skapa proffsiga fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post – byggt för egenföretagare, redovisningskonsulter och redovisningsbyråer. Gratis att börja.",
@@ -30,21 +30,21 @@ export const metadata: Metadata = {
     "offert", "ROT-avdrag faktura", "RUT-avdrag", "bokföringsprogram egenföretagare",
     "redovisningsbyrå fakturering", "e-faktura", "OCR", "bankgiro", "fakturamall",
   ],
-  authors: [{ name: "Enkelfaktura" }],
-  applicationName: "Enkelfaktura",
+  authors: [{ name: "EnkeltFaktura" }],
+  applicationName: "EnkeltFaktura",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "sv_SE",
     url: SITE_URL,
-    siteName: "Enkelfaktura",
-    title: "Enkelfaktura – Fakturering & offert för svenska företag",
+    siteName: "EnkeltFaktura",
+    title: "EnkeltFaktura – Fakturering & offert för svenska företag",
     description:
       "Fakturor, offerter, ROT/RUT, OCR & bankgiro – allt på svenska, enligt svensk standard. Gratis att börja.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Enkelfaktura – Fakturering & offert för svenska företag",
+    title: "EnkeltFaktura – Fakturering & offert för svenska företag",
     description: "Skapa fakturor och offerter på minuter. ROT/RUT, OCR & bankgiro, PDF och e-post.",
   },
   robots: { index: true, follow: true },

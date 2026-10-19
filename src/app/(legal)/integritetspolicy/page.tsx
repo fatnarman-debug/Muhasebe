@@ -4,7 +4,7 @@ import { H1, H2, P, UL, Updated, Draft } from "@/components/legal/prose";
 
 export const metadata: Metadata = {
   title: "Integritetspolicy",
-  description: "Så behandlar Enkelfaktura personuppgifter enligt GDPR.",
+  description: "Så behandlar EnkeltFaktura personuppgifter enligt GDPR.",
   alternates: { canonical: "/integritetspolicy" },
 };
 
@@ -16,7 +16,7 @@ export default function IntegritetspolicyPage() {
       <Updated>Senast uppdaterad: [ÅÅÅÅ-MM-DD]</Updated>
 
       <P>
-        Enkelfaktura (”vi”, ”oss”) värnar om din integritet. Den här policyn beskriver hur vi samlar in och
+        EnkeltFaktura (”vi”, ”oss”) värnar om din integritet. Den här policyn beskriver hur vi samlar in och
         behandlar personuppgifter när du använder vår tjänst för fakturering och offerter (”tjänsten”).
       </P>
       <P>

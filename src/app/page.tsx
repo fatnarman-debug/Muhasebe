@@ -84,12 +84,12 @@ const plans = [
 const trustChips = ["Bankgiro", "OCR-referens", "ROT/RUT", "F-skatt", "Kreditfaktura", "GDPR · EU-data"];
 
 const faqs = [
-  { q: "Är Enkelfaktura gratis att börja med?", a: "Du provar allt gratis i 14 dagar utan kreditkort och kan skicka riktiga fakturor direkt. När provperioden tar slut väljer du en plan för att fortsätta – allt ditt material finns kvar." },
+  { q: "Är EnkeltFaktura gratis att börja med?", a: "Du provar allt gratis i 14 dagar utan kreditkort och kan skicka riktiga fakturor direkt. När provperioden tar slut väljer du en plan för att fortsätta – allt ditt material finns kvar." },
   { q: "Passar det mig som är egenföretagare?", a: "Absolut – det är just dig vi har byggt det för. Driver du enskild firma eller eget AB skapar du din första faktura på under en minut, utan att kunna något om bokföring." },
   { q: "Stödjer ni ROT- och RUT-avdrag?", a: "Ja. När du markerar arbetskostnad räknas ROT- eller RUT-avdraget ut automatiskt och visas korrekt på fakturan enligt Skatteverkets regler." },
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
   { q: "Hur gör jag om jag behöver makulera en faktura?", a: "En skickad faktura får inte raderas enligt bokföringslagen. I stället skapar du en kreditfaktura med ett klick – den upphäver originalet med negativa belopp och behåller en obruten nummerserie." },
-  { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. Enkelfaktura är byggt med GDPR i åtanke." },
+  { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. EnkeltFaktura är byggt med GDPR i åtanke." },
   { q: "Funkar det även för en redovisningsbyrå?", a: "Ja. Är ni flera kan byråplanen bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara sina egna kunder." },
   { q: "Finns det bindningstid?", a: "Nej. Alla planer börjar gratis och du kan säga upp när du vill. Inga bindningstider, inga dolda avgifter." },
 ];
@@ -99,11 +99,11 @@ const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "Organization", name: "Enkelfaktura", url: BASE, description: "Fakturering för svenska egenföretagare och redovisningskonsulter." },
-    { "@type": "WebSite", name: "Enkelfaktura", url: BASE, inLanguage: "sv-SE" },
+    { "@type": "Organization", name: "EnkeltFaktura", url: BASE, description: "Fakturering för svenska egenföretagare och redovisningskonsulter." },
+    { "@type": "WebSite", name: "EnkeltFaktura", url: BASE, inLanguage: "sv-SE" },
     {
       "@type": "SoftwareApplication",
-      name: "Enkelfaktura",
+      name: "EnkeltFaktura",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web",
       inLanguage: "sv-SE",
@@ -227,7 +227,7 @@ export default function LandingPage() {
         <div className="max-w-xl">
           <p className="text-sm font-semibold text-teal-700 mb-3">För vem</p>
           <h2 className="font-display text-4xl text-stone-950">Gjort för dig som driver eget</h2>
-          <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. Enkelfaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
+          <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. EnkeltFaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-5 mt-12">
           {personas.map((s) => (
@@ -265,7 +265,7 @@ export default function LandingPage() {
         <div className="mt-5 rounded-[1.4rem] border border-stone-200 bg-white px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
           <p className="text-sm text-stone-600 flex-1">
             <span className="font-semibold text-stone-900">Driver du en större redovisningsbyrå?</span>{" "}
-            Bjud in konsulter, tilldela kunder och styr behörigheter i tre nivåer – Enkelfaktura skalar med er.
+            Bjud in konsulter, tilldela kunder och styr behörigheter i tre nivåer – EnkeltFaktura skalar med er.
           </p>
           <Link href="/auth/register" className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800 shrink-0">
             Skapa byråkonto <ArrowRight className="w-4 h-4" />
@@ -298,16 +298,17 @@ export default function LandingPage() {
       {/* ───── Jämförelse / Varför ───── */}
       <section className="max-w-5xl mx-auto px-5 sm:px-6 py-20 sm:py-24">
         <div className="text-center max-w-xl mx-auto">
-          <p className="text-sm font-semibold text-teal-700 mb-3">Varför Enkelfaktura</p>
+          <p className="text-sm font-semibold text-teal-700 mb-3">Varför EnkeltFaktura</p>
           <h2 className="font-display text-4xl text-stone-950">Samma jobb – utan krånglet</h2>
           <p className="text-stone-500 text-lg mt-3">Många fakturaprogram gömmer gränser och avgifter. Vi gör tvärtom – allt ingår, inga överraskningar.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-5 mt-12 items-start">
-          {/* Enkelfaktura */}
+          {/* EnkeltFaktura */}
           <div className="rounded-[1.4rem] p-7 sm:p-8 text-white shadow-xl shadow-[#13294B]/10" style={{ background: "#13294B" }}>
             <div className="flex items-center gap-2.5 mb-6">
-              <Brandmark className="w-8 h-8" />
-              <span className="font-display text-lg">Enkelfaktura</span>
+              {/* Vit variant – brandblått syns daligt mot den morka plattan */}
+              <Brandmark className="w-8 h-8" color="#FFFFFF" />
+              <span className="font-display text-lg">EnkeltFaktura</span>
             </div>
             <ul className="space-y-3.5">
               {usList.map((t) => (
@@ -362,7 +363,7 @@ export default function LandingPage() {
           <div>
             <h2 className="font-display text-3xl sm:text-4xl">Svensk fakturering, utan krångel</h2>
             <p className="text-stone-300 mt-4 leading-relaxed max-w-md">
-              Vi har byggt Enkelfaktura för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
+              Vi har byggt EnkeltFaktura för svensk verklighet – inte en översatt mall. Bankgiro, OCR,
               ROT/RUT, kreditfaktura och GDPR finns inbyggt från dag ett.
             </p>
             <Link href="/auth/register" className="inline-flex items-center gap-2 mt-7 bg-white text-stone-900 font-semibold px-5 py-3 rounded-full hover:bg-stone-100 transition-colors">

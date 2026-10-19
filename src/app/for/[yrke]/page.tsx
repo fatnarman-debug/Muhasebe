@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ yrke: str
       type: "article",
       locale: "sv_SE",
       url: `${BASE}/for/${y.slug}`,
-      siteName: "Enkelfaktura",
+      siteName: "EnkeltFaktura",
       title,
       description: y.meta,
     },

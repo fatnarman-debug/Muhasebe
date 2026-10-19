@@ -7,7 +7,7 @@ export function TrialBanner({ daysLeft }: { daysLeft: number }) {
       style={{ background: "#13294B", color: "#fff" }}>
       <span>
         {daysLeft > 0
-          ? <>Du testar Enkelfaktura gratis – <strong>{daysLeft} {daysLeft === 1 ? "dag" : "dagar"} kvar</strong> av provperioden.</>
+          ? <>Du testar EnkeltFaktura gratis – <strong>{daysLeft} {daysLeft === 1 ? "dag" : "dagar"} kvar</strong> av provperioden.</>
           : <>Din provperiod går ut idag.</>}
       </span>
       <Link href="/uppgradera" className="font-semibold underline underline-offset-2" style={{ color: "#5eead4" }}>

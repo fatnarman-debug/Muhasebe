@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     type: "article",
     locale: "sv_SE",
     url: `${BASE}${PATH}`,
-    siteName: "Enkelfaktura",
+    siteName: "EnkeltFaktura",
     title: "Fakturaprogram för hantverkare – ROT-avdrag automatiskt",
     description:
       "ROT 30 % och RUT 50 % räknas ut automatiskt på fakturan. Byggt för snickare, elektriker, målare och rörmokare.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Enkelfaktura för hantverkare" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "EnkeltFaktura för hantverkare" }],
   },
 };
 
@@ -39,7 +39,7 @@ const faqs = [
   },
   {
     q: "Räknas material med i ROT-avdraget?",
-    a: "Nej. Avdraget gäller endast arbetskostnaden. Material, resor, maskiner och frakt ger inget avdrag och ska redovisas separat på fakturan. Enkelfaktura håller isär arbete och material åt dig så att avdraget alltid beräknas på rätt belopp.",
+    a: "Nej. Avdraget gäller endast arbetskostnaden. Material, resor, maskiner och frakt ger inget avdrag och ska redovisas separat på fakturan. EnkeltFaktura håller isär arbete och material åt dig så att avdraget alltid beräknas på rätt belopp.",
   },
   {
     q: "Måste jag räkna ut ROT-avdraget själv?",
@@ -51,7 +51,7 @@ const faqs = [
   },
   {
     q: "Kan jag skicka fakturan direkt från mobilen?",
-    a: "Ja. Enkelfaktura fungerar i mobilens webbläsare, så du kan skapa och skicka fakturan direkt från arbetsplatsen när jobbet är klart – utan att åka tillbaka till kontoret.",
+    a: "Ja. EnkeltFaktura fungerar i mobilens webbläsare, så du kan skapa och skicka fakturan direkt från arbetsplatsen när jobbet är klart – utan att åka tillbaka till kontoret.",
   },
 ];
 
@@ -354,7 +354,7 @@ export default function HantverkarePage() {
         </Link>
         <p className="text-sm text-stone-600 mt-6">
           Vill du se alla funktioner?{" "}
-          <Link href="/#funktioner" className="underline hover:text-stone-900">Läs mer om Enkelfaktura</Link>
+          <Link href="/#funktioner" className="underline hover:text-stone-900">Läs mer om EnkeltFaktura</Link>
         </p>
       </section>
 

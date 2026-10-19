@@ -18,7 +18,7 @@ export function SiteHeader({ anchorBase = "" }: { anchorBase?: string }) {
       <nav className="max-w-6xl mx-auto px-5 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <Brandmark className="w-8 h-8" />
-          <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
+          <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>EnkeltFaktura</span>
         </Link>
         <div className="hidden md:flex items-center gap-8 text-sm text-stone-500">
           {nav.map((n) => (
@@ -45,7 +45,7 @@ export function SiteFooter({ anchorBase = "" }: { anchorBase?: string }) {
         <div className="lg:col-span-1">
           <div className="flex items-center gap-2.5">
             <Brandmark className="w-8 h-8" />
-            <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>Enkelfaktura</span>
+            <span className="text-lg font-bold tracking-tight" style={{ color: "#13294B" }}>EnkeltFaktura</span>
           </div>
           <p className="text-sm text-stone-600 mt-3 leading-relaxed">
             Fakturering &amp; offert för svenska egenföretagare. Byggt i Sverige, för svenska regler.
@@ -78,7 +78,7 @@ export function SiteFooter({ anchorBase = "" }: { anchorBase?: string }) {
       </div>
       <div className="border-t border-stone-200/70">
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-stone-600">
-          <span>© 2026 Enkelfaktura. Alla rättigheter förbehållna.</span>
+          <span>© 2026 EnkeltFaktura. Alla rättigheter förbehållna.</span>
           <span>Byggt i Sverige · för svenska företag</span>
         </div>
       </div>
