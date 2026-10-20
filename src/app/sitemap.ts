@@ -20,6 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
 
+    // Guider
+    { url: `${BASE}/guider/rot-avdrag-pa-faktura`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+
     // Jamforelsesidor
     { url: `${BASE}/jamfor/bokio-alternativ`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 

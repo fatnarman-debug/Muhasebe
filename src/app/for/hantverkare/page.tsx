@@ -353,8 +353,8 @@ export default function HantverkarePage() {
           Skapa konto gratis <ArrowRight className="w-4 h-4" />
         </Link>
         <p className="text-sm text-stone-600 mt-6">
-          Vill du se alla funktioner?{" "}
-          <Link href="/#funktioner" className="underline hover:text-stone-900">Läs mer om EnkeltFaktura</Link>
+          Vill du förstå pengaflödet?{" "}
+          <Link href="/guider/rot-avdrag-pa-faktura" className="underline hover:text-stone-900">Läs guiden om ROT-avdrag på fakturan</Link>
         </p>
       </section>
 
