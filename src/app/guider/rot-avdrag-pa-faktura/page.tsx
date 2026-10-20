@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "När får jag pengarna från Skatteverket?",
-    a: "Först när kunden har betalat sin del av fakturan får du ansöka om utbetalning. Skatteverket uttrycker det som att \"när arbetet är utfört och du har betalat, ansöker företaget om utbetalning\". Du ligger alltså ute med avdragsbeloppet från det att fakturan skickas till dess att kunden betalar och ansökan går igenom.",
+    a: "Först när arbetet är utfört och kunden har betalat sin del får du ansöka om utbetalning. Ansökan ska göras senast den 31 januari året efter betalningsåret. Du ligger alltså ute med avdragsbeloppet från det att fakturan skickas till dess att kunden betalar och ansökan går igenom.",
   },
   {
     q: "Vilket år hör avdraget till om jobbet görs i december och betalas i januari?",
@@ -36,15 +36,15 @@ const faqs = [
   },
   {
     q: "Ger resekostnader och framkörning ROT-avdrag?",
-    a: "Nej. Skatteverket är uttrycklig: \"Material och andra kostnader, som resekostnader, ger däremot inte rätt till avdrag.\" Framkörning, transport, maskinhyra och bortforsling ska faktureras som egna rader utan avdrag.",
+    a: "Nej. Skatteverket anger uttryckligen: \"Material och andra kostnader, som resekostnader, ger däremot inte rätt till avdrag.\" Framkörning, transport, maskinhyra och bortforsling ska faktureras som egna rader utan avdrag.",
   },
   {
     q: "Vad händer om kundens tak redan är fullt?",
-    a: "Skatteverket avslår begäran om utrymmet är slut, och då är det kunden som ska betala den delen. Eftersom du redan dragit av beloppet på fakturan blir det en efterhandsdiskussion du helst vill slippa. Fråga kunden om kvarvarande utrymme innan större jobb, och dokumentera svaret.",
+    a: "Skatteverket medger inte avdraget om utrymmet är slut. Kom överens i avtalet om hur betalningen ska hanteras i det läget – vem som får stå för beloppet beror bland annat på avtalet och orsaken till avslaget. Fråga kunden om kvarvarande utrymme innan större jobb, och dokumentera svaret.",
   },
   {
     q: "Kan två personer i samma hushåll dela på ett jobb?",
-    a: "Ja, om båda äger bostaden. Taket är personligt, så två ägare har varsitt – upp till 100 000 kronor i ROT för ett och samma jobb. Fördela då fakturan på båda personerna, annars går den enes utrymme förlorat.",
+    a: "Två delägare kan dela på avdraget om båda uppfyller villkoren och har skatte- och avdragsutrymme kvar. Ange hur avdraget ska fördelas mellan dem. Avdraget kan tillsammans aldrig överstiga 30 procent av den avdragsgrundande arbetskostnaden.",
   },
 ];
 
@@ -82,9 +82,9 @@ const jsonLd = {
 
 const steg = [
   { n: "01", t: "Dela fakturan i arbete och material", d: "Avdraget räknas bara på arbetskostnaden. Material, framkörning, maskinhyra och bortforsling ska ligga på egna rader utan avdrag." },
-  { n: "02", t: "Dra av kundens del direkt", d: "Kunden ska bara betala sin andel – 70 procent av arbetskostnaden vid ROT. Det är det som kallas fakturamodellen." },
+  { n: "02", t: "Dra av rotavdraget direkt", d: "Kunden betalar bara sin andel – 70 procent av arbetskostnaden vid ROT. Det är det som kallas fakturamodellen." },
   { n: "03", t: "Vänta på kundens betalning", d: "Du får inte ansöka innan kunden betalat. Fram till dess ligger du ute med avdragsbeloppet." },
-  { n: "04", t: "Ansök om utbetalning", d: "När betalningen kommit in begär du resterande belopp från Skatteverket. Betalningsdatumet avgör vilket beskattningsår avdraget hör till." },
+  { n: "04", t: "Ansök om utbetalning", d: "När arbetet är utfört och kunden har betalat sin del kan du begära utbetalning. Ansök senast den 31 januari året efter betalningsåret. Betalningsdatumet avgör vilket beskattningsår avdraget hör till." },
 ];
 
 export default function RotGuide() {
@@ -121,10 +121,10 @@ export default function RotGuide() {
             <aside className="rounded-[1.4rem] border border-stone-200 bg-white p-7 sm:p-8 shadow-xl shadow-stone-900/[0.06]">
               <h2 className="font-semibold text-stone-900">Kort svar</h2>
               <p className="text-[15px] text-stone-700 leading-relaxed mt-3">
-                ROT-avdraget är <strong>30 procent av arbetskostnaden</strong> under 2026, med ett
-                tak på <strong>50 000 kronor per person och år</strong>. Du drar av kundens del
-                direkt på fakturan och begär resten från Skatteverket – men först{" "}
-                <strong>efter att kunden har betalat</strong>. Avdraget gäller bara arbete, aldrig
+                ROT-avdraget är <strong>30 procent av arbetskostnaden inklusive moms</strong> under
+                2026, med ett tak på <strong>50 000 kronor per person och år</strong>. Du drar av rotavdraget på
+                fakturan och begär utbetalning från Skatteverket – men först{" "}
+                <strong>efter att kunden har betalat sin del</strong>. Avdraget gäller bara arbete, aldrig
                 material eller resor.
               </p>
             </aside>
@@ -171,7 +171,7 @@ export default function RotGuide() {
             <div className="rounded-[1.4rem] border-2 border-teal-200 bg-teal-50/30 p-6">
               <h3 className="font-semibold text-stone-900">Ger avdrag</h3>
               <ul className="mt-4 space-y-2 text-[15px] text-stone-800">
-                {["Arbetstid på plats i bostaden", "Reparation och underhåll", "Om- och tillbyggnad", "Rivning som del av arbetet", "Felsökning"].map((t) => (
+                {["Arbetskostnad för godkända rotarbeten", "Reparation och underhåll", "Om- och tillbyggnad", "Rivning som ingår i arbetet", "Felsökning i samband med en reparation"].map((t) => (
                   <li key={t} className="flex gap-2.5"><span className="text-teal-700" aria-hidden="true">✓</span> {t}</li>
                 ))}
               </ul>
@@ -179,7 +179,7 @@ export default function RotGuide() {
             <div className="rounded-[1.4rem] border border-stone-200 p-6">
               <h3 className="font-semibold text-stone-900">Ger inget avdrag</h3>
               <ul className="mt-4 space-y-2 text-[15px] text-stone-700">
-                {["Material och varor", "Resor och framkörning", "Maskinhyra", "Bortforsling och deponi", "Arbete utanför bostaden"].map((t) => (
+                {["Material och varor", "Resor och framkörning", "Maskinhyra", "Bortforsling och deponi", "Arbete som inte omfattas av rotreglerna"].map((t) => (
                   <li key={t} className="flex gap-2.5"><span className="text-stone-400" aria-hidden="true">✕</span> {t}</li>
                 ))}
               </ul>
@@ -211,7 +211,7 @@ export default function RotGuide() {
             <tbody className="divide-y divide-stone-100">
               {[
                 ["ROT", "30 % av arbetskostnaden", "max 50 000 kr/person/år"],
-                ["RUT", "50 % av arbetskostnaden", "får fylla hela taket"],
+                ["RUT", "50 % av arbetskostnaden", "inom det gemensamma taket"],
                 ["Gemensamt tak", "ROT + RUT tillsammans", "75 000 kr/person/år"],
               ].map(([a, b, c]) => (
                 <tr key={a}>

@@ -41,14 +41,14 @@ const REGLER = {
     etikett: "ROT 30 %",
     procent: 0.3,
     rubrik: "Så fungerar ROT-avdraget på fakturan",
-    text: "ROT-avdraget är 30 procent av arbetskostnaden under 2026, med ett tak på 50 000 kronor per person och år. Avdraget gäller enbart arbete – inte material, resor eller maskiner. Du drar av kundens del direkt på fakturan och begär resten från Skatteverket.",
+    text: "ROT-avdraget är 30 procent av arbetskostnaden inklusive moms under 2026, med ett tak på 50 000 kronor per person och år. Avdraget gäller enbart arbete – inte material, resor eller maskiner. Du drar av rotavdraget på fakturan. När arbetet är utfört och kunden har betalat sin del begär du utbetalning från Skatteverket.",
     exempel: { arbete: 20000, material: 10000 },
   },
   rut: {
     etikett: "RUT 50 %",
     procent: 0.5,
     rubrik: "Så fungerar RUT-avdraget på fakturan",
-    text: "RUT-avdraget är 50 procent av arbetskostnaden. ROT och RUT delar ett gemensamt tak på 75 000 kronor per person och år, och hela taket får användas för RUT-tjänster. Avdraget gäller bara arbete – material och växter ger inget avdrag.",
+    text: "RUT-avdraget är 50 procent av arbetskostnaden inklusive moms. ROT och RUT delar ett gemensamt tak på högst 75 000 kronor per person och år, inom det gemensamma taket. Avdraget gäller bara arbete – material och växter ger inget avdrag. Du drar av rutavdraget på fakturan och begär utbetalning när kunden har betalat sin del.",
     exempel: { arbete: 8000, material: 2000 },
   },
 } as const;
@@ -61,7 +61,7 @@ function funktionerFor(y: Yrke) {
   const bas = [
     { icon: FileText, title: "Offert som blir faktura", desc: "Skicka offert på jobbet. När kunden tackar ja omvandlar du den till faktura med ett klick – samma rader, samma priser." },
     { icon: Receipt, title: "Tydliga rader", desc: "Separata rader för arbete, material och utlägg. Kunden ser vad hen betalar för, och du slipper frågor i efterhand." },
-    { icon: ScanLine, title: "OCR, bankgiro & QR", desc: "Varje faktura får maskinläsbar betalrad och QR-kod. Kunden skannar i bankappen och betalar rätt belopp." },
+    { icon: ScanLine, title: "OCR, bankgiro & QR", desc: "Varje faktura får en maskinläsbar betalrad och en QR-kod. Kunden skannar i bankappen och betalar rätt belopp." },
     { icon: BellRing, title: "Påminnelser med avgift", desc: "Obetald faktura? Skicka en proffsig påminnelse med påminnelseavgift när du själv vill." },
     { icon: Smartphone, title: "Fungerar i mobilen", desc: "Skriv och skicka fakturan direkt efter jobbet i stället för på kvällen vid köksbordet." },
   ];
@@ -69,13 +69,13 @@ function funktionerFor(y: Yrke) {
     bas.unshift({
       icon: Percent,
       title: `${REGLER[y.avdrag].etikett} räknas ut åt dig`,
-      desc: "Markera vad som är arbetskostnad. Avdraget beräknas enligt 2026 års regler och visas korrekt på fakturan – ingen handräkning.",
+      desc: "Markera vad som är arbetskostnad. Avdraget räknas ut utifrån de arbetskostnader och uppgifter du anger, enligt 2026 års nivåer.",
     });
   } else {
     bas.unshift({
       icon: ShieldCheck,
-      title: "F-skatt och moms rätt från början",
-      desc: "Fakturan innehåller allt som krävs enligt lag: F-skattsedel, organisationsnummer, momssats och betalningsvillkor.",
+      title: "F-skatt och moms på plats",
+      desc: "Fakturan fylls i med dina företagsuppgifter: momsregistreringsnummer, uppgift om godkännande för F-skatt, momssats och betalningsvillkor.",
     });
   }
   return bas;
@@ -177,7 +177,7 @@ export default async function YrkePage({ params }: { params: Promise<{ yrke: str
                     <p className="text-sm font-semibold text-stone-900 mb-3">Räkneexempel</p>
                     <dl className="text-[15px] space-y-2">
                       <div className="flex justify-between gap-4">
-                        <dt className="text-stone-700">Arbetskostnad</dt>
+                        <dt className="text-stone-700">Arbetskostnad inklusive moms</dt>
                         <dd className="font-medium tabular-nums">{kr(regel.exempel.arbete)}</dd>
                       </div>
                       <div className="flex justify-between gap-4">
@@ -194,16 +194,22 @@ export default async function YrkePage({ params }: { params: Promise<{ yrke: str
                       betalar kunden {kr(regel.exempel.arbete + regel.exempel.material - avdrag)} – avdraget
                       är fortfarande {kr(avdrag)}.
                     </p>
+                    <p className="text-sm text-stone-600 mt-2">
+                      Exemplet förutsätter att kunden har rätt till avdraget och tillräckligt
+                      utrymme kvar.
+                    </p>
                   </div>
                 </>
               ) : (
                 <>
                   <h2 className="font-semibold text-stone-900">Vad som måste stå på fakturan</h2>
                   <p className="text-[15px] text-stone-700 leading-relaxed mt-3">
-                    En faktura ska enligt bokföringslagen innehålla fakturanummer i obruten serie,
-                    fakturadatum och förfallodatum, ditt och kundens namn och adress, ditt
-                    organisationsnummer, uppgift om F-skatt, momssats och momsbelopp samt vad tjänsten
-                    avser.
+                    En fullständig momsfaktura ska bland annat innehålla fakturadatum, ett unikt
+                    löpnummer, säljarens momsregistreringsnummer, säljarens och köparens namn och
+                    adress samt uppgifter om vad som sålts, pris och moms. Ange även
+                    betalningsvillkor och, om du är godkänd för F-skatt, uppgiften &rdquo;Godkänd för
+                    F-skatt&rdquo;. Särskilda regler gäller bland annat vid momsfri försäljning och
+                    omvänd betalningsskyldighet.
                   </p>
                   <p className="text-sm text-stone-600 leading-relaxed mt-4 pt-4 border-t border-stone-100">
                     Allt detta fylls i automatiskt när du lagt in ditt företag en gång. Du behöver aldrig
@@ -329,8 +335,8 @@ export default async function YrkePage({ params }: { params: Promise<{ yrke: str
           Testa med din nästa faktura
         </h2>
         <p className="text-stone-700 mt-4 leading-relaxed max-w-lg mx-auto">
-          14 dagar gratis utan kreditkort. Skicka riktiga fakturor direkt – allt ditt material finns
-          kvar om du väljer att fortsätta.
+          14 dagar gratis utan kreditkort. Skicka riktiga fakturor direkt – dina uppgifter och
+          fakturor finns kvar om du väljer att fortsätta.
         </p>
         <Link href="/auth/register" className="inline-flex items-center justify-center gap-2 bg-[#13294B] hover:bg-[#1e3a63] text-white font-semibold px-7 py-4 rounded-full transition-colors mt-8">
           Skapa konto gratis <ArrowRight className="w-4 h-4" />

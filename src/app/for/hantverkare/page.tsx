@@ -56,11 +56,11 @@ const faqs = [
 ];
 
 const features = [
-  { icon: Percent, title: "ROT & RUT räknas ut åt dig", desc: "Markera vad som är arbete. Avdraget beräknas enligt 2026 års regler och visas korrekt på fakturan – ingen handräkning, ingen risk för fel belopp." },
+  { icon: Percent, title: "ROT & RUT räknas ut åt dig", desc: "Markera vad som är arbete. Avdraget räknas ut utifrån de arbetskostnader du anger, enligt 2026 års nivåer." },
   { icon: Receipt, title: "Arbete och material separat", desc: "Avdrag gäller bara arbetskostnaden. Raderna hålls isär automatiskt så att underlaget till Skatteverket blir rätt direkt." },
   { icon: FileText, title: "Offert som blir faktura", desc: "Skicka offert på jobbet. När kunden tackar ja omvandlar du den till faktura med ett klick – samma rader, samma avdrag." },
   { icon: ScanLine, title: "OCR, bankgiro & QR", desc: "Varje faktura får maskinläsbar betalrad och QR-kod. Kunden skannar i bankappen och betalar rätt belopp – färre felbetalningar att reda ut." },
-  { icon: BellRing, title: "Påminnelser med avgift", desc: "Obetald faktura? Skicka en proffsig påminnelse med påminnelseavgift när du själv vill, inte automatiskt bakom ryggen på kunden." },
+  { icon: BellRing, title: "Påminnelser med avgift", desc: "Obetald faktura? Skicka en proffsig påminnelse med påminnelseavgift. Du väljer själv när påminnelsen skickas." },
   { icon: Smartphone, title: "Fakturera från bygget", desc: "Fungerar i mobilen. Skriv fakturan i bilen när jobbet är klart, i stället för på kvällen hemma vid köksbordet." },
 ];
 
@@ -134,9 +134,8 @@ export default function HantverkarePage() {
                 Fakturaprogram för hantverkare
               </h1>
               <p className="text-lg text-stone-700 mt-5 leading-relaxed max-w-xl">
-                Markera vad som är arbetskostnad – ROT- och RUT-avdraget räknas ut automatiskt och
-                hamnar rätt på fakturan. Inga handuträkningar, inga felbelopp att reda ut med
-                Skatteverket i efterhand.
+                Markera vad som är arbetskostnad – ROT- och RUT-avdraget räknas ut utifrån de
+                uppgifter du anger och hamnar på rätt rad i fakturan. Du slipper räkna för hand.
               </p>
 
               <div className="flex flex-wrap items-center gap-3 mt-8">
@@ -163,15 +162,15 @@ export default function HantverkarePage() {
             <aside className="rounded-[1.4rem] border border-stone-200 bg-white p-7 sm:p-8 shadow-xl shadow-stone-900/[0.06]">
               <h2 className="font-semibold text-stone-900">Så fungerar ROT-avdraget på fakturan</h2>
               <p className="text-[15px] text-stone-700 leading-relaxed mt-3">
-                ROT-avdraget är <strong>30 procent av arbetskostnaden</strong> under 2026, med ett tak
-                på <strong>50 000 kronor per person och år</strong>. RUT-avdraget är{" "}
+                ROT-avdraget är <strong>30 procent av arbetskostnaden inklusive moms</strong> under
+                2026, med ett tak på <strong>50 000 kronor per person och år</strong>. RUT-avdraget är{" "}
                 <strong>50 procent</strong>. Tillsammans delar de ett tak på{" "}
                 <strong>75 000 kronor per person och år</strong>, varav högst 50 000 kronor får vara
                 ROT. Avdraget gäller enbart arbete – inte material, resor eller maskiner.
               </p>
               <p className="text-sm text-stone-600 leading-relaxed mt-4 pt-4 border-t border-stone-100">
-                Du drar av kundens del direkt på fakturan och begär resten från Skatteverket.
-                Kunden betalar alltså bara sin andel.
+                Du drar av rotavdraget på fakturan. När arbetet är utfört och kunden har betalat
+                sin del begär du utbetalning från Skatteverket.
               </p>
             </aside>
           </div>
@@ -302,7 +301,7 @@ export default function HantverkarePage() {
         <div className="max-w-xl">
           <p className="text-sm font-semibold text-teal-700 mb-3">Yrken</p>
           <h2 className="font-display text-3xl sm:text-4xl text-stone-950">
-            Används av hantverkare i hela Sverige
+            För hantverkare i hela Sverige
           </h2>
           <p className="text-stone-700 mt-4 leading-relaxed">
             Samma flöde oavsett yrke: markera arbetskostnaden, låt avdraget räknas ut och skicka
@@ -343,8 +342,8 @@ export default function HantverkarePage() {
           Sluta räkna ROT för hand
         </h2>
         <p className="text-stone-700 mt-4 leading-relaxed max-w-lg mx-auto">
-          Testa gratis i 14 dagar utan kreditkort. Skicka riktiga fakturor direkt – allt ditt
-          material finns kvar om du väljer att fortsätta.
+          Testa gratis i 14 dagar utan kreditkort. Skicka riktiga fakturor direkt – dina uppgifter
+          och fakturor finns kvar om du väljer att fortsätta.
         </p>
         <Link
           href="/auth/register"

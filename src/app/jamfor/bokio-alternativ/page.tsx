@@ -13,28 +13,28 @@ const PATH = "/jamfor/bokio-alternativ";
 const KONTROLLERAD = "20 oktober 2026";
 
 export const metadata: Metadata = {
-  title: "Bokio-alternativ 2026 – när gratisplanen försvann",
+  title: "Bokio-alternativ 2026 – vad kostar det att fakturera?",
   description:
-    "Bokio tog bort gratisplanen i januari 2026 och fakturering är ett tillägg. Jämför vad du faktiskt betalar för att fakturera – och när Bokio ändå är rätt val.",
+    "I Bokio Basic kostar fakturering 89 kr/mån extra. Jämför vad du faktiskt betalar för att fakturera – och när Bokio ändå är rätt val.",
   alternates: { canonical: PATH },
   openGraph: {
     type: "article",
     locale: "sv_SE",
     url: `${BASE}${PATH}`,
     siteName: "EnkeltFaktura",
-    title: "Bokio-alternativ 2026 – när gratisplanen försvann",
-    description: "Vad kostar det egentligen att fakturera i Bokio 2026? Och när är ett renodlat fakturaprogram billigare?",
+    title: "Bokio-alternativ 2026 – vad kostar det att fakturera?",
+    description: "Vad kostar det att fakturera i Bokio 2026? Och när är ett renodlat fakturaprogram billigare?",
   },
 };
 
 const faqs = [
   {
-    q: "Varför tog Bokio bort gratisplanen?",
-    a: "Bokio avvecklade sin permanenta gratisplan i januari 2026 och erbjuder i stället 14 dagars kostnadsfri testperiod. Skälet är Bokios eget att kommentera – men effekten för användaren är tydlig: det som tidigare var gratis löpande bokföring kostar nu från 269 kronor i månaden vid årsbetalning.",
+    q: "Vad kostar Bokio i dag?",
+    a: "Bokios prislista innehåller betalda abonnemang och en kostnadsfri provperiod på 14 dagar. Billigaste planen Basic kostar 269 kronor i månaden vid årsbetalning. Kontrollera alltid aktuellt pris hos Bokio innan du bestämmer dig.",
   },
   {
     q: "Ingår fakturering i Bokios grundplan?",
-    a: "Enligt Bokios egen prissida är Fakturering ett tillägg som kostar 89 kronor i månaden utöver planen. För den som framför allt vill skicka fakturor blir alltså den faktiska månadskostnaden plan plus tillägg, inte bara planens pris.",
+    a: "I Bokio Basic är fakturering ett tillägg som kostar 89 kronor i månaden utöver planen. I Premium ingår fakturering. För den som väljer Basic blir alltså den faktiska månadskostnaden plan plus tillägg, inte bara planens pris.",
   },
   {
     q: "Är EnkeltFaktura ett bokföringsprogram?",
@@ -42,11 +42,11 @@ const faqs = [
   },
   {
     q: "Kan jag flytta mina kunduppgifter från Bokio?",
-    a: "Kunduppgifter som namn, organisationsnummer och adress lägger du in i EnkeltFaktura när du skapar kunden. Historiska fakturor behöver du spara kvar enligt bokföringslagen – exportera dem från Bokio innan du avslutar ditt konto där, oavsett vilket program du byter till.",
+    a: "Kunduppgifter som namn, organisationsnummer och adress lägger du in i EnkeltFaktura när du skapar kunden. Historiska fakturor behöver du spara enligt bokföringslagen – exportera dem från Bokio innan du avslutar ditt konto där, oavsett vilket program du byter till.",
   },
   {
     q: "Vad händer med fakturanumreringen när jag byter?",
-    a: "Du anger själv vilket nummer serien ska börja på. Fortsätt där din gamla serie slutade, så behåller du en obruten nummerföljd – det är ett krav enligt bokföringslagen och gör revisionen enklare.",
+    a: "Du anger själv vilket nummer serien ska börja på. Fortsätter du din gamla serie anger du nästa lediga fakturanummer. Varje faktura ska ha ett unikt löpnummer, men numreringen behöver inte ligga i en enda serie.",
   },
 ];
 
@@ -99,12 +99,12 @@ export default function BokioAlternativ() {
           <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-start">
             <div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] leading-[1.07]" style={{ color: "#13294B" }}>
-                Bokio-alternativ när gratisplanen försvann
+                Bokio-alternativ: vad kostar det att fakturera?
               </h1>
               <p className="text-lg text-stone-700 mt-5 leading-relaxed max-w-xl">
-                Bokio avvecklade sin gratisplan i januari 2026. Många som bara använde den för att
-                skicka fakturor står nu inför en månadskostnad – och upptäcker att fakturering
-                dessutom är ett separat tillägg.
+                Bokios aktuella prislista innehåller betalda abonnemang och en kostnadsfri
+                provperiod på 14 dagar. Många som framför allt vill skicka fakturor upptäcker
+                dessutom att fakturering är ett separat tillägg i den billigaste planen.
               </p>
               <p className="text-stone-700 mt-4 leading-relaxed max-w-xl">
                 Den här sidan räknar på vad det faktiskt kostar, och är lika tydlig med när Bokio
@@ -125,12 +125,12 @@ export default function BokioAlternativ() {
             <aside className="rounded-[1.4rem] border border-stone-200 bg-white p-7 sm:p-8 shadow-xl shadow-stone-900/[0.06]">
               <h2 className="font-semibold text-stone-900">Kort svar</h2>
               <p className="text-[15px] text-stone-700 leading-relaxed mt-3">
-                Bokio tog bort sin permanenta gratisplan i januari 2026. Billigaste planen Basic
-                kostar <strong>{kr(BOKIO_BAS)}/mån</strong> vid årsbetalning, och fakturering är
-                ett tillägg på <strong>{kr(BOKIO_FAKTURA)}/mån</strong>. Den som vill fakturera
-                landar alltså på omkring <strong>{kr(BOKIO_TOTALT)}/mån</strong>. EnkeltFaktura
-                kostar <strong>{kr(EF)}/mån</strong> med fakturering inkluderad, men gör inte
-                löpande bokföring.
+                Bokios billigaste plan Basic kostar <strong>{kr(BOKIO_BAS)}/mån</strong> vid
+                årsbetalning, och fakturering är där ett tillägg på{" "}
+                <strong>{kr(BOKIO_FAKTURA)}/mån</strong>. Den som vill fakturera i Basic landar
+                alltså på omkring <strong>{kr(BOKIO_TOTALT)}/mån</strong>. Fakturering ingår i
+                Premium. EnkeltFaktura kostar <strong>{kr(EF)}/mån</strong> med fakturering
+                inkluderad, men gör inte löpande bokföring.
               </p>
               <p className="text-sm text-stone-600 mt-4 pt-4 border-t border-stone-100">
                 Priser hämtade från bokio.se {KONTROLLERAD}. Kontrollera alltid aktuellt pris hos
@@ -156,7 +156,7 @@ export default function BokioAlternativ() {
             <thead>
               <tr className="bg-stone-50 border-b border-stone-200">
                 <th scope="col" className="text-left font-semibold text-stone-900 px-6 py-4">Kostnad per månad</th>
-                <th scope="col" className="text-right font-semibold text-stone-900 px-6 py-4">Bokio</th>
+                <th scope="col" className="text-right font-semibold text-stone-900 px-6 py-4">Bokio Basic<br /><span className="font-normal text-stone-600 text-sm">+ fakturering</span></th>
                 <th scope="col" className="text-right font-semibold text-stone-900 px-6 py-4">EnkeltFaktura</th>
               </tr>
             </thead>
@@ -187,9 +187,10 @@ export default function BokioAlternativ() {
         </div>
 
         <p className="text-sm text-stone-700 mt-5 max-w-2xl leading-relaxed">
-          Jämförelsen gäller den som vill skicka fakturor. Bokio har fler funktioner i de dyrare
-          planerna och tillägg som bankkoppling och e-faktura prissätts separat hos båda tjänsterna
-          på olika sätt – räkna på just din användning.
+          Basic vid årsbetalning; EnkeltFaktura Egen vid månadsbetalning. Priser exklusive moms.
+          Jämförelsen gäller den som vill skicka fakturor – Bokio har fler funktioner i de dyrare
+          planerna, och fakturering ingår i Premium. Kontrollera vilka funktioner och avgifter som
+          ingår i den plan du jämför.
         </p>
       </section>
 
@@ -215,7 +216,7 @@ export default function BokioAlternativ() {
                 {[
                   "behöver löpande bokföring i samma system",
                   "ska göra momsdeklaration och bokslut själv",
-                  "vill ha automatisk bankkoppling mot transaktionerna",
+                  "vill ha automatisk överföring av banktransaktioner",
                   "driver aktiebolag med fler rapporteringskrav",
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-3 text-[15px] text-stone-700">
@@ -263,7 +264,7 @@ export default function BokioAlternativ() {
           {[
             { n: "01", t: "Exportera din historik", d: "Ladda ner tidigare fakturor och underlag från Bokio innan du avslutar kontot. Enligt bokföringslagen ska materialet sparas i sju år." },
             { n: "02", t: "Lägg in företaget", d: "Logotyp, bankgiro, momssats och fakturamall – en gång, sedan följer de med på varje faktura." },
-            { n: "03", t: "Fortsätt nummerserien", d: "Ange det nummer din gamla serie slutade på. En obruten följd är ett krav och gör revisionen enklare." },
+            { n: "03", t: "Fortsätt nummerserien", d: "Fortsätter du samma serie anger du nästa lediga fakturanummer. Varje faktura ska ha ett unikt löpnummer." },
             { n: "04", t: "Säg upp i rätt ordning", d: "Avsluta först när exporten är klar och första fakturan gått ut från det nya systemet." },
           ].map((s) => (
             <li key={s.n} className="rounded-2xl border border-stone-200 bg-white p-5">

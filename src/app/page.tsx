@@ -52,13 +52,13 @@ const usList = [
   "Svenskt – byggt för svenska regler",
 ];
 const themList = [
-  "Ofta begränsat antal eller avgift per faktura",
-  "Gratisnivå ofta max ~5 kunder",
-  "ROT/RUT som tillval eller saknas",
-  "E-faktura/QR ibland mot extra kostnad",
-  "Kredithantering ofta krånglig",
-  "Dolda avgifter, t.ex. ~3 kr per e-faktura",
-  "Ofta en översatt utlandsmall",
+  "Kontrollera om antalet fakturor är begränsat",
+  "Kontrollera om gratisnivån har en kundgräns",
+  "Kontrollera om ROT/RUT ingår eller är tillval",
+  "Kontrollera om e-faktura och QR kostar extra",
+  "Kontrollera hur kreditfakturor hanteras",
+  "Kontrollera avgifter per skickad faktura",
+  "Kontrollera om mallarna följer svensk standard",
 ];
 
 const steps = [
@@ -90,7 +90,7 @@ const faqs = [
   { q: "Kan kunden betala via OCR och bankgiro?", a: "Ja. Varje faktura får en maskinläsbar betalrad (optisk rad, typ 41) längst ner och en QR-kod som kunden kan skanna i sin bankapp för att betala rätt belopp." },
   { q: "Hur gör jag om jag behöver makulera en faktura?", a: "En skickad faktura får inte raderas enligt bokföringslagen. I stället skapar du en kreditfaktura med ett klick – den upphäver originalet med negativa belopp och behåller en obruten nummerserie." },
   { q: "Var lagras min data?", a: "All data lagras på servrar inom EU och säkerhetskopior krypteras med AES-256. EnkeltFaktura är byggt med GDPR i åtanke." },
-  { q: "Funkar det även för en redovisningsbyrå?", a: "Ja. Är ni flera kan byråplanen bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara sina egna kunder." },
+  { q: "Funkar det även för en redovisningsbyrå?", a: "Ja. Är ni flera kan du med byråplanen bjuda in konsulter, tilldela kunder och styra behörigheter i tre nivåer – varje konsult ser bara de företag som har tilldelats konsulten." },
   { q: "Finns det bindningstid?", a: "Nej. Alla planer börjar gratis och du kan säga upp när du vill. Inga bindningstider, inga dolda avgifter." },
 ];
 
@@ -137,7 +137,7 @@ export default function LandingPage() {
             </div>
             <h1 className="ef-rise font-display text-[2.6rem] leading-[1.04] sm:text-6xl text-stone-950 mt-6">
               Fakturering så enkel
-              <br />att du faktiskt <span className="text-teal-700">gör den klar.</span>
+              <br />att du faktiskt <span className="text-teal-700">blir klar.</span>
             </h1>
             <p className="ef-rise text-lg text-stone-600 leading-relaxed mt-6 max-w-lg" style={{ animationDelay: "120ms" }}>
               Fakturor, offerter, ROT/RUT och påminnelser i ett lugnt och tydligt verktyg.
@@ -176,7 +176,7 @@ export default function LandingPage() {
               <div className="mx-6 mt-5 rounded-2xl bg-stone-50 px-4 py-3 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[10px] uppercase tracking-wide text-stone-600">Att betala</p>
-                  <p className="font-display text-xl text-stone-900">18 750,00 kr</p>
+                  <p className="font-display text-xl text-stone-900">20 250,00 kr</p>
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] uppercase tracking-wide text-stone-600">Förfaller</p>
@@ -187,7 +187,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="px-6 py-4 space-y-2.5">
-                {[["Webbutveckling, 15 tim", "15 000 kr"], ["Hosting & drift", "1 200 kr"], ["Moms 25 %", "2 550 kr"]].map(([k, v]) => (
+                {[["Webbutveckling, 15 tim", "15 000 kr"], ["Hosting & drift", "1 200 kr"], ["Moms 25 %", "4 050 kr"]].map(([k, v]) => (
                   <div key={k} className="flex items-center justify-between text-sm">
                     <span className="text-stone-500">{k}</span>
                     <span className="font-medium text-stone-800 tabular-nums" style={{ fontFamily: "var(--font-mono)" }}>{v}</span>
@@ -227,7 +227,7 @@ export default function LandingPage() {
         <div className="max-w-xl">
           <p className="text-sm font-semibold text-teal-700 mb-3">För vem</p>
           <h2 className="font-display text-4xl text-stone-950">Gjort för dig som driver eget</h2>
-          <p className="text-stone-500 text-lg mt-3">Inte en översatt mall för storbolag. EnkeltFaktura är gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer.</p>
+          <p className="text-stone-500 text-lg mt-3">Gjort för enmansföretag och små byråer – det som faktiskt behövs, inget mer. Jämför gärna med andra program; listan till höger är frågor värda att ställa.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-5 mt-12">
           {personas.map((s) => (
@@ -321,14 +321,14 @@ export default function LandingPage() {
               ))}
             </ul>
           </div>
-          {/* Vanliga program */}
+          {/* Att kontrollera hos alternativ */}
           <div className="rounded-[1.4rem] p-7 sm:p-8 bg-white border border-stone-200">
-            <p className="font-display text-lg text-stone-600 mb-6">Vanliga fakturaprogram</p>
+            <p className="font-display text-lg text-stone-600 mb-6">Att kontrollera hos alternativ</p>
             <ul className="space-y-3.5">
               {themList.map((t) => (
                 <li key={t} className="flex items-start gap-3 text-sm">
-                  <span className="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0 bg-stone-100">
-                    <X className="w-3.5 h-3.5 text-stone-600" strokeWidth={3} />
+                  <span className="mt-0.5 w-5 h-5 rounded-full grid place-items-center shrink-0 bg-stone-100 text-stone-600 text-xs font-bold" aria-hidden="true">
+                    ?
                   </span>
                   <span className="text-stone-500">{t}</span>
                 </li>

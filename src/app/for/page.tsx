@@ -49,7 +49,7 @@ function AvdragsMarke({ avdrag }: { avdrag: "rot" | "rut" | null }) {
   if (!avdrag) {
     return (
       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-stone-600 bg-stone-100 rounded-full px-2 py-0.5">
-        <ShieldCheck className="w-3 h-3" aria-hidden="true" /> Utan avdrag
+        <ShieldCheck className="w-3 h-3" aria-hidden="true" /> Utan ROT/RUT-avdrag
       </span>
     );
   }
@@ -83,7 +83,7 @@ export default function ForHubb() {
           </h1>
           <p className="text-lg text-stone-700 mt-5 leading-relaxed max-w-2xl">
             Fakturering ser olika ut beroende på vad du gör. En snickare ska hålla isär arbete och
-            material för ROT-avdraget. En fotograf fakturerar förskott och nyttjanderätt. Välj ditt
+            material för ROT-avdraget. En fotograf kan fakturera förskott och ersättning för nyttjanderätt. Välj ditt
             yrke så visar vi hur det fungerar i praktiken.
           </p>
           <p className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-stone-600 mt-6">

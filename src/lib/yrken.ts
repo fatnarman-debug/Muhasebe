@@ -13,10 +13,10 @@ export type KategoriId = "bygg" | "hem" | "halsa" | "kreativt" | "konsult";
 /** Visningsordning pa hubbsidan /for. */
 export const kategorier: { id: KategoriId; namn: string; ingress: string }[] = [
   { id: "bygg", namn: "Bygg & hantverk", ingress: "ROT-avdrag räknas ut automatiskt på arbetskostnaden." },
-  { id: "hem", namn: "Hem & trädgård", ingress: "RUT-avdrag med 50 procent på arbetet." },
+  { id: "hem", namn: "Hem & trädgård", ingress: "RUT-avdrag med 50 procent av arbetskostnaden." },
   { id: "halsa", namn: "Skönhet & hälsa", ingress: "Återkommande fakturor, klippkort och företagsavtal." },
   { id: "kreativt", namn: "Kreativt & digitalt", ingress: "Projekt, delbetalningar, licenser och utlägg." },
-  { id: "konsult", namn: "Konsult & rådgivning", ingress: "Timmar, fast pris och specifikation som kunden kräver." },
+  { id: "konsult", namn: "Konsult & rådgivning", ingress: "Timmar, fast pris och de specifikationer kunden behöver." },
 ];
 
 export type Yrke = {
@@ -58,8 +58,8 @@ export const yrken: Yrke[] = [
     ],
     faq: [
       { q: "Ger bortforsling av byggavfall ROT-avdrag?", a: "Nej. Bortforsling, deponiavgifter och transport räknas inte som ROT-berättigat arbete. Det är själva arbetet på bostaden som ger avdrag – ta upp bortforsling som en egen rad utan avdrag." },
-      { q: "Kan jag fakturera löpande under ett långt bygge?", a: "Ja, och det är ofta klokt vid större jobb. Dela upp i delfakturor allt eftersom moment blir klara. Varje faktura får sitt eget ROT-underlag, så kunden kan begära avdrag löpande." },
-      { q: "Vad gäller om kunderna är två som äger bostaden tillsammans?", a: "Taket är personligt, så två ägare har varsitt. Det betyder upp till 100 000 kronor i ROT-avdrag för ett och samma kök- eller badrumsjobb, i stället för 50 000. Fördela då fakturan på båda personerna – står hela beloppet på en av dem går den andres utrymme förlorat." },
+      { q: "Kan jag fakturera löpande under ett långt bygge?", a: "Ja, och det är ofta klokt vid större jobb. Dela upp i delfakturor allt eftersom moment blir klara. För varje betald delfaktura kan du begära utbetalning för det färdiga, avdragsgrundande arbetet." },
+      { q: "Vad gäller om kunderna är två som äger bostaden tillsammans?", a: "Två delägare kan dela på avdraget om båda uppfyller villkoren och har utrymme kvar. Det kan betyda upp till 100 000 kronor i rotavdrag för ett och samma kök- eller badrumsjobb, i stället för 50 000. Ange hur avdraget ska fördelas mellan dem." },
     ],
     relaterade: ["malare", "plattsattare", "golvlaggare"],
   },
@@ -70,16 +70,16 @@ export const yrken: Yrke[] = [
     kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för elektriker med ROT-avdrag som räknas ut automatiskt. Separera arbete och materiel, fakturera från bilen. Testa gratis.",
-    lead: "Elinstallationer går ofta fort men har mycket materiel: kabel, dosor, centraler, brytare. Avdraget gäller bara arbetet, och felposterad materiel är den vanligaste orsaken till att ett ROT-underlag inte godkänns.",
+    lead: "Elinstallationer går ofta fort men har mycket materiel: kabel, dosor, centraler, brytare. Avdraget gäller bara arbetet – om materiel räknas in i arbetskostnaden kan rotunderlaget bli fel.",
     fakturarader: ["Arbetstid elinstallation (tim)", "Kabel och förläggningsmateriel", "Centraler, automatsäkringar och jordfelsbrytare", "Uttag, brytare och dosor", "Felsökning (tim)"],
     utmaningar: [
       { t: "Mycket materiel per jobb", d: "Ett enkelt uttagsbyte kan ha tio materielrader. Utan tydlig uppdelning blir ROT-underlaget en gissning." },
-      { t: "Jour och akutjobb", d: "Utryckning kvällstid faktureras med annan timtaxa. Blandas de ihop med ordinarie tid blir både avdrag och fakturan otydlig." },
+      { t: "Jour och akutjobb", d: "Utryckning kvällstid faktureras med annan timtaxa. Om jourtid blandas ihop med ordinarie arbetstid blir både fakturan och avdragsunderlaget otydliga." },
       { t: "Många små jobb på en dag", d: "Fem kunder, fem fakturor. Skrivs de i efterhand hamnar fel adress eller fel timmar på fel kund." },
     ],
     faq: [
-      { q: "Ger felsökning ROT-avdrag?", a: "Ja, felsökning och reparation av elinstallationer i bostaden är ROT-berättigat arbete. Det är arbetstiden som ger avdrag – den materiel som byts ut gör det inte." },
-      { q: "Hur fakturerar jag utryckning utanför ordinarie tid?", a: "Lägg utryckningen som en egen rad med sin egen timtaxa, skild från ordinarie arbetstid. Båda raderna är arbetskostnad och ger ROT-avdrag, men kunden ser tydligt vad som är vad." },
+      { q: "Ger felsökning ROT-avdrag?", a: "Felsökning i samband med en reparation kan ge rotavdrag. Enbart felsökning, utan att något arbete utförs, ger inte rätt till avdrag. Det är arbetstiden som ger avdrag – den materiel som byts ut gör det inte." },
+      { q: "Hur fakturerar jag utryckning utanför ordinarie tid?", a: "Lägg jourtiden som en egen rad med sin egen timtaxa, skild från ordinarie arbetstid. Arbetstid i bostaden kan ge rotavdrag, medan resa och framkörning aldrig gör det – de ska redovisas separat." },
     ],
     relaterade: ["rormokare", "snickare", "vvs-montor"],
   },
@@ -191,16 +191,16 @@ export const yrken: Yrke[] = [
     kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för takläggare och takmontörer. ROT räknas på arbetet – inte på pannor, plåt eller ställning. Offert, faktura och påminnelser.",
-    lead: "Vid ett takbyte utgör arbetet ofta 40–60 procent av totalpriset. Resten är pannor, plåt, papp och ställning – som inte ger något avdrag alls. Kunden räknar nästan alltid med ROT redan i offerten, så uppdelningen måste hålla hela vägen.",
+    lead: "Hur stor del av priset som är arbetskostnad varierar med taket och uppdraget. Resten är pannor, plåt, papp och ställningshyra – som inte ger något avdrag. Kunden räknar nästan alltid med rotavdrag redan i offerten, så uppdelningen måste hålla hela vägen.",
     fakturarader: ["Takläggningsarbete (tim eller kvm)", "Takpannor, plåt och papp", "Läkt, underlagsduk och beslag", "Ställning: montering och demontering", "Ställningshyra (ingen avdragsrätt)"],
     utmaningar: [
-      { t: "Ställning: montering ja, hyra nej", d: "Att montera och demontera ställningen är arbete och ger avdrag. Själva hyran av ställningsmaterialet gör det inte. Två rader, inte en." },
+      { t: "Ställning: montering ja, hyra nej", d: "Montering och demontering är arbete och kan ge avdrag i samband med godkänt rotarbete. Själva hyran av ställningsmaterialet gör det inte. Två rader, inte en." },
       { t: "Stora belopp slår i taket", d: "Ett takbyte kan ensamt fylla kundens ROT-tak på 50 000 kr. Är kunderna två ägare finns dubbelt utrymme – men bara om fakturan fördelas på båda." },
-      { t: "Vädret flyttar jobbet", d: "Ett jobb som skjuts från december till januari byter avdragsår för kunden, eftersom betalningsdatumet styr. Det kan avgöra om avdraget ryms eller inte." },
+      { t: "Vädret flyttar jobbet", d: "Om kundens betalning flyttas från december till januari hör avdraget till det nya året. Det kan avgöra om avdraget ryms eller inte." },
     ],
     faq: [
-      { q: "Ger byggställning ROT-avdrag vid takbyte?", a: "Arbetet med att montera och demontera ställningen ger avdrag, eftersom det är arbete. Hyran av själva ställningsmaterialet ger inget avdrag. Dela därför upp dem på separata rader – annars blir hela posten ifrågasatt." },
-      { q: "Hur stor del av ett takbyte ger avdrag?", a: "Bara arbetskostnaden, som vid takbyten ofta ligger runt 40–60 procent av totalpriset. Pannor, plåt, papp, läkt och ställningshyra ger inget avdrag. Andelen varierar med takets typ och materialval, så räkna på det enskilda jobbet i stället för att utgå från en tumregel." },
+      { q: "Ger byggställning ROT-avdrag vid takbyte?", a: "Montering och demontering av ställningen kan ge rotavdrag när den sker i samband med ett godkänt rotarbete. Hyran av själva ställningsmaterialet ger inget avdrag. Dela därför upp dem på separata rader – annars blir hela posten ifrågasatt." },
+      { q: "Hur stor del av ett takbyte ger avdrag?", a: "Bara arbetskostnaden. Pannor, plåt, papp, läkt och ställningshyra ger inget avdrag. Hur stor andel arbetet utgör varierar med takets typ och materialval, så beräkna rotunderlaget utifrån det aktuella arbetet i stället för en tumregel." },
     ],
     relaterade: ["stallningsbyggare", "murare", "snickare"],
   },
@@ -211,7 +211,7 @@ export const yrken: Yrke[] = [
     kategori: "bygg",
     avdrag: "rot",
     meta: "Fakturaprogram för glasmästare. ROT på arbetet vid fönsterbyte – och tydlig hantering när jobbet är ett försäkringsärende. Testa gratis.",
-    lead: "Glasmästeri rör sig mellan två helt olika fakturor: planerade fönsterbyten där kunden vill ha ROT, och akuta glasskador som går via försäkringsbolaget. De ska inte faktureras likadant – och de får inte blandas ihop.",
+    lead: "Som glasmästare hanterar du olika slags fakturering: planerade fönsterbyten där kunden vill ha rotavdrag, och akuta glasskador som går via försäkringsbolaget. De ska inte faktureras likadant – och de får inte blandas ihop.",
     fakturarader: ["Glasmästeriarbete (tim)", "Isolerglas, energiglas eller säkerhetsglas", "Karm, beslag och tätlister", "Utryckning vid akut skada", "Försäkringsärende: självrisk"],
     utmaningar: [
       { t: "Försäkring och ROT går inte ihop", d: "Får kunden ersättning från försäkringsbolaget för samma arbete kan ROT-avdrag inte användas för den delen. Blandas de ihop blir det återkrav." },
@@ -219,8 +219,8 @@ export const yrken: Yrke[] = [
       { t: "Glaset kostar mer än timmen", d: "Energiglas och säkerhetsglas är dyra poster. Hamnar de i arbetsraden blir avdraget felaktigt högt." },
     ],
     faq: [
-      { q: "Kan kunden få ROT-avdrag när försäkringen betalar?", a: "Nej, inte för den del som försäkringen ersätter. ROT-avdrag kan inte kombineras med försäkringsersättning för samma arbete. Är en del av jobbet utanför försäkringen – till exempel ett uppgraderat glas kunden själv väljer – kan den delen hanteras separat. Håll de två delarna isär på fakturan." },
-      { q: "Ger fönsterbyte ROT-avdrag?", a: "Ja, arbetet med att byta fönster i bostaden är ROT-berättigat. Själva fönstret, glaset och karmen är material och ger inget avdrag. Vid fasta priser per fönster måste arbetsdelen framgå separat för att avdraget ska kunna räknas." },
+      { q: "Kan kunden få ROT-avdrag när försäkringen betalar?", a: "Rotavdrag kan inte ges för arbete som ersätts av försäkringen, även om ersättningen bara täcker en del av arbetskostnaden. Om ersättningen tydligt gäller endast material, eller om andra arbeten som inte rör skadan faktureras separat, kan bedömningen bli en annan. Håll delarna isär på fakturan och stäm av vid osäkerhet." },
+      { q: "Ger fönsterbyte ROT-avdrag?", a: "Arbetskostnaden för fönsterbyte i småhus kan ge rotavdrag. För bostadsrätter gäller snävare regler. Själva fönstret, glaset och karmen är material och ger inget avdrag. Vid fasta priser per fönster måste arbetsdelen framgå separat för att avdraget ska kunna räknas." },
     ],
     relaterade: ["snickare", "malare", "takmontor"],
   },
@@ -234,12 +234,12 @@ export const yrken: Yrke[] = [
     lead: "Ställningsbranschen har en gräns som är lätt att missa på fakturan: arbetet med att montera och demontera ställningen ger ROT-avdrag, men hyran av materialet gör det inte. Står allt på en rad blir hela posten ifrågasatt.",
     fakturarader: ["Montering av ställning (tim)", "Demontering (tim)", "Ställningshyra per vecka (ingen avdragsrätt)", "Väderskydd och inplastning", "Transport och etablering"],
     utmaningar: [
-      { t: "Hyra och arbete på samma rad", d: "Den vanligaste orsaken till underkänt underlag i branschen. Hyran är inte arbete och ger aldrig avdrag, hur länge ställningen än står." },
+      { t: "Hyra och arbete på samma rad", d: "Om hyra och arbete blandas på samma rad blir avdragsunderlaget otydligt. Hyran är inte arbete och ger aldrig avdrag, hur länge ställningen än står." },
       { t: "Hyrestiden är rörlig", d: "Jobbet drar ut, ställningen står kvar. Löpande hyresdebitering måste framgå tydligt, annars blir slutfakturan en överraskning." },
-      { t: "Du är underentreprenör", d: "Står ställningen åt en takläggare är det ofta den entreprenören som fakturerar kunden. Då är ditt ROT-underlag deras problem – men dina rader måste ändå vara korrekta." },
+      { t: "Du är underentreprenör", d: "Om du arbetar som underentreprenör åt en takläggare är det ofta huvudentreprenören som fakturerar slutkunden. Ditt underlag behöver ändå tydligt skilja arbete från hyra och transport." },
     ],
     faq: [
-      { q: "Ger byggställning ROT-avdrag?", a: "Arbetet med montering och demontering ger ROT-avdrag med 30 procent, eftersom det är arbete utfört på bostaden. Hyran av ställningsmaterialet ger inget avdrag. Redovisa dem därför alltid på separata rader på fakturan." },
+      { q: "Ger byggställning ROT-avdrag?", a: "Montering och demontering av byggnadsställning kan ge rotavdrag när arbetet sker i samband med ett godkänt rotarbete. Hyran av ställningsmaterialet omfattas inte. Redovisa dem därför alltid på separata rader på fakturan." },
       { q: "Hur fakturerar jag när hyrestiden förlängs?", a: "Ange hyran som en egen rad med antal veckor och veckopris, så räknas summan ut automatiskt när perioden ändras. Vid långa jobb är det ofta tydligare att delfakturera hyran löpande än att lägga hela beloppet på slutfakturan." },
     ],
     relaterade: ["takmontor", "malare", "murare"],
@@ -253,10 +253,10 @@ export const yrken: Yrke[] = [
     kategori: "hem",
     avdrag: "rut",
     meta: "Fakturaprogram för trädgårdsmästare med RUT-avdrag automatiskt. 50 % på arbetet, växter separat. Fakturera direkt från trädgården.",
-    lead: "Trädgårdsarbete ger RUT-avdrag på 50 procent av arbetskostnaden – dubbelt så mycket som ROT. Men gränsen mot vad som räknas är snävare än många tror, och växter ger aldrig avdrag.",
+    lead: "För trädgårdsarbeten som omfattas av rutavdrag kan kunden få avdrag med 50 procent av arbetskostnaden. Gränsen mellan arbete som ger rätt till rutavdrag och annat arbete är viktig, och växter ger aldrig avdrag.",
     fakturarader: ["Trädgårdsarbete (tim)", "Häckklippning och beskärning", "Växter, jord och gödsel", "Bortforsling av trädgårdsavfall", "Maskinhyra"],
     utmaningar: [
-      { t: "RUT eller inget avdrag alls", d: "Häckklippning och ogräsrensning ger RUT. Anläggning av ny trädgård gör det normalt inte. Gränsen måste synas redan i offerten." },
+      { t: "RUT eller inget avdrag alls", d: "Häckklippning och ogräsrensning ger RUT. Anläggning av ny trädgård, liksom plantering och omplantering, gör det normalt inte. Gränsen måste synas redan i offerten." },
       { t: "Säsongsarbete i korta pass", d: "Två timmar här, tre där. Många små jobb blir många små fakturor – skrivs de i klump i efterhand blir det fel." },
       { t: "Växter är inte arbete", d: "Plantor, jord och gödsel är material och ger aldrig avdrag, hur mycket arbete som än ingår i planteringen." },
     ],
@@ -346,7 +346,7 @@ export const yrken: Yrke[] = [
     ],
     faq: [
       { q: "Hur fakturerar jag bokningsavgift och slutbetalning?", a: "Skicka en första faktura på bokningsavgiften när avtalet skrivs. När jobbet är levererat skickar du slutfakturan på totalbeloppet med en avdragsrad för den redan betalda avgiften, så att det framgår vad som återstår." },
-      { q: "Vilken moms gäller för fotografering?", a: "Fotografiska tjänster har normalt 25 procent moms. Försäljning av konstverk i form av fotografier kan i vissa fall ha reducerad moms – de reglerna är snäva, så stäm av din verksamhet med Skatteverket." },
+      { q: "Vilken moms gäller för fotografering?", a: "Fotografiska tjänster och försäljning av fotografier har normalt 25 procent moms. Att ett fotografi säljs som konst innebär inte i sig att en lägre momssats gäller. Vid osäkerhet om din egen verksamhet, stäm av med Skatteverket." },
     ],
     relaterade: ["webbdesigner", "oversattare", "konsult"],
   },
