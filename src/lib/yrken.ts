@@ -164,6 +164,87 @@ export const yrken: Yrke[] = [
     relaterade: ["plattsattare", "snickare", "malare"],
   },
 
+  {
+    slug: "murare",
+    namn: "murare",
+    singular: "muraren",
+    kategori: "bygg",
+    avdrag: "rot",
+    meta: "Fakturaprogram för murare med automatiskt ROT-avdrag. Håll tegel, bruk och arbete isär på fakturan. Offert som blir faktura. 14 dagar gratis.",
+    lead: "Murningsjobb har tung materialandel – tegel, bruk och puts väger ofta mer än arbetstiden i kronor. Just därför blir ROT-underlaget fel så fort material och arbete hamnar på samma rad.",
+    fakturarader: ["Murningsarbete (tim)", "Tegel, block och sten", "Bruk, puts och cement", "Ställning och uppställning", "Bortforsling av rivningsmassa"],
+    utmaningar: [
+      { t: "Material kan överstiga arbetet", d: "Ett fasadjobb kan ha mer tegel än timmar i kronor räknat. Hamnar materialet i arbetsraden blir avdraget långt för högt och underlaget underkänns." },
+      { t: "Väder stoppar jobbet", d: "Bruk härdar inte i minusgrader. Jobb som drar ut över månadsskiften gör att delfakturor behövs – och att kundens avdragsår kan flyttas." },
+      { t: "Skorsten eller fasad", d: "Arbete på bostaden ger avdrag. Mur i trädgården eller fristående konstruktioner gör det normalt inte. Gränsen ska synas redan i offerten." },
+    ],
+    faq: [
+      { q: "Ger skorstensrenovering ROT-avdrag?", a: "Ja, renovering av skorsten på bostaden räknas som ROT-berättigat arbete. Som alltid gäller avdraget bara arbetskostnaden – tegel, bruk och insatsrör är material och ger inget avdrag." },
+      { q: "Ger murning av trädgårdsmur avdrag?", a: "Normalt inte. ROT gäller arbete på bostaden, och en fristående mur eller stödmur i trädgården räknas vanligtvis inte dit. Är du osäker på ett enskilt jobb, stäm av med Skatteverket innan du lovar kunden avdrag." },
+    ],
+    relaterade: ["plattsattare", "takmontor", "snickare"],
+  },
+  {
+    slug: "takmontor",
+    namn: "takmontörer",
+    singular: "takmontören",
+    kategori: "bygg",
+    avdrag: "rot",
+    meta: "Fakturaprogram för takläggare och takmontörer. ROT räknas på arbetet – inte på pannor, plåt eller ställning. Offert, faktura och påminnelser.",
+    lead: "Vid ett takbyte utgör arbetet ofta 40–60 procent av totalpriset. Resten är pannor, plåt, papp och ställning – som inte ger något avdrag alls. Kunden räknar nästan alltid med ROT redan i offerten, så uppdelningen måste hålla hela vägen.",
+    fakturarader: ["Takläggningsarbete (tim eller kvm)", "Takpannor, plåt och papp", "Läkt, underlagsduk och beslag", "Ställning: montering och demontering", "Ställningshyra (ingen avdragsrätt)"],
+    utmaningar: [
+      { t: "Ställning: montering ja, hyra nej", d: "Att montera och demontera ställningen är arbete och ger avdrag. Själva hyran av ställningsmaterialet gör det inte. Två rader, inte en." },
+      { t: "Stora belopp slår i taket", d: "Ett takbyte kan ensamt fylla kundens ROT-tak på 50 000 kr. Är kunderna två ägare finns dubbelt utrymme – men bara om fakturan fördelas på båda." },
+      { t: "Vädret flyttar jobbet", d: "Ett jobb som skjuts från december till januari byter avdragsår för kunden, eftersom betalningsdatumet styr. Det kan avgöra om avdraget ryms eller inte." },
+    ],
+    faq: [
+      { q: "Ger byggställning ROT-avdrag vid takbyte?", a: "Arbetet med att montera och demontera ställningen ger avdrag, eftersom det är arbete. Hyran av själva ställningsmaterialet ger inget avdrag. Dela därför upp dem på separata rader – annars blir hela posten ifrågasatt." },
+      { q: "Hur stor del av ett takbyte ger avdrag?", a: "Bara arbetskostnaden, som vid takbyten ofta ligger runt 40–60 procent av totalpriset. Pannor, plåt, papp, läkt och ställningshyra ger inget avdrag. Andelen varierar med takets typ och materialval, så räkna på det enskilda jobbet i stället för att utgå från en tumregel." },
+    ],
+    relaterade: ["stallningsbyggare", "murare", "snickare"],
+  },
+  {
+    slug: "glasmastare",
+    namn: "glasmästare",
+    singular: "glasmästaren",
+    kategori: "bygg",
+    avdrag: "rot",
+    meta: "Fakturaprogram för glasmästare. ROT på arbetet vid fönsterbyte – och tydlig hantering när jobbet är ett försäkringsärende. Testa gratis.",
+    lead: "Glasmästeri rör sig mellan två helt olika fakturor: planerade fönsterbyten där kunden vill ha ROT, och akuta glasskador som går via försäkringsbolaget. De ska inte faktureras likadant – och de får inte blandas ihop.",
+    fakturarader: ["Glasmästeriarbete (tim)", "Isolerglas, energiglas eller säkerhetsglas", "Karm, beslag och tätlister", "Utryckning vid akut skada", "Försäkringsärende: självrisk"],
+    utmaningar: [
+      { t: "Försäkring och ROT går inte ihop", d: "Får kunden ersättning från försäkringsbolaget för samma arbete kan ROT-avdrag inte användas för den delen. Blandas de ihop blir det återkrav." },
+      { t: "Akutjobb utan offert", d: "En krossad ruta ska åtgärdas samma dag. Allt måste dokumenteras på plats, annars blir fakturan en efterhandskonstruktion." },
+      { t: "Glaset kostar mer än timmen", d: "Energiglas och säkerhetsglas är dyra poster. Hamnar de i arbetsraden blir avdraget felaktigt högt." },
+    ],
+    faq: [
+      { q: "Kan kunden få ROT-avdrag när försäkringen betalar?", a: "Nej, inte för den del som försäkringen ersätter. ROT-avdrag kan inte kombineras med försäkringsersättning för samma arbete. Är en del av jobbet utanför försäkringen – till exempel ett uppgraderat glas kunden själv väljer – kan den delen hanteras separat. Håll de två delarna isär på fakturan." },
+      { q: "Ger fönsterbyte ROT-avdrag?", a: "Ja, arbetet med att byta fönster i bostaden är ROT-berättigat. Själva fönstret, glaset och karmen är material och ger inget avdrag. Vid fasta priser per fönster måste arbetsdelen framgå separat för att avdraget ska kunna räknas." },
+    ],
+    relaterade: ["snickare", "malare", "takmontor"],
+  },
+  {
+    slug: "stallningsbyggare",
+    namn: "ställningsbyggare",
+    singular: "ställningsbyggaren",
+    kategori: "bygg",
+    avdrag: "rot",
+    meta: "Fakturaprogram för ställningsbyggare. Montering och demontering ger ROT-avdrag – hyran gör det inte. Separera raderna automatiskt.",
+    lead: "Ställningsbranschen har en gräns som är lätt att missa på fakturan: arbetet med att montera och demontera ställningen ger ROT-avdrag, men hyran av materialet gör det inte. Står allt på en rad blir hela posten ifrågasatt.",
+    fakturarader: ["Montering av ställning (tim)", "Demontering (tim)", "Ställningshyra per vecka (ingen avdragsrätt)", "Väderskydd och inplastning", "Transport och etablering"],
+    utmaningar: [
+      { t: "Hyra och arbete på samma rad", d: "Den vanligaste orsaken till underkänt underlag i branschen. Hyran är inte arbete och ger aldrig avdrag, hur länge ställningen än står." },
+      { t: "Hyrestiden är rörlig", d: "Jobbet drar ut, ställningen står kvar. Löpande hyresdebitering måste framgå tydligt, annars blir slutfakturan en överraskning." },
+      { t: "Du är underentreprenör", d: "Står ställningen åt en takläggare är det ofta den entreprenören som fakturerar kunden. Då är ditt ROT-underlag deras problem – men dina rader måste ändå vara korrekta." },
+    ],
+    faq: [
+      { q: "Ger byggställning ROT-avdrag?", a: "Arbetet med montering och demontering ger ROT-avdrag med 30 procent, eftersom det är arbete utfört på bostaden. Hyran av ställningsmaterialet ger inget avdrag. Redovisa dem därför alltid på separata rader på fakturan." },
+      { q: "Hur fakturerar jag när hyrestiden förlängs?", a: "Ange hyran som en egen rad med antal veckor och veckopris, så räknas summan ut automatiskt när perioden ändras. Vid långa jobb är det ofta tydligare att delfakturera hyran löpande än att lägga hela beloppet på slutfakturan." },
+    ],
+    relaterade: ["takmontor", "malare", "murare"],
+  },
+
   /* ───────── RUT – hem & trädgård ───────── */
   {
     slug: "tradgardsmastare",
