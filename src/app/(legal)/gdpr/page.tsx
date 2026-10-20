@@ -13,7 +13,7 @@ const subprocessors = [
   ["Supabase (programvara)", "Databas, autentisering och fillagring. Programvaran är självhostad på servern ovan – uppgifterna ligger inte hos bolaget Supabase.", "Tyskland (EU)"],
   ["Resend / Amazon SES", "Utskick av konto-, faktura- och påminnelsemejl.", "EU (eu-west-1, Irland)"],
   ["Cloudflare", "DNS, CDN och skydd mot överbelastning. Trafiken till tjänsten passerar deras nät.", "Globalt nät"],
-  ["Cloudflare R2", "Lagring av säkerhetskopior av databasen.", "Plats väljs automatiskt – ej låst till EU"],
+  ["Cloudflare R2", "Lagring av säkerhetskopior av databasen.", "Östra Europa (EEUR)"],
   ["Google Ireland Ltd.", "Besöksstatistik via Google Analytics. Laddas endast om du samtycker till statistikcookies.", "EU, med överföring till USA"],
 ];
 
@@ -72,8 +72,9 @@ export default function GdprPage() {
         </table>
       </div>
       <P>
-        Säkerhetskopiorna hos Cloudflare R2 ligger i en lagringsyta vars geografiska placering väljs
-        automatiskt och alltså inte är begränsad till EU. Detta ses över.
+        Säkerhetskopiorna lagras i Cloudflares region för östra Europa. Lagringsytan är däremot inte
+        skapad med EU-jurisdiktion, vilket innebär att placeringen inte är bunden på avtalsnivå. En
+        lagringsyta med EU-jurisdiktion förbereds.
       </P>
 
       <H2>Säkerhetsåtgärder</H2>
