@@ -36,7 +36,11 @@ export function AdminAddUser() {
     setLoading(false);
 
     if (!res.ok && res.status !== 207) {
-      setError(data.error ?? "Bir hata oluştu.");
+      setError(
+        res.status === 409
+          ? "Bu e-posta adresi zaten kayıtlı. Kullanıcılar listesinden hesabı açıp silebilir, sonra yeniden davet edebilirsin."
+          : data.error ?? "Bir hata oluştu."
+      );
       return;
     }
     if (data.warning) setWarning(data.warning);

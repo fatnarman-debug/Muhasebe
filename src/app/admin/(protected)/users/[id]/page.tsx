@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Building2, FileText, Mail, Clock } from "lucide-react";
 import { formatSEK, formatDate } from "@/lib/utils";
 import { AdminPlanForm } from "@/components/admin/AdminPlanForm";
+import { AccountLifecycleControls } from "@/components/admin/AccountLifecycleControls";
+import { getAdminSession } from "@/lib/admin-session";
+import { redirect } from "next/navigation";
 
 function adminClient() {
   return createClient(
@@ -12,7 +15,13 @@ function adminClient() {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Egen kontroll utover gruppens layout: sidan gor service-role-lasningar
+  // och ska inte kunna na dem innan sessionen ar verifierad.
+  if (!(await getAdminSession())) redirect("/admin/login");
+
   const { id } = await params;
   const supabase = adminClient();
 
@@ -190,6 +199,21 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Hesap yonetimi: dondurma ve kalici silme */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <h3 className="font-semibold text-slate-900 text-sm mb-1">Hesap yönetimi</h3>
+        <p className="text-xs text-slate-500 mb-4">
+          Dondurma geri alınabilir. Silme kalıcıdır ve kullanıcının tüm verilerini kaldırır.
+        </p>
+        <AccountLifecycleControls
+          userId={user.id}
+          email={user.email ?? ""}
+          isFrozen={Boolean(user.frozen_at)}
+          frozenReason={user.frozen_reason ?? null}
+          redirectAfterDelete="/admin/users"
+        />
       </div>
     </div>
   );
