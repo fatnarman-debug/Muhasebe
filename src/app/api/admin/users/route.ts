@@ -47,7 +47,9 @@ export async function POST(req: Request) {
   // 1) Bjud in – Supabase skickar ett mail dar anvandaren satter eget losenord.
   const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { full_name: fullName, role, account_type: accountType },
-    redirectTo: `${site}/auth/callback`,
+    // Inbjudningstoken kommer tillbaka i URL-hashen, som servern inte ser.
+    // Skicka darfor till klientsidan som kan plocka upp den och satta losenord.
+    redirectTo: `${site}/auth/satt-losenord`,
   });
 
   if (inviteError || !invited?.user) {
