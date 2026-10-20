@@ -9,9 +9,12 @@ export const metadata: Metadata = {
 };
 
 const subprocessors = [
-  ["Supabase", "Databas, autentisering och fillagring", "EU (Irland)"],
-  ["Resend", "Utskick av faktura- och påminnelsemejl", "[EU / USA – ange]"],
-  ["[Hostingleverantör / Coolify]", "Drift och hosting av applikationen", "[ange region – helst EU]"],
+  ["Strato AG", "Serverdrift. Applikationen och databasen körs på en server hos Strato.", "Tyskland (EU)"],
+  ["Supabase (programvara)", "Databas, autentisering och fillagring. Programvaran är självhostad på servern ovan – uppgifterna ligger inte hos bolaget Supabase.", "Tyskland (EU)"],
+  ["Resend / Amazon SES", "Utskick av konto-, faktura- och påminnelsemejl.", "EU (eu-west-1, Irland)"],
+  ["Cloudflare", "DNS, CDN och skydd mot överbelastning. Trafiken till tjänsten passerar deras nät.", "Globalt nät"],
+  ["Cloudflare R2", "Lagring av säkerhetskopior av databasen.", "Plats väljs automatiskt – ej låst till EU"],
+  ["Google Ireland Ltd.", "Besöksstatistik via Google Analytics. Laddas endast om du samtycker till statistikcookies.", "EU, med överföring till USA"],
 ];
 
 export default function GdprPage() {
@@ -37,7 +40,7 @@ export default function GdprPage() {
       <UL>
         <li><strong>Föremål och ändamål:</strong> behandling av kunddata för att skapa, skicka och hantera fakturor och offerter på dina instruktioner.</li>
         <li><strong>Typ av uppgifter:</strong> namn, adress, e-post, organisationsnummer eller personnummer samt fakturauppgifter.</li>
-        <li><strong>Varaktighet:</strong> så länge du använder tjänsten samt lagstadgad arkiveringstid (minst 7 år enligt bokföringslagen).</li>
+        <li><strong>Varaktighet:</strong> så länge du använder tjänsten. Räkenskapsinformation bevaras därefter enligt bokföringslagen i sju år räknat från utgången av det kalenderår då räkenskapsåret avslutades.</li>
         <li><strong>Våra skyldigheter:</strong> behandla uppgifter endast enligt dina dokumenterade instruktioner, iaktta sekretess, vidta lämpliga säkerhetsåtgärder, bistå dig vid de registrerades rättigheter, samt radera eller återlämna uppgifter efter avslutat uppdrag (med förbehåll för lagkrav).</li>
         <li><strong>Underbiträden:</strong> du godkänner att vi anlitar de underbiträden som anges nedan, och vi ålägger dem motsvarande skyldigheter.</li>
         <li><strong>Personuppgiftsincident:</strong> vi underrättar dig utan onödigt dröjsmål om vi upptäcker en incident som rör dina uppgifter.</li>
@@ -68,7 +71,10 @@ export default function GdprPage() {
           </tbody>
         </table>
       </div>
-      <P className="text-sm">[Uppdatera listan om ni byter eller lägger till leverantörer. Ange faktisk region för varje tjänst.]</P>
+      <P>
+        Säkerhetskopiorna hos Cloudflare R2 ligger i en lagringsyta vars geografiska placering väljs
+        automatiskt och alltså inte är begränsad till EU. Detta ses över.
+      </P>
 
       <H2>Säkerhetsåtgärder</H2>
       <UL>

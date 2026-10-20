@@ -34,6 +34,10 @@ export async function generateMetadata({ params }: { params: Promise<{ yrke: str
   };
 }
 
+/** Nar uppgifterna pa sidorna senast stamdes av mot Skatteverket.
+    Uppdatera nar reglerna kontrolleras om. */
+const SENAST_KONTROLLERAD = "20 oktober 2026";
+
 /* ── Avdragsregler 2026 (Skatteverket) ──────────────────────────────────── */
 
 const REGLER = {
@@ -328,6 +332,28 @@ export default async function YrkePage({ params }: { params: Promise<{ yrke: str
           </ul>
         </section>
       )}
+
+      {/* ───── Kalla och omfattning ─────
+           Lasaren fakturerar utifran det har. Da maste det ga att se var
+           uppgifterna kommer ifran, nar de kontrollerades och vad sidan
+           inte omfattar. */}
+      <section className="max-w-3xl mx-auto px-5 sm:px-6 pb-16">
+        <div className="rounded-2xl border border-stone-200 bg-white/70 p-6 text-sm text-stone-700 leading-relaxed">
+          <h2 className="font-semibold text-stone-900 text-[15px] mb-2">Om uppgifterna på sidan</h2>
+          <p className="mb-3">
+            Belopp, procentsatser och gränsdragningar är hämtade från{" "}
+            <a href="https://www.skatteverket.se/privat/fastigheterochbostad/rotarbeteochrutarbete.4.2e56d4ba1202f95012080002966.html"
+               className="underline decoration-stone-300 hover:decoration-stone-600 underline-offset-2"
+               rel="noopener">Skatteverket</a>{" "}
+            och kontrollerade {SENAST_KONTROLLERAD}.
+          </p>
+          <p>
+            Sidan beskriver hur avdraget redovisas på fakturan i vanliga fall. Den tar inte upp alla
+            undantag och ersätter inte besked från Skatteverket eller din redovisningskonsult. Vid
+            tveksamhet om ett enskilt arbete ger avdrag – fråga innan du fakturerar.
+          </p>
+        </div>
+      </section>
 
       {/* ───── CTA ───── */}
       <section className="max-w-5xl mx-auto px-5 sm:px-6 pb-20 sm:pb-24 text-center">

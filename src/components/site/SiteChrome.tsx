@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Brandmark } from "@/components/Brandmark";
+import { CookieSettingsButton } from "@/components/CookieSettingsButton";
 
 /* Delad header/footer for alla publika sidor.
    Navigationen pekar pa riktiga sidor, inte ankare – ankarlankar fungerar
@@ -102,6 +103,7 @@ export function SiteFooter({ anchorBase = "" }: { anchorBase?: string }) {
             <li><Link href="/integritetspolicy" className="hover:text-stone-900">Integritetspolicy</Link></li>
             <li><Link href="/anvandarvillkor" className="hover:text-stone-900">Användarvillkor</Link></li>
             <li><Link href="/gdpr" className="hover:text-stone-900">GDPR</Link></li>
+            <li><CookieSettingsButton className="hover:text-stone-900 text-left" /></li>
           </ul>
         </div>
       </div>

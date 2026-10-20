@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const KEY = "lf-cookie-consent"; // "all" | "necessary"
+export const OPEN_EVENT = "lf-consent-open";
+
+/** Oppnar cookiebannern igen sa att besokaren kan andra eller aterkalla sitt val. */
+export function oppnaCookieinstallningar() {
+  try { window.dispatchEvent(new Event(OPEN_EVENT)); } catch { /* ignorera */ }
+}
 
 /**
  * GDPR-cookiebanner. Tjänsten använder i nuläget endast nödvändiga cookies
@@ -12,13 +18,25 @@ const KEY = "lf-cookie-consent"; // "all" | "necessary"
  */
 export function CookieBanner() {
   const [show, setShow] = useState(false);
+  const [nuvarande, setNuvarande] = useState<"all" | "necessary" | null>(null);
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(KEY)) setShow(true);
+      const sparat = localStorage.getItem(KEY) as "all" | "necessary" | null;
+      setNuvarande(sparat);
+      if (!sparat) setShow(true);
     } catch {
       /* localStorage kan saknas (privat läge) – visa då inte bannern upprepat */
     }
+
+    // Samtycket maste ga att andra i efterhand, inte bara vid forsta besoket.
+    // Lanken i sidfoten oppnar bannern igen via det har handelsen.
+    function oppna() {
+      try { setNuvarande(localStorage.getItem(KEY) as "all" | "necessary" | null); } catch {}
+      setShow(true);
+    }
+    window.addEventListener(OPEN_EVENT, oppna);
+    return () => window.removeEventListener(OPEN_EVENT, oppna);
   }, []);
 
   function choose(value: "all" | "necessary") {
@@ -30,6 +48,7 @@ export function CookieBanner() {
     try {
       window.dispatchEvent(new Event("lf-consent-change"));
     } catch { /* ignorera */ }
+    setNuvarande(value);
     setShow(false);
   }
 
@@ -42,17 +61,27 @@ export function CookieBanner() {
           Vi använder nödvändiga cookies för att tjänsten ska fungera och vill gärna använda cookies för statistik
           för att förbättra EnkeltFaktura. Läs mer i vår{" "}
           <Link href="/integritetspolicy" className="text-blue-700 underline">integritetspolicy</Link>.
+          {nuvarande && (
+            <>
+              {" "}Ditt nuvarande val:{" "}
+              <strong>{nuvarande === "all" ? "statistik tillåten" : "endast nödvändiga"}</strong>.
+              Du kan ändra det här när du vill.
+            </>
+          )}
         </p>
         <div className="flex gap-2 mt-3 sm:mt-0 shrink-0">
+          {/* Lika stora och lika framtradande: att neka ska inte vara svarare an att godta. */}
           <button
             onClick={() => choose("necessary")}
-            className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            aria-pressed={nuvarande === "necessary"}
+            className="px-4 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-800 hover:bg-slate-50 transition-colors"
           >
             Endast nödvändiga
           </button>
           <button
             onClick={() => choose("all")}
-            className="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-colors"
+            aria-pressed={nuvarande === "all"}
+            className="px-4 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold text-slate-800 hover:bg-slate-50 transition-colors"
           >
             Acceptera alla
           </button>
