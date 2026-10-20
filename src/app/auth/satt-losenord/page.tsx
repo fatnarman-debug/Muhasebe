@@ -23,13 +23,18 @@ export default function SattLosenord() {
   const [fel, setFel] = useState<string | null>(null);
   const [epost, setEpost] = useState<string | null>(null);
   const [orsak, setOrsak] = useState<string | null>(null);
+  const [kod, setKod] = useState("");
+  const [kodEpost, setKodEpost] = useState("");
+  const [kodFel, setKodFel] = useState<string | null>(null);
+  const [kollarKod, setKollarKod] = useState(false);
 
   useEffect(() => {
     // Las hashen forst: supabase-klienten tommer den nar den initieras, och
     // da forsvinner bade token och eventuellt felmeddelande fran GoTrue.
     const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const hashFel = hash.get("error_description") ?? hash.get("error");
-    const felkod = hash.get("error_code");
+    const fraga = new URLSearchParams(window.location.search);
+    const hashFel = hash.get("error_description") ?? hash.get("error") ?? fraga.get("error_description") ?? fraga.get("error");
+    const felkod = hash.get("error_code") ?? fraga.get("error_code");
     const accessToken = hash.get("access_token");
     const refreshToken = hash.get("refresh_token");
 
@@ -90,6 +95,45 @@ export default function SattLosenord() {
     return () => { avbruten = true; sub.subscription.unsubscribe(); };
   }, []);
 
+  /* Reservvag nar lanken inte gar att vaxla in. Inbjudningar skickas fran
+     servern med service-role, sa den PKCE-verifierare som ?code kraver har
+     aldrig skapats i mottagarens webblasare. Engangskoden i mejlet ar inte
+     bunden till nagon webblasare och fungerar da i stallet. */
+  async function losInKod(e: React.FormEvent) {
+    e.preventDefault();
+    setKodFel(null);
+    setKollarKod(true);
+
+    const supabase = createClient();
+    const epostTrim = kodEpost.trim();
+    const kodTrim = kod.replace(/\s/g, "");
+
+    // Samma kod kan komma fran en inbjudan, en aterstallning eller en
+    // bekraftelse - prova typerna i tur och ordning.
+    let sista: string | null = null;
+    for (const typ of ["invite", "recovery", "signup", "email"] as const) {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: epostTrim,
+        token: kodTrim,
+        type: typ,
+      });
+      if (data?.session) {
+        setEpost(data.session.user.email ?? epostTrim);
+        setKollarKod(false);
+        setLage("redo");
+        return;
+      }
+      sista = error?.message ?? sista;
+    }
+
+    setKollarKod(false);
+    setKodFel(
+      /expired|invalid/i.test(sista ?? "")
+        ? "Koden stämmer inte eller har gått ut. Begär en ny länk."
+        : sista ?? "Koden kunde inte verifieras."
+    );
+  }
+
   async function spara(e: React.FormEvent) {
     e.preventDefault();
     setFel(null);
@@ -133,19 +177,76 @@ export default function SattLosenord() {
                   <p className="text-[15px] text-stone-700 leading-relaxed mt-2">
                     {orsak ?? "Vi hittade ingen giltig inbjudan i länken."} Inbjudnings- och
                     återställningslänkar gäller en begränsad tid och kan bara användas en gång.
-                    Begär en ny länk nedan – den fungerar för både nya och befintliga konton.
+                    Använd koden från mejlet nedan, eller begär en ny länk.
                   </p>
                 </div>
               </div>
+              <div className="mt-6 rounded-xl border border-stone-200 bg-stone-50/70 p-5">
+                <h2 className="font-semibold text-stone-900 text-[15px]">Har du koden i mejlet?</h2>
+                <p className="text-sm text-stone-700 leading-relaxed mt-1.5">
+                  Längst ned i mejlet står en sexsiffrig kod. Den fungerar även när länken
+                  inte gör det – till exempel om du öppnar den i en annan webbläsare.
+                </p>
+
+                <form onSubmit={losInKod} className="mt-4 space-y-3">
+                  <div>
+                    <label htmlFor="kod-epost" className="block text-sm font-medium text-stone-700 mb-1.5">
+                      E-postadress
+                    </label>
+                    <input
+                      id="kod-epost"
+                      type="email"
+                      inputMode="email"
+                      value={kodEpost}
+                      onChange={(e) => setKodEpost(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="w-full h-11 rounded-lg border border-stone-300 px-3 text-base bg-white focus:outline-none focus:ring-2 focus:ring-[#13294B]/20 focus:border-stone-400"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="kod" className="block text-sm font-medium text-stone-700 mb-1.5">
+                      Kod från mejlet
+                    </label>
+                    <input
+                      id="kod"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9 ]*"
+                      maxLength={9}
+                      value={kod}
+                      onChange={(e) => setKod(e.target.value)}
+                      required
+                      placeholder="123456"
+                      className="w-full h-11 rounded-lg border border-stone-300 px-3 text-base bg-white tracking-[0.3em] font-mono focus:outline-none focus:ring-2 focus:ring-[#13294B]/20 focus:border-stone-400"
+                    />
+                  </div>
+
+                  {kodFel && (
+                    <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5">
+                      {kodFel}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={kollarKod}
+                    className="inline-flex items-center justify-center gap-2 w-full bg-[#13294B] hover:bg-[#1e3a63] disabled:opacity-60 text-white font-semibold px-5 py-3 rounded-full transition-colors"
+                  >
+                    {kollarKod ? <><Loader2 className="w-4 h-4 animate-spin" /> Kontrollerar…</> : "Fortsätt med koden"}
+                  </button>
+                </form>
+              </div>
+
               <Link
                 href="/auth/glomt-losenord"
-                className="inline-flex items-center justify-center w-full bg-[#13294B] hover:bg-[#1e3a63] text-white font-semibold px-5 py-3 rounded-full transition-colors mt-6"
+                className="block text-center text-sm text-stone-700 underline decoration-stone-300 hover:decoration-stone-700 underline-offset-2 mt-5"
               >
-                Skicka en ny länk
+                Skicka en ny länk i stället
               </Link>
               <Link
                 href="/auth/login"
-                className="block text-center text-sm text-stone-600 underline decoration-stone-300 hover:decoration-stone-600 underline-offset-2 mt-4"
+                className="block text-center text-sm text-stone-600 underline decoration-stone-300 hover:decoration-stone-600 underline-offset-2 mt-3"
               >
                 Till inloggningen
               </Link>
