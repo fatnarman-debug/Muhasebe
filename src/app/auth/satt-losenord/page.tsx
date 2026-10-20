@@ -22,22 +22,60 @@ export default function SattLosenord() {
   const [sparar, setSparar] = useState(false);
   const [fel, setFel] = useState<string | null>(null);
   const [epost, setEpost] = useState<string | null>(null);
+  const [orsak, setOrsak] = useState<string | null>(null);
 
   useEffect(() => {
+    // Las hashen forst: supabase-klienten tommer den nar den initieras, och
+    // da forsvinner bade token och eventuellt felmeddelande fran GoTrue.
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const hashFel = hash.get("error_description") ?? hash.get("error");
+    const felkod = hash.get("error_code");
+    const accessToken = hash.get("access_token");
+    const refreshToken = hash.get("refresh_token");
+
     const supabase = createClient();
     let avbruten = false;
 
     async function kolla() {
-      // detectSessionInUrl gor jobbet, men den hinner inte alltid fore forsta
-      // renderingen - lyssna darfor aven pa auth-handelsen.
+      if (hashFel) {
+        // Vanligaste orsaken: lanken har redan anvants, ofta av e-postklientens
+        // egen lankskanning, eller sa har den gatt ut.
+        setOrsak(
+          /expired|invalid/i.test(felkod ?? hashFel)
+            ? "Länken har gått ut eller har redan använts."
+            : decodeURIComponent(hashFel.replace(/\+/g, " "))
+        );
+        setLage("ingen-session");
+        return;
+      }
+
+      // detectSessionInUrl gor normalt jobbet, men den hinner inte alltid fore
+      // forsta renderingen - lyssna darfor aven pa auth-handelsen nedan.
       const { data } = await supabase.auth.getSession();
       if (avbruten) return;
       if (data.session) {
         setEpost(data.session.user.email ?? null);
         setLage("redo");
-      } else {
-        setLage("ingen-session");
+        return;
       }
+
+      // Fanns det en token i hashen men ingen session? Satt den sjalv i
+      // stallet for att lita pa klientens automatik.
+      if (accessToken && refreshToken) {
+        const { data: satt, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (avbruten) return;
+        if (satt.session) {
+          setEpost(satt.session.user.email ?? null);
+          setLage("redo");
+          return;
+        }
+        if (error) setOrsak(error.message);
+      }
+
+      setLage("ingen-session");
     }
 
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -93,14 +131,21 @@ export default function SattLosenord() {
                 <div>
                   <h1 className="font-semibold text-stone-900">Länken gick inte att använda</h1>
                   <p className="text-[15px] text-stone-700 leading-relaxed mt-2">
-                    Inbjudningslänkar gäller en begränsad tid och kan bara användas en gång. Be om
-                    en ny inbjudan, eller återställ lösenordet om du redan har ett konto.
+                    {orsak ?? "Vi hittade ingen giltig inbjudan i länken."} Inbjudnings- och
+                    återställningslänkar gäller en begränsad tid och kan bara användas en gång.
+                    Begär en ny länk nedan – den fungerar för både nya och befintliga konton.
                   </p>
                 </div>
               </div>
               <Link
-                href="/auth/login"
+                href="/auth/glomt-losenord"
                 className="inline-flex items-center justify-center w-full bg-[#13294B] hover:bg-[#1e3a63] text-white font-semibold px-5 py-3 rounded-full transition-colors mt-6"
+              >
+                Skicka en ny länk
+              </Link>
+              <Link
+                href="/auth/login"
+                className="block text-center text-sm text-stone-600 underline decoration-stone-300 hover:decoration-stone-600 underline-offset-2 mt-4"
               >
                 Till inloggningen
               </Link>

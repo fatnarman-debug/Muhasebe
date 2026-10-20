@@ -2,28 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-
-const M = ({ name, size = 20 }: { name: string; size?: number }) => (
-  <span className="material-symbols-outlined select-none leading-none"
-    style={{ fontVariationSettings: `'FILL' 1,'wght' 400,'GRAD' 0,'opsz' ${size}`, fontSize: size }}>
-    {name}
-  </span>
-);
-
-const inp: React.CSSProperties = {
-  width: "100%", border: "1px solid #e5e7eb", borderRadius: 9,
-  padding: "10px 13px", fontSize: 14, color: "#111827",
-  background: "#fff", outline: "none", boxSizing: "border-box",
-};
+import { Brandmark } from "@/components/Brandmark";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [showPass, setShowPass] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [visa, setVisa] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,81 +22,106 @@ export default function LoginPage() {
     try {
       const supabase = createClient();
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-      if (authError) { setError("Felaktigt e-post eller lösenord."); setLoading(false); return; }
+      if (authError) {
+        setError("Fel e-postadress eller lösenord.");
+        setLoading(false);
+        return;
+      }
       const role = data.user?.user_metadata?.role ?? "privat";
       const dest = role === "byraansvarig" ? "/yetkili" : role === "konsult" ? "/konsult" : "/dashboard";
       router.push(dest);
       router.refresh();
     } catch {
-      setError("Ett fel uppstod. Försök igen.");
+      setError("Något gick fel. Försök igen.");
       setLoading(false);
     }
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8f9fb", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
-      <div style={{ width: "100%", maxWidth: 420 }}>
+    <div className="min-h-dvh bg-[#faf8f3] text-stone-900 antialiased">
+      <div className="max-w-md mx-auto w-full px-5 py-12 sm:py-20">
+        <Link href="/" className="flex items-center justify-center gap-2.5 mb-10">
+          <Brandmark className="w-9 h-9" />
+          <span className="text-xl font-bold tracking-tight" style={{ color: "#13294B" }}>EnkeltFaktura</span>
+        </Link>
 
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 32 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-            <M name="account_balance" size={20} />
-          </div>
-          <span style={{ fontFamily: "var(--font-mono)", fontWeight: 800, fontSize: 18, color: "#111827", letterSpacing: "-0.01em" }}>
-            LedgerFlow
-          </span>
-        </div>
+        <div className="rounded-[1.4rem] border border-stone-200 bg-white p-7 sm:p-8 shadow-xl shadow-stone-900/[0.06]">
+          <h1 className="text-xl font-semibold tracking-tight text-stone-900">Logga in</h1>
+          <p className="text-[15px] text-stone-700 mt-1.5">Ange dina uppgifter för att fortsätta.</p>
 
-        {/* Card */}
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", padding: "32px 28px" }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 4, letterSpacing: "-0.02em" }}>Logga in</h1>
-          <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 24 }}>Ange dina uppgifter för att fortsätta</p>
-
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>E-postadress</label>
+              <label htmlFor="epost" className="block text-sm font-medium text-stone-700 mb-1.5">
+                E-postadress
+              </label>
               <input
-                type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="din@byrå.se" required autoComplete="email"
-                style={inp}
-                onFocus={e => (e.target.style.borderColor = "#111827")}
-                onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
+                id="epost"
+                type="email"
+                inputMode="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                className="w-full h-11 rounded-lg border border-stone-300 px-3 text-base focus:outline-none focus:ring-2 focus:ring-[#13294B]/20 focus:border-stone-400"
               />
             </div>
 
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: "#374151", display: "block", marginBottom: 6 }}>Lösenord</label>
-              <div style={{ position: "relative" }}>
+              <div className="flex items-baseline justify-between mb-1.5">
+                <label htmlFor="losenord" className="block text-sm font-medium text-stone-700">
+                  Lösenord
+                </label>
+                <Link
+                  href="/auth/glomt-losenord"
+                  className="text-sm text-[#13294B] underline decoration-stone-300 hover:decoration-[#13294B] underline-offset-2"
+                >
+                  Glömt lösenordet?
+                </Link>
+              </div>
+              <div className="relative">
                 <input
-                  type={showPass ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••" required autoComplete="current-password"
-                  style={{ ...inp, paddingRight: 40 }}
-                  onFocus={e => (e.target.style.borderColor = "#111827")}
-                  onBlur={e => (e.target.style.borderColor = "#e5e7eb")}
+                  id="losenord"
+                  type={visa ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="w-full h-11 rounded-lg border border-stone-300 px-3 pr-11 text-base focus:outline-none focus:ring-2 focus:ring-[#13294B]/20 focus:border-stone-400"
                 />
-                <button type="button" onClick={() => setShowPass(v => !v)}
-                  style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", display: "flex", alignItems: "center" }}>
-                  <M name={showPass ? "visibility_off" : "visibility"} size={18} />
+                <button
+                  type="button"
+                  onClick={() => setVisa((v) => !v)}
+                  aria-label={visa ? "Dölj lösenord" : "Visa lösenord"}
+                  className="absolute right-0 top-0 h-11 w-11 grid place-items-center text-stone-500 hover:text-stone-800 transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-[#13294B]/20"
+                >
+                  {visa ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             {error && (
-              <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#dc2626" }}>
+              <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5">
                 {error}
-              </div>
+              </p>
             )}
 
-            <button type="submit" disabled={loading}
-              style={{ background: "#111827", color: "#fff", border: "none", borderRadius: 9, padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-              {loading && <span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />}
-              {loading ? "Loggar in…" : "Logga in"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center justify-center gap-2 w-full bg-[#13294B] hover:bg-[#1e3a63] disabled:opacity-60 text-white font-semibold px-5 py-3 rounded-full transition-colors"
+            >
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Loggar in…</> : "Logga in"}
             </button>
           </form>
         </div>
 
+        <p className="text-center text-sm text-stone-600 mt-6">
+          Har du inget konto?{" "}
+          <Link href="/auth/register" className="text-[#13294B] font-medium underline decoration-stone-300 hover:decoration-[#13294B] underline-offset-2">
+            Skapa konto
+          </Link>
+        </p>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
