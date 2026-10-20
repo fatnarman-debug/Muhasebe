@@ -20,6 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
 
+    // Jamforelsesidor
+    { url: `${BASE}/jamfor/bokio-alternativ`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+
     { url: `${BASE}/auth/register`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/auth/login`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE}/integritetspolicy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
