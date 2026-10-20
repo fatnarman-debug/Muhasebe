@@ -59,6 +59,7 @@ export const yrken: Yrke[] = [
     faq: [
       { q: "Ger bortforsling av byggavfall ROT-avdrag?", a: "Nej. Bortforsling, deponiavgifter och transport räknas inte som ROT-berättigat arbete. Det är själva arbetet på bostaden som ger avdrag – ta upp bortforsling som en egen rad utan avdrag." },
       { q: "Kan jag fakturera löpande under ett långt bygge?", a: "Ja, och det är ofta klokt vid större jobb. Dela upp i delfakturor allt eftersom moment blir klara. Varje faktura får sitt eget ROT-underlag, så kunden kan begära avdrag löpande." },
+      { q: "Vad gäller om kunderna är två som äger bostaden tillsammans?", a: "Taket är personligt, så två ägare har varsitt. Det betyder upp till 100 000 kronor i ROT-avdrag för ett och samma kök- eller badrumsjobb, i stället för 50 000. Fördela då fakturan på båda personerna – står hela beloppet på en av dem går den andres utrymme förlorat." },
     ],
     relaterade: ["malare", "plattsattare", "golvlaggare"],
   },
