@@ -121,7 +121,7 @@ export const yrken: Yrke[] = [
       { q: "Ger stambyte ROT-avdrag?", a: "Ja, stambyte i en bostad som du äger är ROT-berättigat. I en bostadsrätt gäller avdraget bara arbete inom lägenheten – arbete i föreningens gemensamma stammar bekostas av föreningen och ger inte kunden avdrag." },
       { q: "Ger jourutryckning på helgen ROT-avdrag?", a: "Arbetstiden ger avdrag, även med jourtillägg. Själva framkörningen och resan gör det inte – lägg den som en separat rad utan avdrag." },
     ],
-    relaterade: ["elektriker", "plattsattare", "snickare"],
+    relaterade: ["elektriker", "markarbetare", "snickare"],
   },
   {
     slug: "plattsattare",
@@ -243,6 +243,29 @@ export const yrken: Yrke[] = [
       { q: "Hur fakturerar jag när hyrestiden förlängs?", a: "Ange hyran som en egen rad med antal veckor och veckopris, så räknas summan ut automatiskt när perioden ändras. Vid långa jobb är det ofta tydligare att delfakturera hyran löpande än att lägga hela beloppet på slutfakturan." },
     ],
     relaterade: ["takmontor", "malare", "murare"],
+  },
+
+  {
+    slug: "markarbetare",
+    namn: "markarbetare",
+    singular: "markarbetaren",
+    kategori: "bygg",
+    avdrag: "rot",
+    meta: "Fakturaprogram för markarbetare med ROT-avdrag. Dränering ger avdrag, uppfarten inte – och grävmaskinen räknas aldrig som arbete.",
+    lead: "Vid markarbete går ROT-gränsen tvärs genom uppdraget. Dränering av husgrund och schakt för vatten, avlopp, el eller fiber ger avdrag med 30 procent av arbetskostnaden. Att asfaltera, lägga marksten, anlägga uppfart, gräsmatta eller trädgårdsgång gör det inte. Och grävmaskinen räknas aldrig som arbetskostnad, hur stor del av notan den än utgör.",
+    fakturarader: ["Markarbete och schakt (tim)", "Dränering av husgrund (löpmeter)", "Schakt för vatten- och avloppsledning", "Hyra av grävmaskin", "Bortforsling av schaktmassor", "Återfyllning och packning"],
+    utmaningar: [
+      { t: "Grävmaskinen är inte arbete", d: "Skatteverket undantar uttryckligen maskinell utrustning som grävmaskiner och borraggregat. Flera prisguider på nätet påstår motsatsen – att maskinkostnaden får räknas in vid markarbeten. Gör du det blir begäran felaktig, och maskinen är ofta den största posten." },
+      { t: "Gränsen går vid huset, inte vid tomtgränsen", d: "Arbetet måste höra till byggnaden: dränering runt grunden, schakt för att dra in ledningar, markarbete för en tillbyggnad. Samma grävmaskin som sedan lägger en uppfart ger inget avdrag alls." },
+      { t: "Massorna är en egen post", d: "Bortforsling av schaktmassor och deponiavgifter ger inte ROT. Ligger de inbakade i timpriset drar de ned kundens avdrag utan att det syns på fakturan." },
+    ],
+    faq: [
+      { q: "Räknas grävmaskinen som arbetskostnad vid ROT-avdrag?", a: "Nej. Skatteverket ger inte rotavdrag för maskinell utrustning, till exempel grävmaskiner eller borraggregat. Det gäller även när maskinen körs av den som utför arbetet. Ta upp maskinen på en egen rad – flera prisguider påstår motsatsen, men det stämmer inte." },
+      { q: "Ger dränering av huset ROT-avdrag?", a: "Ja. Dränering av husgrunden hör till byggnaden och ger rotavdrag med 30 procent av arbetskostnaden, upp till 50 000 kronor per person och år. Dräneringsrör, fuktskydd och makadam är material och ingår inte." },
+      { q: "Ger en ny uppfart eller marksten ROT-avdrag?", a: "Nej. Att asfaltera, lägga sten eller plattor och att anlägga uppfarter, gräsmattor och trädgårdsgångar ger inte rotavdrag. Inte heller staket, murar eller pool. Det är arbete på tomten, inte på bostaden." },
+      { q: "Ger schaktning för el, fiber eller vatten ROT-avdrag?", a: "Ja. Schaktning för att dra in vatten, avlopp, el eller tele till bostaden ger rotavdrag, eftersom arbetet krävs för husets försörjning. Själva ledningen är material." },
+    ],
+    relaterade: ["rormokare", "snickare", "tradgardsmastare"],
   },
 
   /* ───────── RUT – hem & trädgård ───────── */
@@ -413,7 +436,7 @@ export const yrken: Yrke[] = [
       { q: "Hur fakturerar jag bokningsavgift och slutbetalning?", a: "Skicka en första faktura på bokningsavgiften när avtalet skrivs. När jobbet är levererat skickar du slutfakturan på totalbeloppet med en avdragsrad för den redan betalda avgiften, så att det framgår vad som återstår." },
       { q: "Vilken moms gäller för fotografering?", a: "Fotografiska tjänster och försäljning av fotografier har normalt 25 procent moms. Att ett fotografi säljs som konst innebär inte i sig att en lägre momssats gäller. Vid osäkerhet om din egen verksamhet, stäm av med Skatteverket." },
     ],
-    relaterade: ["webbdesigner", "oversattare", "konsult"],
+    relaterade: ["webbdesigner", "musiker", "konsult"],
   },
   {
     slug: "webbdesigner",
@@ -454,6 +477,29 @@ export const yrken: Yrke[] = [
       { q: "Hur fakturerar jag per ord?", a: "Ange antalet ord som antal och ordpriset som styckpris, så räknas summan ut automatiskt. Kunden ser både volymen och priset per enhet, vilket minskar frågorna i efterhand." },
     ],
     relaterade: ["webbdesigner", "konsult", "fotograf"],
+  },
+
+  {
+    slug: "musiker",
+    namn: "musiker",
+    singular: "musikern",
+    kategori: "kreativt",
+    avdrag: null,
+    meta: "Fakturaprogram för musiker. Gaget är momsfritt, inspelningsrätt 6 % och skivor 25 % – tre momssatser i samma verksamhet, rätt på fakturan.",
+    lead: "Få yrken har så spretiga momsregler som musikerns. Ersättningen du får för att framträda inför publik är momsfri. Upplåter du rätten till en inspelning är det 6 procent. Säljer du skivor, nedladdad musik eller streaming är det 25 procent. Tre olika behandlingar som kan dyka upp samma månad – och ibland på samma faktura.",
+    fakturarader: ["Gage för spelning (momsfritt)", "Reseersättning och logi", "Ersättning för inspelningsrätt (6 % moms)", "Skivor och merch (25 % moms)", "Studiotid och produktion", "Repetition inför uppdrag"],
+    utmaningar: [
+      { t: "Tre momssatser i samma verksamhet", d: "Gaget är momsfritt, inspelningsrätten 6 procent och skivförsäljningen 25 procent. Sätts fel sats på fakturan är det du som får betala mellanskillnaden i efterhand, inte arrangören." },
+      { t: "Momsfriheten gäller framträdandet – inte allt annat", d: "Undantaget träffar ersättningen för att framträda inför publik när du själv säljer framträdandet. Bokar du ut andra artister är det artistförmedling, och då gäller 25 procent." },
+      { t: "Arrangören betalar efter spelningen, inte på scenen", d: "Gaget faktureras i efterhand, ofta till en förening eller kommun med 30 dagars betalningstid. Utan faktureringsunderlag från kvällen blir det svårt att komma ihåg vad som avtalades." },
+    ],
+    faq: [
+      { q: "Ska jag ta ut moms på gaget för en spelning?", a: "Nej. Den ersättning du som artist får för ditt framträdande inför publik är momsfri. Det förutsätter att du själv säljer framträdandet, att det sker inför en publik och att det du framför är upphovsrättsligt skyddat." },
+      { q: "Vilken moms gäller när jag upplåter rätten till en inspelning?", a: "6 procent. Det gäller när du som utövande konstnär upplåter eller överlåter rätten till en inspelning av ett verk du framför, till exempel till ett skivbolag eller en upphovsrättsorganisation." },
+      { q: "Vilken moms gäller på skivor, nedladdningar och streaming?", a: "25 procent. Försäljning av skivor, nedladdad musik och streaming av musik beskattas med full momssats – till skillnad från både gaget och inspelningsrätten." },
+      { q: "Vilken moms gäller om jag bokar ut andra artister?", a: "25 procent. Artistförmedling är en vanlig tjänst och omfattas varken av undantaget för framträdanden eller av den lägre kultursatsen." },
+    ],
+    relaterade: ["fotograf", "oversattare", "konsult"],
   },
 
   /* ───────── Konsult & rådgivning ───────── */
