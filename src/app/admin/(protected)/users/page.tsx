@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { Users, ChevronRight } from "lucide-react";
 import { getAdminSession } from "@/lib/admin-session";
+import { AdminAddUser } from "@/components/admin/AdminAddUser";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +45,8 @@ export default async function AdminUsersPage() {
           <p className="text-sm text-slate-500">Tüm kayıtlı kullanıcılar ({rows.length}).</p>
         </div>
       </div>
+
+      <AdminAddUser />
 
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <table className="w-full text-sm">
