@@ -10,7 +10,7 @@ const PATH = "/jamfor/bokio-alternativ";
    Konkurrentpriser andras – kontrollera om mot kallan innan sidan uppdateras,
    och flytta fram KONTROLLERAD. En felaktig prisuppgift om en konkurrent ar
    bade ett trovardighets- och ett rattsligt problem. */
-const KONTROLLERAD = "20 oktober 2026";
+const KONTROLLERAD = "21 oktober 2026";
 
 export const metadata: Metadata = {
   title: "Bokio-alternativ 2026 – vad kostar det att fakturera?",

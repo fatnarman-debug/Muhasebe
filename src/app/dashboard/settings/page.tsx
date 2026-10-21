@@ -5,10 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Save, Check, KeyRound, User } from "lucide-react";
+import { Loader2, Save, Check, KeyRound, User, Download, ShieldAlert, AlertTriangle } from "lucide-react";
 
 export default function SettingsPage() {
-  const [tab, setTab] = useState<"profile" | "password">("profile");
+  const [tab, setTab] = useState<"profile" | "password" | "data">("profile");
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -19,7 +19,7 @@ export default function SettingsPage() {
 
       {/* Tab bar */}
       <div className="flex gap-1 border-b border-gray-200">
-        {([["profile", "Profil", User], ["password", "Lösenord", KeyRound]] as const).map(([key, label, Icon]) => (
+        {([["profile", "Profil", User], ["password", "Lösenord", KeyRound], ["data", "Dina uppgifter", ShieldAlert]] as const).map(([key, label, Icon]) => (
           <button
             key={key}
             onClick={() => setTab(key)}
@@ -37,6 +37,7 @@ export default function SettingsPage() {
 
       {tab === "profile" && <ProfileTab />}
       {tab === "password" && <PasswordTab />}
+      {tab === "data" && <DataTab />}
     </div>
   );
 }
@@ -132,5 +133,115 @@ function PasswordTab() {
         {saved ? "Lösenord uppdaterat!" : "Uppdatera lösenord"}
       </Button>
     </form>
+  );
+}
+
+/* Dataportabilitet och radering. Exporten hamtar anvandarens egna rader;
+   raderingen registreras som en begaran i stallet for att verkstallas direkt,
+   eftersom fakturor ar rakenskapsinformation med egen bevarandetid. */
+function DataTab() {
+  const [skickar, setSkickar] = useState(false);
+  const [skickat, setSkickat] = useState(false);
+  const [fel, setFel] = useState<string | null>(null);
+  const [anledning, setAnledning] = useState("");
+  const [bekrafta, setBekrafta] = useState(false);
+
+  async function begarRadering() {
+    setFel(null);
+    setSkickar(true);
+    const res = await fetch("/api/konto/radera-begaran", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ anledning }),
+    });
+    const data = await res.json().catch(() => ({}));
+    setSkickar(false);
+    if (!res.ok) { setFel(data.error ?? "Begäran kunde inte skickas."); return; }
+    setSkickat(true);
+  }
+
+  return (
+    <div className="space-y-6">
+      <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          Ladda ner dina uppgifter
+        </h2>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          Du får en JSON-fil med dina kunder, fakturor, fakturarader, artiklar och
+          betalningar. Filen innehåller det du själv har lagt in.
+        </p>
+        <a
+          href="/api/konto/export"
+          className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
+        >
+          <Download className="w-4 h-4" /> Ladda ner som JSON
+        </a>
+      </section>
+
+      <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          Avsluta kontot
+        </h2>
+
+        {skickat ? (
+          <p className="flex items-start gap-2 text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg px-3.5 py-2.5">
+            <Check className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>
+              Din begäran är registrerad. Vi hör av oss till din e-postadress när den
+              har behandlats.
+            </span>
+          </p>
+        ) : (
+          <>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Kontot avslutas inte direkt. Fakturor du har skapat är räkenskapsinformation
+              och ska bevaras enligt bokföringslagen – allt kan därför inte raderas på
+              en gång. Begäran behandlas manuellt och du får besked om vad som tas bort
+              och vad som måste sparas.
+            </p>
+            <p className="flex items-start gap-2 text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3.5 py-2.5">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>Ladda ner dina uppgifter innan du begär radering.</span>
+            </p>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="anledning">Anledning (frivilligt)</Label>
+              <Input
+                id="anledning"
+                value={anledning}
+                onChange={(e) => setAnledning(e.target.value)}
+                placeholder="Hjälper oss att bli bättre"
+              />
+            </div>
+
+            <label className="flex items-start gap-2.5 text-sm text-gray-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={bekrafta}
+                onChange={(e) => setBekrafta(e.target.checked)}
+                className="accent-red-600 mt-0.5"
+              />
+              <span>Jag vill att mitt konto avslutas och mina uppgifter raderas så långt det är möjligt.</span>
+            </label>
+
+            {fel && (
+              <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5">
+                {fel}
+              </p>
+            )}
+
+            <Button
+              type="button"
+              onClick={begarRadering}
+              disabled={!bekrafta || skickar}
+              className="gap-2 bg-red-600 hover:bg-red-700 disabled:opacity-50"
+            >
+              {skickar ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldAlert className="w-4 h-4" />}
+              {skickar ? "Skickar…" : "Begär radering"}
+            </Button>
+          </>
+        )}
+      </section>
+    </div>
   );
 }
