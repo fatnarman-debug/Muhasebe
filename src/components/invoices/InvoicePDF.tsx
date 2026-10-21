@@ -154,7 +154,13 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
             <Text style={styles.companyLine}>
               {company.address_line1}, {company.postal_code} {company.city}
               {company.org_no ? ` · Org.nr ${company.org_no}` : ""}
+              {company.moms_no ? ` · Momsreg.nr ${company.moms_no}` : ""}
             </Text>
+            {/* Kopparen behover veta att saljaren har F-skatt - annars kan
+                kopare behova gora skatteavdrag, och ROT/RUT forutsatter det. */}
+            {company.f_skatt ? (
+              <Text style={styles.companyLine}>Godkänd för F-skatt</Text>
+            ) : null}
           </View>
           <View>
             <Text style={[styles.fakturaTitle, { color: accent }]}>{docTitle}</Text>
@@ -208,6 +214,12 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           <View style={styles.infoCol}>
             <View style={styles.infoRow}><Text style={styles.infoKey}>Fakturadatum</Text><Text style={styles.infoVal}>{fmtDate(invoice.invoice_date)}</Text></View>
             {customer.org_no ? <View style={styles.infoRow}><Text style={styles.infoKey}>Org.nr</Text><Text style={styles.infoVal}>{customer.org_no}</Text></View> : null}
+            {harAvdrag && customer.personnummer ? (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoKey}>Personnr</Text>
+                <Text style={styles.infoVal}>{customer.personnummer}</Text>
+              </View>
+            ) : null}
             {invoice.your_reference ? <View style={styles.infoRow}><Text style={styles.infoKey}>Er referens</Text><Text style={styles.infoVal}>{invoice.your_reference}</Text></View> : null}
           </View>
         </View>
