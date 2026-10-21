@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  async redirects() {
+    return [
+      // Jamforelsesidan mot en namngiven konkurrent ar borttagen. Adressen
+      // ar indexerad, sa den pekas om i stallet for att ge 404.
+      { source: "/jamfor/bokio-alternativ", destination: "/", permanent: true },
+      { source: "/jamfor", destination: "/", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

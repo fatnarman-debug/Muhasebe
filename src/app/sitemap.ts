@@ -24,7 +24,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/guider/rot-avdrag-pa-faktura`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 
     // Jamforelsesidor
-    { url: `${BASE}/jamfor/bokio-alternativ`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 
     { url: `${BASE}/auth/register`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/auth/login`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
