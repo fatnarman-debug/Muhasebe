@@ -127,6 +127,17 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
   const vatRates = Object.keys(vatByRate).map(Number).filter((r) => vatByRate[r].net !== 0).sort((a, b) => b - a);
   const rounding = invoice.total - (invoice.subtotal + invoice.vat_amount);
 
+  // ROT/RUT: avdraget maste synas pa fakturan. Skatteverket vill se
+  // arbetskostnaden, avdragets storlek och vad kunden faktiskt ska betala.
+  const rotRut = invoice.rot_rut_amount ?? 0;
+  const harAvdrag = !isOffert && Math.abs(rotRut) >= 0.005;
+  const arbetskostnad = sorted
+    .filter((l) => l.is_labor)
+    .reduce((sum, l) => sum + l.line_total + l.vat_amount, 0);
+  // Det belopp kunden ska betala - inte fakturans totalsumma. Anvands aven
+  // i bankgirots optiska rad, annars betalar kunden fel summa.
+  const attBetala = invoice.total - rotRut;
+
   // "Att betala" özet bandı: band şablonlarda renkli (beyaz yazı), diğerlerinde gri (accent tutar)
   const bandBg = tpl.band ? tpl.bandBg! : "#f3f4f6";
   const bandFg = tpl.band ? "#ffffff" : "#111827";
@@ -166,7 +177,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         <View style={{ marginHorizontal: -40, paddingHorizontal: 40, paddingVertical: 16, backgroundColor: bandBg, flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <View style={{ flex: 1.3 }}>
             <Text style={[styles.bandLabelSm, { color: bandSub }]}>{isOffert ? "Belopp (inkl. moms)" : isCredit ? "Att kreditera (inkl. moms)" : "Att betala (inkl. moms)"}</Text>
-            <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(invoice.total)}</Text>
+            <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(attBetala)}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[styles.bandColLabel, { color: bandSub }]}>{isOffert ? "Giltigt t.o.m." : isCredit ? "Krediteringsdatum" : "Förfallodatum"}</Text>
@@ -249,8 +260,26 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
                 <Text style={[styles.sumCell, { width: 90 }]}>{fmt(rounding)}</Text>
               </View>
             )}
+            {harAvdrag && (
+              <>
+                <View style={styles.sumRow}>
+                  <Text style={styles.sumLabel}>Arbetskostnad inkl. moms</Text>
+                  <Text style={[styles.sumCell, { width: 90 }]}> </Text>
+                  <Text style={[styles.sumCell, { width: 70 }]}> </Text>
+                  <Text style={[styles.sumCell, { width: 90 }]}>{fmt(arbetskostnad)}</Text>
+                </View>
+                <View style={styles.sumRow}>
+                  <Text style={styles.sumLabel}>
+                    {invoice.rot_rut_type === "rut" ? "RUT-avdrag 50 %" : "ROT-avdrag 30 %"}
+                  </Text>
+                  <Text style={[styles.sumCell, { width: 90 }]}> </Text>
+                  <Text style={[styles.sumCell, { width: 70 }]}> </Text>
+                  <Text style={[styles.sumCell, { width: 90 }]}>{fmt(-rotRut)}</Text>
+                </View>
+              </>
+            )}
             <View style={styles.attRow}>
-              <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Att betala"} {fmt(invoice.total)}</Text>
+              <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Att betala"} {fmt(attBetala)}</Text>
             </View>
           </View>
         </View>
@@ -258,8 +287,8 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         {/* 7) Bankgiro OCR optik satırı (typ 41) — yalnızca faturada, offert'te yok */}
         {company.bankgiro && !hidePay && (() => {
           const ref = invoice.ocr_number || invoice.invoice_number.replace(/\D/g, "");
-          const kronor = Math.floor(invoice.total);
-          const ore = String(Math.round((invoice.total - kronor) * 100)).padStart(2, "0");
+          const kronor = Math.floor(attBetala);
+          const ore = String(Math.round((attBetala - kronor) * 100)).padStart(2, "0");
           const check = luhn(`${kronor}${ore}`);
           const bg = company.bankgiro.replace(/\D/g, "");
           const mono = { fontFamily: "Courier-Bold" as const, fontSize: 11, color: "#111827" };

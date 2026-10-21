@@ -46,7 +46,7 @@ export default function KonsultNewInvoicePage() {
         if (ids.length) {
           const { data: cust } = await supabase
             .from("customers")
-            .select("id, name, client_company_id, payment_terms_days")
+            .select("id, name, client_company_id, payment_terms_days, customer_type, personnummer")
             .in("client_company_id", ids)
             .eq("is_active", true)
             .order("name");

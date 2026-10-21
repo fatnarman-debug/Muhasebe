@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save, Plus, Trash2, Send, AlertTriangle } from "lucide-react";
 import { formatSEK, generateOCR, toDateInput } from "@/lib/utils";
+import { raknaAvdrag, REGLER } from "@/lib/rot-rut";
 import type { ClientCompany, Customer, Invoice, InvoiceLine } from "@/types/database";
 
 interface EditLine {
@@ -18,6 +19,9 @@ interface EditLine {
   unit: string;
   unit_price: number;
   vat_rate: number;
+  /** Arbete ger ROT/RUT-avdrag. Maste foljia med vid redigering, annars
+      nollstalls markeringen och avdraget pa fakturan blir fel. */
+  is_labor: boolean;
 }
 
 interface Props {
@@ -29,7 +33,7 @@ interface Props {
   getRedirectPath?: (id: string) => string;
 }
 
-const emptyLine = (): EditLine => ({ description: "", quantity: 1, unit: "st", unit_price: 0, vat_rate: 25 });
+const emptyLine = (): EditLine => ({ description: "", quantity: 1, unit: "st", unit_price: 0, vat_rate: 25, is_labor: false });
 
 export function InvoiceEditForm({ invoice, company, customer, lines: initialLines, allCustomers, getRedirectPath }: Props) {
   const router = useRouter();
@@ -44,7 +48,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
   const [notes, setNotes] = useState(invoice.notes ?? "");
   const [lines, setLines] = useState<EditLine[]>(
     initialLines.length > 0
-      ? initialLines.map((l) => ({ id: l.id, description: l.description, quantity: l.quantity, unit: l.unit, unit_price: l.unit_price, vat_rate: l.vat_rate }))
+      ? initialLines.map((l) => ({ id: l.id, description: l.description, quantity: l.quantity, unit: l.unit, unit_price: l.unit_price, vat_rate: l.vat_rate, is_labor: l.is_labor ?? false }))
       : [emptyLine()]
   );
 
@@ -65,6 +69,19 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
   });
   const totalVat = Object.values(vatByRate).reduce((s, v) => s + v, 0);
   const total = subtotal + totalVat;
+
+  // Avdraget raknas om fran de aktuella raderna. Annars star ett gammalt
+  // avdragsbelopp kvar efter en andring och fakturan visar fel summa att
+  // betala. Typen (ROT/RUT) andras inte har - bara beloppet foljer raderna.
+  const avdragsTyp = invoice.rot_rut_type === "rot" || invoice.rot_rut_type === "rut"
+    ? invoice.rot_rut_type : null;
+  const avdrag = avdragsTyp
+    ? raknaAvdrag(avdragsTyp, lines.map((l) => {
+        const { lineTotal, vatAmount } = calcLine(l);
+        return { line_total: lineTotal, vat_amount: vatAmount, is_labor: l.is_labor };
+      })).avdrag
+    : 0;
+  const attBetala = total - avdrag;
 
   function updateLine(i: number, field: keyof EditLine, value: string | number) {
     setLines((prev) => prev.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
@@ -92,7 +109,8 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
         subtotal,
         vat_amount: totalVat,
         total,
-        amount_due: total,
+        amount_due: attBetala,
+        rot_rut_amount: avdrag,
         your_reference: yourReference || null,
         our_reference: ourReference || null,
         notes: notes || null,
@@ -120,7 +138,7 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
           vat_rate: l.vat_rate as 0 | 6 | 12 | 25,
           line_total: lineTotal,
           vat_amount: vatAmount,
-          is_labor: false,
+          is_labor: l.is_labor,
         };
       });
 
@@ -306,9 +324,19 @@ export function InvoiceEditForm({ invoice, company, customer, lines: initialLine
                 <span className="tabular-nums">{formatSEK(amt)}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold text-base">
-              <span>Totalt att betala</span>
+            <div className="border-t border-gray-200 pt-2 flex justify-between font-medium">
+              <span>Totalt</span>
               <span className="tabular-nums">{formatSEK(total)}</span>
+            </div>
+            {avdragsTyp && (
+              <div className="flex justify-between text-teal-700">
+                <span>{REGLER[avdragsTyp].etikett}</span>
+                <span className="tabular-nums">−{formatSEK(avdrag)}</span>
+              </div>
+            )}
+            <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold text-base">
+              <span>Att betala</span>
+              <span className="tabular-nums">{formatSEK(attBetala)}</span>
             </div>
           </div>
 

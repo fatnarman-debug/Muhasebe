@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Save, Plus, Trash2, Send, Package, Search, FileText, FileSpreadsheet } from "lucide-react";
 import { formatSEK, generateOCR, toDateInput, addDays } from "@/lib/utils";
+import { raknaAvdrag, kontrollera, REGLER, INVANDNING_TEXT, type AvdragsTyp } from "@/lib/rot-rut";
 import type { ClientCompany, Customer, Article, DocumentType } from "@/types/database";
 
 interface InvoiceLine {
@@ -17,6 +18,8 @@ interface InvoiceLine {
   unit: string;
   unit_price: number;
   vat_rate: number;
+  /** Arbete ger ROT/RUT-avdrag; material och resor gor det inte. */
+  is_labor: boolean;
 }
 
 interface Props {
@@ -34,6 +37,7 @@ const emptyLine = (): InvoiceLine => ({
   unit: "st",
   unit_price: 0,
   vat_rate: 25,
+  is_labor: false,
 });
 
 export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType = "invoice" }: Props) {
@@ -52,6 +56,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
   const [ourReference, setOurReference] = useState("");
   const [notes, setNotes] = useState("");
   const [lines, setLines] = useState<InvoiceLine[]>([emptyLine()]);
+  const [rotRutTyp, setRotRutTyp] = useState<AvdragsTyp | "">("");
 
   // Article picker state
   const [articles, setArticles] = useState<Article[]>([]);
@@ -98,7 +103,26 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
   const totalVat = Object.values(vatByRate).reduce((s, v) => s + v, 0);
   const total = subtotal + totalVat;
 
-  function updateLine(i: number, field: keyof InvoiceLine, value: string | number) {
+  // ROT/RUT raknas i en egen modul sa att formular och PDF alltid ger
+  // samma siffra. Raderna skickas med beraknad moms per rad.
+  const avdragsRader = lines.map((l) => {
+    const { lineTotal, vatAmount } = calcLine(l);
+    return { line_total: lineTotal, vat_amount: vatAmount, is_labor: l.is_labor };
+  });
+  const underlag = rotRutTyp ? raknaAvdrag(rotRutTyp, avdragsRader) : null;
+  const avdrag = underlag?.avdrag ?? 0;
+  const attBetala = total - avdrag;
+
+  const valdKund = selectedCompany?.customers.find((c) => c.id === customerId);
+  const invandningar = rotRutTyp
+    ? kontrollera({
+        kundtyp: (valdKund as { customer_type?: string } | undefined)?.customer_type,
+        personnummer: (valdKund as { personnummer?: string | null } | undefined)?.personnummer,
+        rader: avdragsRader,
+      })
+    : [];
+
+  function updateLine(i: number, field: keyof InvoiceLine, value: string | number | boolean) {
     setLines((prev) => prev.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
   }
   function addLine() { setLines((prev) => [...prev, emptyLine()]); }
@@ -113,6 +137,8 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
         unit: a.unit,
         unit_price: a.unit_price,
         vat_rate: a.vat_rate,
+        // Artiklar ar som regel material; markeras som arbete vid behov.
+        is_labor: false,
       },
     ]);
     setShowPicker(false);
@@ -146,9 +172,10 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
       subtotal,
       vat_amount: totalVat,
       total,
-      amount_due: total,
+      amount_due: isOffert ? total : attBetala,
       paid_amount: 0,
-      rot_rut_amount: 0,
+      rot_rut_type: !isOffert && rotRutTyp && invandningar.length === 0 ? rotRutTyp : null,
+      rot_rut_amount: !isOffert && invandningar.length === 0 ? avdrag : 0,
       your_reference: yourReference || null,
       our_reference: ourReference || null,
       notes: notes || null,
@@ -177,7 +204,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
           vat_rate: l.vat_rate as 0 | 6 | 12 | 25,
           line_total: lineTotal,
           vat_amount: vatAmount,
-          is_labor: false,
+          is_labor: l.is_labor,
         };
       });
 
@@ -305,6 +332,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
                 <th className="text-left px-3 py-2.5 font-medium text-gray-500 text-xs w-16">Enhet</th>
                 <th className="text-right px-3 py-2.5 font-medium text-gray-500 text-xs w-28">À-pris (ex. moms)</th>
                 <th className="text-right px-3 py-2.5 font-medium text-gray-500 text-xs w-20">Moms%</th>
+                <th className="text-center px-2 py-2.5 font-medium text-gray-500 text-xs w-16" title="Arbete ger ROT/RUT-avdrag">Arbete</th>
                 <th className="text-right px-3 py-2.5 font-medium text-gray-500 text-xs w-28">Belopp</th>
                 <th className="w-10" />
               </tr>
@@ -354,6 +382,15 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
                       <option value={6}>6%</option>
                       <option value={0}>0%</option>
                     </select>
+                  </td>
+                  <td className="px-2 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={line.is_labor}
+                      onChange={(e) => updateLine(i, "is_labor", e.target.checked)}
+                      aria-label={`Rad ${i + 1} är arbete`}
+                      className="accent-blue-600"
+                    />
                   </td>
                   <td className="px-3 py-2 text-right font-medium text-gray-900 w-28 tabular-nums">
                     {formatSEK(calcLine(line).lineTotal)}
@@ -452,9 +489,55 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
                 <span className="tabular-nums">{formatSEK(amt)}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold text-base">
-              <span>Totalt att betala</span>
+            <div className="border-t border-gray-200 pt-2 flex justify-between font-medium">
+              <span>Totalt</span>
               <span className="tabular-nums">{formatSEK(total)}</span>
+            </div>
+
+            {!isOffert && (
+              <div className="border-t border-gray-200 pt-3 space-y-2">
+                <Label htmlFor="rotrut" className="text-xs text-gray-500">Skattereduktion</Label>
+                <select
+                  id="rotrut"
+                  value={rotRutTyp}
+                  onChange={(e) => setRotRutTyp(e.target.value as AvdragsTyp | "")}
+                  className="w-full h-9 rounded-lg border border-gray-300 px-2 text-sm bg-white"
+                >
+                  <option value="">Inget avdrag</option>
+                  <option value="rot">ROT-avdrag ({REGLER.rot.procent * 100} %)</option>
+                  <option value="rut">RUT-avdrag ({REGLER.rut.procent * 100} %)</option>
+                </select>
+
+                {rotRutTyp && invandningar.length > 0 && (
+                  <ul className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 space-y-1">
+                    {invandningar.map((i) => <li key={i}>{INVANDNING_TEXT[i]}</li>)}
+                  </ul>
+                )}
+
+                {rotRutTyp && underlag && invandningar.length === 0 && (
+                  <div className="space-y-1.5 text-sm">
+                    <div className="flex justify-between text-gray-500">
+                      <span>Arbetskostnad inkl. moms</span>
+                      <span className="tabular-nums">{formatSEK(underlag.arbetskostnad)}</span>
+                    </div>
+                    <div className="flex justify-between text-teal-700">
+                      <span>{REGLER[rotRutTyp].etikett}</span>
+                      <span className="tabular-nums">−{formatSEK(avdrag)}</span>
+                    </div>
+                    {underlag.taketNatt && (
+                      <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        Avdraget är nedsatt till takbeloppet {formatSEK(underlag.tak)} per person och år.
+                        Kunden kan redan ha använt en del av taket hos någon annan – kontrollera innan du skickar.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold text-base">
+              <span>{isOffert ? "Summa" : "Att betala"}</span>
+              <span className="tabular-nums">{formatSEK(isOffert ? total : attBetala)}</span>
             </div>
           </div>
           {ocrNumber && (
