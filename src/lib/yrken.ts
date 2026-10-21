@@ -355,6 +355,50 @@ export const yrken: Yrke[] = [
     relaterade: ["stadfirma", "fonsterputsare", "snickare"],
   },
 
+  {
+    slug: "barnvakt",
+    namn: "barnvakter",
+    singular: "barnvakten",
+    kategori: "hem",
+    avdrag: "rut",
+    meta: "Fakturaprogram för barnvakter med RUT-avdrag. Läxhjälp räknas bara till tio procent, och hämtning på förskolan ger inget avdrag alls.",
+    lead: "Barnpassning ger rutavdrag med 50 procent av arbetskostnaden, men reglerna är mer detaljerade än de flesta tror. Avdraget gäller barn till och med årskurs 7, läxhjälp får utgöra högst tio procent av tiden vid varje tillfälle, och transporten till och från förskolan ger inget avdrag även när den sker mitt i passet.",
+    fakturarader: ["Barnpassning (tim)", "Kvällspassning, tillägg", "Läxhjälp inom passet", "Hämtning och lämning", "Resa till och från uppdraget"],
+    utmaningar: [
+      { t: "Tio-procentsregeln på läxhjälp", d: "Hjälp med läxor och annat skolarbete ger avdrag bara upp till tio procent av tiden vid varje passningstillfälle. Blir det mer räknas den delen som undervisning, och undervisning ger inget rutavdrag. Skriv ut hur tiden fördelas." },
+      { t: "Hämtning och lämning är inte passning", d: "Att köra barnet till förskolan, skolan eller fritidsaktiviteten ger inte avdrag – det är transport. Den tiden ska ligga på en egen rad utan avdrag, även när den sker mitt i ett pass." },
+      { t: "Släktskap stänger av avdraget", d: "Passar du barn du är släkt med ger arbetet inget rutavdrag, oavsett hur korrekt fakturan ser ut. Det är värt att klara ut innan ni kommer överens om priset." },
+    ],
+    faq: [
+      { q: "Hur gamla barn omfattas av RUT för barnpassning?", a: "Barn till och med årskurs 7. För äldre barn ger passning inte rutavdrag. Åldersgränsen följer skolgången, inte födelseåret, så kontrollera vilken årskurs barnet går i." },
+      { q: "Ger läxhjälp RUT-avdrag?", a: "Delvis. Läxhjälp och annat skolarbete ger avdrag upp till tio procent av tiden vid varje passningstillfälle. Renodlad privatundervisning eller coachning ger inget avdrag alls, hur kort den än är." },
+      { q: "Får jag ta betalt för matlagning under passet?", a: "Enklare matlagning i liten omfattning, direkt kopplad till passningen, ingår i rutarbetet. Att laga mat som en egen tjänst gör det inte – då är det matlagning, inte barnpassning." },
+      { q: "Ger det avdrag att hämta barnet på förskolan?", a: "Nej. Betalning för transport vid hämtning och lämning vid förskola, skola eller fritidsaktiviteter är uttryckligen undantagen. Ta upp den som en egen rad utan avdrag." },
+    ],
+    relaterade: ["stadfirma", "fastighetsskotare", "tradgardsmastare"],
+  },
+  {
+    slug: "fastighetsskotare",
+    namn: "fastighetsskötare",
+    singular: "fastighetsskötaren",
+    kategori: "hem",
+    avdrag: "rut",
+    meta: "Fakturaprogram för fastighetsskötare med RUT. Snöskottning och tillsyn ger avdrag – reparationer gör det inte. Dela raderna rätt.",
+    lead: "Tillsyn av bostaden och snöskottning ger rutavdrag med 50 procent av arbetskostnaden. Men samma besök innehåller ofta både sådant som ger avdrag och sådant som inte gör det: att vattna blommor och spola kranar ger avdrag, att byta en trasig kran gör det inte. Gränsen går vid reparation.",
+    fakturarader: ["Tillsyn av bostad (per besök)", "Snöskottning av uppfart och tak", "Borttagning av istappar", "Mindre reparation", "Material", "Framkörning"],
+    utmaningar: [
+      { t: "Tillsyn ger avdrag, reparation gör det inte", d: "Att ta hand om post, vattna blommor, vädra, spola kranar och toaletter och kontrollera lamporna är tillsyn och ger rutavdrag. Upptäcker du en skada och lagar den är själva lagningen ett annat slags arbete utan avdrag." },
+      { t: "Många korta besök, ett underlag", d: "Tillsyn faktureras ofta per besök under en längre bortavaro. Utan datum och tidsåtgång per besök går underlaget inte att rekonstruera när kunden vill ha sitt avdrag." },
+      { t: "Snöskottning har en bestämd omfattning", d: "Avdraget gäller uppfarter, hus- och garagetak och gårdsplaner samt istappar i anslutning till bostaden. Snöröjning längre bort på tomten eller på en gemensam väg hör inte dit." },
+    ],
+    faq: [
+      { q: "Ger snöskottning RUT-avdrag?", a: "Ja, på uppfarter, hus- och garagetak och gårdsplaner, liksom borttagning av istappar i anslutning till bostaden. Det är arbetet som ger avdrag – inte maskinhyra eller bortforsling av snön." },
+      { q: "Vad räknas som tillsyn av bostaden?", a: "Att ta hand om posten, vattna blommor, vädra, spola kranar och toaletter och kontrollera att lamporna fungerar. Åtgärder vid en mindre skada ingår i tillsynen, men själva reparationen eller underhållet gör det inte." },
+      { q: "Ger arbete i en bostadsrättsförenings gemensamma utrymmen avdrag?", a: "Nej. Rutavdrag görs av privatpersoner för arbete i den egna bostaden. En förening är en juridisk person, och gemensamhetsutrymmen i flerfamiljshus är dessutom undantagna. Den fakturan skrivs utan avdrag." },
+    ],
+    relaterade: ["tradgardsmastare", "barnvakt", "stadfirma"],
+  },
+
   /* ───────── Skönhet & hälsa ───────── */
   {
     slug: "frisor",
@@ -500,6 +544,28 @@ export const yrken: Yrke[] = [
       { q: "Vilken moms gäller om jag bokar ut andra artister?", a: "25 procent. Artistförmedling är en vanlig tjänst och omfattas varken av undantaget för framträdanden eller av den lägre kultursatsen." },
     ],
     relaterade: ["fotograf", "oversattare", "konsult"],
+  },
+
+  {
+    slug: "grafisk-designer",
+    namn: "grafiska designers",
+    singular: "grafiska designern",
+    kategori: "kreativt",
+    avdrag: null,
+    meta: "Fakturaprogram för grafiska designers. Skilj på nyttjanderätt och originalfiler redan i offerten – det är där diskussionerna uppstår.",
+    lead: "Som grafisk designer säljer du sällan bara tid. Du säljer också rätten att använda det du har gjort, och ibland själva originalfilerna. Upphovsrätten uppstår hos dig och följer inte automatiskt med fakturan. Står det inte i offerten vad kunden får använda logotypen till, kommer frågan i stället ett år senare – när den redan sitter på en lastbil.",
+    fakturarader: ["Designarbete (tim)", "Logotyp och visuell identitet, fast pris", "Nyttjanderätt, omfattning och tid", "Överlämning av originalfiler", "Extra korrekturrunda", "Tryckoriginal och repro"],
+    utmaningar: [
+      { t: "Nyttjanderätt är inte samma sak som äganderätt", d: "Kunden betalar normalt för att få använda arbetet, inte för att överta upphovsrätten. Hur brett och hur länge rätten gäller är en prisfråga – skriv ut omfattningen i stället för att lämna den öppen." },
+      { t: "Originalfilerna är ett eget beslut", d: "Levererad PDF och redigerbar originalfil är två olika saker. Lämnar du över originalet kan kunden ändra arbetet utan dig. Det kan vara helt rimligt, men det ska vara prissatt och inte något som antas ingå." },
+      { t: "Korrekturrundorna tar slut", d: "Ett fast pris utan angivet antal rundor blir löpande arbete till fast pris. Ange hur många rundor som ingår och vad en extra runda kostar, redan i offerten." },
+    ],
+    faq: [
+      { q: "Ingår originalfilerna när kunden har betalat?", a: "Inte automatiskt. Det kunden har köpt är det ni har kommit överens om. Vill kunden ha de redigerbara originalfilerna är det en egen post – ange den i offerten så slipper ni diskussionen vid leverans." },
+      { q: "Hur skriver jag nyttjanderätten på fakturan?", a: "Som en egen rad med omfattning och tid, till exempel \"Nyttjanderätt logotyp, samtliga kanaler, utan tidsbegränsning\". Är rätten begränsad i tid bör det framgå när den löper ut, så att en förlängning kan faktureras." },
+      { q: "Vad gäller för bilder och typsnitt jag har köpt in?", a: "Licensen du har köpt gäller dig, inte automatiskt din kund. Kontrollera om licensen får överlåtas innan du levererar – annars kan kunden använda material utan giltig licens, och det är din leverans det hänger på." },
+    ],
+    relaterade: ["webbdesigner", "fotograf", "musiker"],
   },
 
   /* ───────── Konsult & rådgivning ───────── */
