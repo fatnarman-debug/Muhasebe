@@ -40,10 +40,20 @@ export default function AnvandarvillkorPage() {
         <li>Du ansvarar för det innehåll (fakturor, kund- och personuppgifter) du lägger in och för att du har rätt att behandla det.</li>
       </UL>
 
+      {/* Granskas av jurist innan betalning aktiveras. Texten beskriver hur
+          villkoren ar tankta att fungera; nagon betalleverantor ar annu inte
+          inkopplad och inga betalningar tas emot. */}
       <H2>4. Priser och betalning</H2>
       <UL>
-        <li>Avgifter följer vid var tid gällande prislista. Det finns en kostnadsfri plan samt betalplaner. Priser anges exklusive moms.</li>
-        <li>[Beskriv betalningsvillkor, fakturerings-/prenumerationsperiod, förnyelse och eventuell återbetalningspolicy.]</li>
+        <li>
+          Avgifter följer vid var tid gällande prislista, som finns på{" "}
+          <Link href="/priser" className="text-blue-700 underline">prissidan</Link>. Priser anges exklusive moms.
+        </li>
+        <li>Provperioden är 14 dagar och kräver inte något betalkort. Någon avgift tas inte ut under provperioden.</li>
+        <li>Efter provperioden väljer du en betalplan för att fortsätta använda tjänsten. Väljer du ingen plan tas ingen avgift ut.</li>
+        <li>Abonnemanget betalas per månad eller per år i förskott och förnyas löpande till dess att det sägs upp.</li>
+        <li>Det finns ingen bindningstid. Du kan säga upp abonnemanget när du vill, och det löper då ut vid utgången av den period som redan är betald.</li>
+        <li>Du kan när som helst ladda ner dina uppgifter från tjänsten, också efter att abonnemanget har sagts upp.</li>
       </UL>
 
       <H2>5. Tillgänglighet</H2>

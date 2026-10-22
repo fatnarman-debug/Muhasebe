@@ -13,7 +13,7 @@ const subprocessors = [
   ["Supabase (programvara)", "Databas, autentisering och fillagring. Programvaran är självhostad på servern ovan – uppgifterna ligger inte hos bolaget Supabase.", "Tyskland (EU)"],
   ["Resend / Amazon SES", "Utskick av konto-, faktura- och påminnelsemejl.", "EU (eu-west-1, Irland)"],
   ["Cloudflare", "DNS, CDN och skydd mot överbelastning. Trafiken till tjänsten passerar deras nät.", "Globalt nät"],
-  ["Cloudflare R2", "Lagring av säkerhetskopior av databasen.", "Östra Europa (EEUR)"],
+  ["Cloudflare R2", "Lagring av krypterade säkerhetskopior av databasen.", "EU-jurisdiktion"],
   ["Google Ireland Ltd.", "Besöksstatistik via Google Analytics. Laddas endast om du samtycker till statistikcookies.", "EU, med överföring till USA"],
 ];
 
@@ -72,17 +72,18 @@ export default function GdprPage() {
         </table>
       </div>
       <P>
-        Säkerhetskopiorna lagras i Cloudflares region för östra Europa. Lagringsytan är däremot inte
-        skapad med EU-jurisdiktion, vilket innebär att placeringen inte är bunden på avtalsnivå. En
-        lagringsyta med EU-jurisdiktion förbereds.
+        Säkerhetskopiorna lagras i en lagringsyta hos Cloudflare R2 som är skapad med
+        EU-jurisdiktion, vilket binder placeringen till EU på avtalsnivå. De krypteras innan de
+        lämnar servern, och nyckeln som krävs för att öppna dem finns inte på servern.
       </P>
 
       <H2>Säkerhetsåtgärder</H2>
       <UL>
-        <li>Kryptering av data i transit (TLS) och av säkerhetskopior (AES-256)</li>
+        <li>Kryptering av data i transit (TLS)</li>
+        <li>Säkerhetskopior krypteras med asymmetrisk kryptering innan de lämnar servern. Den privata nyckeln förvaras utanför servern, så varken serveråtkomst eller åtkomst till lagringen räcker för att läsa dem</li>
         <li>Åtkomststyrning per roll – varje konsult ser bara sina egna tilldelade kunder (radnivåsäkerhet, RLS, i databasen)</li>
         <li>Loggning av känsliga administrativa åtgärder (revisionslogg)</li>
-        <li>Säkerhetskopior lagrade inom EU</li>
+        <li>Säkerhetskopior lagrade inom EU, med daglig körning och kontrollerad återläsning</li>
       </UL>
 
       <H2>De registrerades rättigheter</H2>
