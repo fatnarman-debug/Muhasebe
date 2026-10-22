@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Hubbsidor
     { url: `${BASE}/priser`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE}/for`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${BASE}/for/enskild-firma`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE}/for/hantverkare`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 
     // Yrkessidor – kommer automatiskt fran src/lib/yrken.ts
