@@ -69,8 +69,16 @@ export default function IntegritetspolicyPage() {
 
       <H2>Överföring till tredjeland</H2>
       <P>
-        Vi strävar efter att lagra och behandla data inom EU/EES. Om ett underbiträde behandlar uppgifter utanför EU/EES
-        sker det med lämpliga skyddsåtgärder, t.ex. EU-kommissionens standardavtalsklausuler (art. 46). [Ange konkret om/när detta sker.]
+        Dina konto- och fakturauppgifter lagras inom EU. Servern står i Tyskland, säkerhetskopiorna
+        ligger i en lagringsyta med EU-jurisdiktion och e-postutskicken går via en avsändare inom EU.
+        Trafiken till webbplatsen passerar Cloudflares nät, som är globalt.
+      </P>
+      <P>
+        Den behandling som kan innebära överföring till tredjeland är besöksstatistiken via Google
+        Analytics, där uppgifter kan överföras till USA. Den laddas bara om du har samtyckt till
+        statistikcookies – gör du inte det sker ingen sådan behandling. Vid överföring utanför
+        EU/EES tillämpas lämpliga skyddsåtgärder, till exempel EU-kommissionens
+        standardavtalsklausuler (art. 46).
       </P>
 
       <H2>Dina rättigheter</H2>
