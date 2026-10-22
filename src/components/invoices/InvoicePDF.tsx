@@ -190,7 +190,13 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
         {/* 3) "Att betala" özet bandı (tam genişlik) */}
         <View style={{ marginHorizontal: -40, paddingHorizontal: 40, paddingVertical: 16, backgroundColor: bandBg, flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <View style={{ flex: 1.3 }}>
-            <Text style={[styles.bandLabelSm, { color: bandSub }]}>{isOffert ? "Belopp (inkl. moms)" : isCredit ? "Att kreditera (inkl. moms)" : "Att betala (inkl. moms)"}</Text>
+            <Text style={[styles.bandLabelSm, { color: bandSub }]}>{
+              /* Vid omvand betalningsskyldighet finns ingen moms - da vore
+                 "(inkl. moms)" direkt missvisande pa en faktura. */
+              omvand
+                ? (isOffert ? "Belopp" : isCredit ? "Att kreditera" : "Att betala")
+                : (isOffert ? "Belopp (inkl. moms)" : isCredit ? "Att kreditera (inkl. moms)" : "Att betala (inkl. moms)")
+            }</Text>
             <Text style={[styles.bandBig, { color: bandAmt }]}>{fmt(attBetala)}</Text>
           </View>
           <View style={{ flex: 1 }}>
@@ -266,7 +272,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               <Text style={[styles.sumHeadCell, { width: 70 }]}>Moms</Text>
               <Text style={[styles.sumHeadCell, { width: 90 }]}>Summering</Text>
             </View>
-            {vatRates.map((r) => (
+            {(omvand ? [] : vatRates).map((r) => (
               <View key={r} style={styles.sumRow}>
                 <Text style={styles.sumLabel}>{r}% Moms</Text>
                 <Text style={[styles.sumCell, { width: 90 }]}>{fmt(vatByRate[r].net)}</Text>
@@ -301,11 +307,14 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               </>
             )}
             {omvand && (
+              /* Momssatsraderna visas inte vid omvand betalningsskyldighet -
+                 det finns ingen momssats. Men beskattningsunderlaget maste
+                 anda synas, sa den har raden bar beloppen. */
               <View style={styles.sumRow}>
                 <Text style={styles.sumLabel}>Omvänd betalningsskyldighet</Text>
-                <Text style={[styles.sumCell, { width: 90 }]}> </Text>
-                <Text style={[styles.sumCell, { width: 70 }]}> </Text>
-                <Text style={[styles.sumCell, { width: 90 }]}>0,00</Text>
+                <Text style={[styles.sumCell, { width: 90 }]}>{fmt(invoice.subtotal)}</Text>
+                <Text style={[styles.sumCell, { width: 70 }]}>0,00</Text>
+                <Text style={[styles.sumCell, { width: 90, fontFamily: "Helvetica-Bold", color: "#111827" }]}>{fmt(invoice.subtotal)}</Text>
               </View>
             )}
             <View style={styles.attRow}>
