@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
 
     // Hubbsidor
+    { url: `${BASE}/priser`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE}/for`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/for/hantverkare`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
 

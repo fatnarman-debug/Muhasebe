@@ -98,6 +98,7 @@ export function SiteFooter({ anchorBase = "" }: { anchorBase?: string }) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-600 mb-3">Konto &amp; juridik</p>
           <ul className="space-y-2 text-sm text-stone-500">
+            <li><Link href="/priser" className="hover:text-stone-900">Priser</Link></li>
             <li><Link href="/auth/register" className="hover:text-stone-900">Skapa konto</Link></li>
             <li><Link href="/auth/login" className="hover:text-stone-900">Logga in</Link></li>
             <li><Link href="/integritetspolicy" className="hover:text-stone-900">Integritetspolicy</Link></li>
