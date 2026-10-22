@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
   cAmt: { width: 80, fontSize: 9, fontFamily: "Helvetica-Bold", textAlign: "right" },
   sumWrap: { flexDirection: "row", justifyContent: "flex-end", marginTop: 14 },
   sumBox: { width: 320 },
+  notBox: { borderTopWidth: 1, borderTopColor: "#e5e7eb", paddingTop: 10, marginTop: 4, marginBottom: 18 },
+  notRubrik: { fontSize: 8, color: "#6b7280", marginBottom: 3, fontFamily: "Helvetica-Bold" },
+  notText: { fontSize: 9, color: "#374151", lineHeight: 1.45 },
   sumHead: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#e5e7eb", paddingBottom: 4 },
   sumHeadCell: { fontSize: 8, color: "#6b7280", textAlign: "right" },
   sumRow: { flexDirection: "row", paddingVertical: 4 },
@@ -214,6 +217,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
           <View style={styles.infoCol}>
             <View style={styles.infoRow}><Text style={styles.infoKey}>Fakturadatum</Text><Text style={styles.infoVal}>{fmtDate(invoice.invoice_date)}</Text></View>
             {customer.org_no ? <View style={styles.infoRow}><Text style={styles.infoKey}>Org.nr</Text><Text style={styles.infoVal}>{customer.org_no}</Text></View> : null}
+            {customer.moms_no ? <View style={styles.infoRow}><Text style={styles.infoKey}>Momsreg.nr</Text><Text style={styles.infoVal}>{customer.moms_no}</Text></View> : null}
             {harAvdrag && customer.personnummer ? (
               <View style={styles.infoRow}>
                 <Text style={styles.infoKey}>Personnr</Text>
@@ -221,6 +225,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
               </View>
             ) : null}
             {invoice.your_reference ? <View style={styles.infoRow}><Text style={styles.infoKey}>Er referens</Text><Text style={styles.infoVal}>{invoice.your_reference}</Text></View> : null}
+            {invoice.our_reference ? <View style={styles.infoRow}><Text style={styles.infoKey}>Vår referens</Text><Text style={styles.infoVal}>{invoice.our_reference}</Text></View> : null}
           </View>
         </View>
 
@@ -295,6 +300,15 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
             </View>
           </View>
         </View>
+
+        {/* Anteckningar. Faltet samlades in i formularet men skrevs aldrig
+            ut - det kunden skrev har nadde alltsa aldrig mottagaren. */}
+        {invoice.notes ? (
+          <View style={styles.notBox}>
+            <Text style={styles.notRubrik}>Meddelande</Text>
+            <Text style={styles.notText}>{invoice.notes}</Text>
+          </View>
+        ) : null}
 
         {/* 7) Bankgiro OCR optik satırı (typ 41) — yalnızca faturada, offert'te yok */}
         {company.bankgiro && !hidePay && (() => {
