@@ -141,6 +141,11 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
   // i bankgirots optiska rad, annars betalar kunden fel summa.
   const attBetala = invoice.total - rotRut;
 
+  // Omvand betalningsskyldighet: ingen moms tas ut och skalet maste sta pa
+  // fakturan. Utan texten ar fakturan inte komplett, och koparen kan inte se
+  // varfor momsen saknas.
+  const omvand = invoice.reverse_charge === true;
+
   // "Att betala" özet bandı: band şablonlarda renkli (beyaz yazı), diğerlerinde gri (accent tutar)
   const bandBg = tpl.band ? tpl.bandBg! : "#f3f4f6";
   const bandFg = tpl.band ? "#ffffff" : "#111827";
@@ -295,11 +300,29 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
                 </View>
               </>
             )}
+            {omvand && (
+              <View style={styles.sumRow}>
+                <Text style={styles.sumLabel}>Omvänd betalningsskyldighet</Text>
+                <Text style={[styles.sumCell, { width: 90 }]}> </Text>
+                <Text style={[styles.sumCell, { width: 70 }]}> </Text>
+                <Text style={[styles.sumCell, { width: 90 }]}>0,00</Text>
+              </View>
+            )}
             <View style={styles.attRow}>
               <Text style={[styles.attText, { color: accent }]}>{isOffert ? "Summa" : isCredit ? "Att kreditera" : "Att betala"} {fmt(attBetala)}</Text>
             </View>
           </View>
         </View>
+
+        {omvand ? (
+          <View style={styles.notBox}>
+            <Text style={styles.notRubrik}>Moms</Text>
+            <Text style={styles.notText}>
+              Omvänd betalningsskyldighet. Köparen är skyldig att redovisa momsen.
+              {customer.moms_no ? ` Köparens momsreg.nr: ${customer.moms_no}.` : ""}
+            </Text>
+          </View>
+        ) : null}
 
         {/* Anteckningar. Faltet samlades in i formularet men skrevs aldrig
             ut - det kunden skrev har nadde alltsa aldrig mottagaren. */}

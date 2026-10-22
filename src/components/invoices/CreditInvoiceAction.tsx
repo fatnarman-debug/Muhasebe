@@ -70,6 +70,8 @@ export function CreditInvoiceAction({
       due_date: today,
       currency: orig.currency ?? "SEK",
       exchange_rate: orig.exchange_rate ?? 1,
+      // Ar originalet utan moms maste kreditfakturan vara det ocksa.
+      reverse_charge: (orig as { reverse_charge?: boolean }).reverse_charge ?? false,
       rot_rut_type: orig.rot_rut_type ?? null,
       rot_rut_amount: -(orig.rot_rut_amount ?? 0),
       subtotal: -(orig.subtotal ?? 0),

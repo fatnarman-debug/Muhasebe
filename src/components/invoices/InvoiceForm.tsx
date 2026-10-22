@@ -57,6 +57,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
   const [notes, setNotes] = useState("");
   const [lines, setLines] = useState<InvoiceLine[]>([emptyLine()]);
   const [rotRutTyp, setRotRutTyp] = useState<AvdragsTyp | "">("");
+  const [omvand, setOmvand] = useState(false);
 
   // Article picker state
   const [articles, setArticles] = useState<Article[]>([]);
@@ -88,11 +89,13 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
       .then(({ data }) => setArticles(data ?? []));
   }, [clientCompanyId, invoiceDate]); // eslint-disable-line
 
+  // Vid omvand betalningsskyldighet tar saljaren inte ut nagon moms alls -
+  // koparen redovisar den sjalv. Satserna pa raderna ignoreras darfor.
   const calcLine = useCallback((l: InvoiceLine) => {
     const lineTotal = Math.round(l.quantity * l.unit_price * 100) / 100;
-    const vatAmount = Math.round(lineTotal * (l.vat_rate / 100) * 100) / 100;
+    const vatAmount = omvand ? 0 : Math.round(lineTotal * (l.vat_rate / 100) * 100) / 100;
     return { lineTotal, vatAmount };
-  }, []);
+  }, [omvand]);
 
   const subtotal = lines.reduce((s, l) => s + calcLine(l).lineTotal, 0);
   const vatByRate: Record<number, number> = {};
@@ -114,6 +117,8 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
   const attBetala = total - avdrag;
 
   const valdKund = selectedCompany?.customers.find((c) => c.id === customerId);
+  const kundArForetag = (valdKund as { customer_type?: string } | undefined)?.customer_type !== "individual";
+  const kundensMomsnr = (valdKund as { moms_no?: string | null } | undefined)?.moms_no;
   const invandningar = rotRutTyp
     ? kontrollera({
         kundtyp: (valdKund as { customer_type?: string } | undefined)?.customer_type,
@@ -174,6 +179,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
       total,
       amount_due: isOffert ? total : attBetala,
       paid_amount: 0,
+      reverse_charge: !isOffert && omvand,
       rot_rut_type: !isOffert && rotRutTyp && invandningar.length === 0 ? rotRutTyp : null,
       rot_rut_amount: !isOffert && invandningar.length === 0 ? avdrag : 0,
       your_reference: yourReference || null,
@@ -201,7 +207,7 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
           quantity: l.quantity,
           unit: l.unit,
           unit_price: l.unit_price,
-          vat_rate: l.vat_rate as 0 | 6 | 12 | 25,
+          vat_rate: (omvand ? 0 : l.vat_rate) as 0 | 6 | 12 | 25,
           line_total: lineTotal,
           vat_amount: vatAmount,
           is_labor: l.is_labor,
@@ -494,7 +500,34 @@ export function InvoiceForm({ clientCompanies, getRedirectPath, initialDocType =
               <span className="tabular-nums">{formatSEK(total)}</span>
             </div>
 
-            {!isOffert && (
+            {!isOffert && customerId && kundArForetag && (
+              <div className="border-t border-gray-200 pt-3 space-y-2">
+                <label className="flex items-start gap-2.5 text-sm text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={omvand}
+                    onChange={(e) => { setOmvand(e.target.checked); if (e.target.checked) setRotRutTyp(""); }}
+                    className="accent-blue-600 mt-0.5"
+                  />
+                  <span>
+                    <span className="block font-medium text-gray-900">Omvänd betalningsskyldighet</span>
+                    <span className="block text-xs text-gray-500">
+                      Ingen moms tas ut – köparen redovisar den. Gäller bl.a. byggtjänster till
+                      företag i byggsektorn.
+                    </span>
+                  </span>
+                </label>
+
+                {omvand && !kundensMomsnr && (
+                  <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    Kundens momsregistreringsnummer krävs på fakturan vid omvänd
+                    betalningsskyldighet. Fyll i det på kunden innan du skickar.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!isOffert && !omvand && (
               <div className="border-t border-gray-200 pt-3 space-y-2">
                 <Label htmlFor="rotrut" className="text-xs text-gray-500">Skattereduktion</Label>
                 <select

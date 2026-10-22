@@ -109,6 +109,7 @@ create table public.invoices (
   exchange_rate numeric(10,6) not null default 1,
   rot_rut_type text check (rot_rut_type in ('rot', 'rut', null)),
   rot_rut_amount numeric(12,2) default 0,
+  reverse_charge boolean not null default false,
   subtotal numeric(12,2) not null default 0,
   vat_amount numeric(12,2) not null default 0,
   total numeric(12,2) not null default 0,

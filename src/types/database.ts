@@ -106,6 +106,8 @@ export interface Invoice {
   exchange_rate: number;
   rot_rut_type: RotRutType | null;
   rot_rut_amount: number;
+  /** Omvand betalningsskyldighet: saljaren tar inte ut moms, koparen redovisar den. */
+  reverse_charge: boolean;
   subtotal: number;
   vat_amount: number;
   total: number;
