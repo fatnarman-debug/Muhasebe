@@ -344,15 +344,123 @@ function AgingReport() {
 }
 
 // ─── SIE-EXPORT ────────────────────────────────────────────────────────────────
+/* Filen lases in i byrans bokforingsprogram. Konteringen syns darfor inte
+   har utan forst i nagon annans bokforing - darfor listas kontona i
+   granssnittet, sa att byran kan stamma av dem mot sin egen kontoplan
+   innan de laser in filen. */
 function SIEExport() {
+  const [foretag, setForetag] = useState<{ id: string; name: string }[]>([]);
+  const [valt, setValt] = useState("");
+  const [ar, setAr] = useState(new Date().getFullYear());
+  const [laddar, setLaddar] = useState(false);
+  const [fel, setFel] = useState<string | null>(null);
+  const [uteslutna, setUteslutna] = useState<{ faktura: string; skal: string }[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase.from("client_companies").select("id, name").order("name");
+      setForetag(data ?? []);
+      if (data?.length === 1) setValt(data[0].id);
+    })();
+  }, []);
+
+  async function hamta() {
+    setFel(null); setUteslutna([]); setLaddar(true);
+    try {
+      const res = await fetch(`/api/export/sie?foretag=${encodeURIComponent(valt)}&ar=${ar}`);
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        setFel(d.error ?? "Exporten misslyckades."); return;
+      }
+      const u = res.headers.get("X-Sie-Uteslutna");
+      if (u) { try { setUteslutna(JSON.parse(decodeURIComponent(u))); } catch {} }
+
+      const blob = await res.blob();
+      const namn = res.headers.get("Content-Disposition")?.match(/filename="(.+?)"/)?.[1] ?? `sie-${ar}.si`;
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = namn; a.click();
+      URL.revokeObjectURL(a.href);
+    } finally { setLaddar(false); }
+  }
+
+  const KONTORADER = [
+    ["1510", "Kundfordringar"],
+    ["1513", "Kundfordringar – delad faktura (ROT/RUT)"],
+    ["3001 / 3002 / 3003", "Försäljning inom Sverige, 25 / 12 / 6 % moms"],
+    ["2611 / 2621 / 2631", "Utgående moms, 25 / 12 / 6 %"],
+    ["3231", "Försäljning inom byggsektorn, omvänd betalningsskyldighet"],
+  ];
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
-      <FileSpreadsheet className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-      <h3 className="font-semibold text-gray-700 mb-1">SIE4-export</h3>
-      <p className="text-sm text-gray-400 max-w-sm mx-auto">
-        Export av bokföringsunderlag i SIE4-format för din redovisningsbyrå. Lanseras i nästa version.
-      </p>
-      <span className="mt-4 inline-block text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Snart tillgänglig</span>
+    <div className="space-y-5">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div>
+          <h3 className="font-semibold text-gray-900">SIE4-export</h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Bokföringsunderlag för skickade fakturor. Filen kan läsas in i de flesta
+            bokföringsprogram. Offerter och utkast kommer inte med.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <label htmlFor="sie-foretag" className="text-xs font-medium text-gray-700">Klientföretag</label>
+            <select id="sie-foretag" value={valt} onChange={(e) => setValt(e.target.value)}
+              className="w-full h-10 rounded-lg border border-gray-300 px-3 text-sm bg-white">
+              <option value="">Välj företag</option>
+              {foretag.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="sie-ar" className="text-xs font-medium text-gray-700">Räkenskapsår</label>
+            <select id="sie-ar" value={ar} onChange={(e) => setAr(Number(e.target.value))}
+              className="w-full h-10 rounded-lg border border-gray-300 px-3 text-sm bg-white">
+              {[ar + 1, ar, ar - 1, ar - 2].filter((y, i, a) => a.indexOf(y) === i).sort((a, b) => b - a)
+                .map((y) => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {fel && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3.5 py-2.5">{fel}</p>}
+
+        {uteslutna.length > 0 && (
+          <div className="text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3.5 py-2.5">
+            <p className="font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              {uteslutna.length} faktura{uteslutna.length > 1 ? "or" : ""} kom inte med
+            </p>
+            <ul className="mt-1.5 space-y-0.5 text-amber-800">
+              {uteslutna.map((u) => <li key={u.faktura}>{u.faktura} – {u.skal}</li>)}
+            </ul>
+            <p className="mt-2 text-amber-800">
+              Filen är alltså inte komplett. Kontrollera fakturorna innan du läser in den.
+            </p>
+          </div>
+        )}
+
+        <button onClick={hamta} disabled={!valt || laddar}
+          className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 disabled:opacity-50 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors">
+          {laddar ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />}
+          {laddar ? "Tar fram filen…" : "Ladda ner SIE-fil"}
+        </button>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Konton som används</h3>
+        <p className="text-sm text-gray-500 mt-1.5">
+          Kontona följer BAS-kontoplanen. Stäm av mot er egen kontoplan innan ni läser in filen –
+          bokföringen hamnar hos er, inte hos oss.
+        </p>
+        <dl className="mt-4 space-y-2 text-sm">
+          {KONTORADER.map(([k, v]) => (
+            <div key={k} className="flex flex-wrap gap-x-3 gap-y-0.5">
+              <dt className="font-mono text-gray-900 w-44 shrink-0">{k}</dt>
+              <dd className="text-gray-600">{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   );
 }
