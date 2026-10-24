@@ -1,4 +1,23 @@
-import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
+import path from "path";
+
+/* PDF:ens inbyggda Helvetica ar WinAnsi-kodad. Svenska a, a och o ryms,
+   men inte turkiska, polska eller baltiska tecken - ett kundnamn som
+   Narmanli eller Kowalczyk skrevs ut fel utan att nagon markte det.
+   Inter laddas darfor fran disk. Filen ligger i public/ sa att den foljer
+   med i standalone-bygget. Ingen nedladdning sker vid rendering: hamtades
+   teckensnittet over natet skulle en seg forbindelse gora att fakturan
+   inte gick att skapa alls. */
+const fontDir = path.join(process.cwd(), "public", "fonts");
+Font.register({
+  family: "Inter",
+  fonts: [
+    { src: path.join(fontDir, "Inter-Regular.ttf"), fontWeight: 400 },
+    { src: path.join(fontDir, "Inter-Bold.ttf"), fontWeight: 700 },
+  ],
+});
+// Inter saknar avstavningsregler; utan detta delas langa ord pa fel stalle.
+Font.registerHyphenationCallback((ord) => [ord]);
 import type { ClientCompany, Customer, Invoice, InvoiceLine, DocumentType } from "@/types/database";
 
 // ── Şablon görselleri: yapı/sıra sabit, yalnızca renk + başlık bandı değişir ──
@@ -38,35 +57,35 @@ function safeLogoUrl(url: string | null | undefined): string | null {
 }
 
 const styles = StyleSheet.create({
-  page: { fontFamily: "Helvetica", fontSize: 9, color: "#1a1a1a", paddingTop: 40, paddingBottom: 90, paddingHorizontal: 40, backgroundColor: "#ffffff" },
+  page: { fontFamily: "Inter", fontSize: 9, color: "#1a1a1a", paddingTop: 40, paddingBottom: 90, paddingHorizontal: 40, backgroundColor: "#ffffff" },
   logo: { width: 130, height: 44, objectFit: "contain", marginBottom: 6 },
-  companyName: { fontSize: 14, fontFamily: "Helvetica-Bold" },
+  companyName: { fontSize: 14, fontFamily: "Inter", fontWeight: 700 },
   companyLine: { fontSize: 8, color: "#555" },
-  fakturaTitle: { fontSize: 26, fontFamily: "Helvetica-Bold", textAlign: "right" },
+  fakturaTitle: { fontSize: 26, fontFamily: "Inter", fontWeight: 700, textAlign: "right" },
   sida: { fontSize: 8, color: "#888", textAlign: "right", marginTop: 2 },
-  recipientName: { fontSize: 10, fontFamily: "Helvetica-Bold" },
+  recipientName: { fontSize: 10, fontFamily: "Inter", fontWeight: 700 },
   recipientLine: { fontSize: 9, color: "#222", lineHeight: 1.5 },
   bandLabelSm: { fontSize: 8 },
-  bandBig: { fontSize: 18, fontFamily: "Helvetica-Bold" },
+  bandBig: { fontSize: 18, fontFamily: "Inter", fontWeight: 700 },
   bandColLabel: { fontSize: 8 },
-  bandColVal: { fontSize: 11, fontFamily: "Helvetica-Bold" },
+  bandColVal: { fontSize: 11, fontFamily: "Inter", fontWeight: 700 },
   infoBox: { borderWidth: 1, borderColor: "#d1d5db", borderRadius: 4, padding: 12, flexDirection: "row", marginBottom: 22 },
   infoCol: { width: "50%" },
   infoRow: { flexDirection: "row", marginBottom: 3 },
   infoKey: { fontSize: 8.5, color: "#6b7280", width: 78 },
-  infoVal: { fontSize: 8.5, color: "#111827", fontFamily: "Helvetica-Bold" },
+  infoVal: { fontSize: 8.5, color: "#111827", fontFamily: "Inter", fontWeight: 700 },
   thRow: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#9ca3af", paddingBottom: 5, marginBottom: 2 },
   th: { fontSize: 8, color: "#6b7280" },
   row: { flexDirection: "row", paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: "#f0f0f0" },
-  cKind: { width: 56, fontSize: 9, fontFamily: "Helvetica-Bold" },
+  cKind: { width: 56, fontSize: 9, fontFamily: "Inter", fontWeight: 700 },
   cDesc: { flex: 1, fontSize: 9, color: "#222", paddingRight: 8 },
   cQty: { width: 78, fontSize: 9, color: "#444", textAlign: "right" },
   cVat: { width: 42, fontSize: 9, color: "#444", textAlign: "right" },
-  cAmt: { width: 80, fontSize: 9, fontFamily: "Helvetica-Bold", textAlign: "right" },
+  cAmt: { width: 80, fontSize: 9, fontFamily: "Inter", fontWeight: 700, textAlign: "right" },
   sumWrap: { flexDirection: "row", justifyContent: "flex-end", marginTop: 14 },
   sumBox: { width: 320 },
   notBox: { borderTopWidth: 1, borderTopColor: "#e5e7eb", paddingTop: 10, marginTop: 4, marginBottom: 18 },
-  notRubrik: { fontSize: 8, color: "#6b7280", marginBottom: 3, fontFamily: "Helvetica-Bold" },
+  notRubrik: { fontSize: 8, color: "#6b7280", marginBottom: 3, fontFamily: "Inter", fontWeight: 700 },
   notText: { fontSize: 9, color: "#374151", lineHeight: 1.45 },
   sumHead: { flexDirection: "row", borderBottomWidth: 1, borderBottomColor: "#e5e7eb", paddingBottom: 4 },
   sumHeadCell: { fontSize: 8, color: "#6b7280", textAlign: "right" },
@@ -74,10 +93,10 @@ const styles = StyleSheet.create({
   sumLabel: { flex: 1, fontSize: 9, color: "#374151" },
   sumCell: { width: 90, fontSize: 9, textAlign: "right", color: "#374151" },
   attRow: { flexDirection: "row", justifyContent: "flex-end", marginTop: 8 },
-  attText: { fontSize: 13, fontFamily: "Helvetica-Bold" },
+  attText: { fontSize: 13, fontFamily: "Inter", fontWeight: 700 },
   giro: { position: "absolute", bottom: 24, left: 40, right: 40, borderTopWidth: 1, borderTopColor: "#111827", paddingTop: 6 },
   giroLabel: { fontSize: 6.5, color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 },
-  giroVal: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#111827" },
+  giroVal: { fontSize: 10, fontFamily: "Inter", fontWeight: 700, color: "#111827" },
 });
 
 function fmt(n: number) {
@@ -277,7 +296,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
                 <Text style={styles.sumLabel}>{r}% Moms</Text>
                 <Text style={[styles.sumCell, { width: 90 }]}>{fmt(vatByRate[r].net)}</Text>
                 <Text style={[styles.sumCell, { width: 70 }]}>{fmt(vatByRate[r].vat)}</Text>
-                <Text style={[styles.sumCell, { width: 90, fontFamily: "Helvetica-Bold", color: "#111827" }]}>{fmt(vatByRate[r].net + vatByRate[r].vat)}</Text>
+                <Text style={[styles.sumCell, { width: 90, fontFamily: "Inter", fontWeight: 700, color: "#111827" }]}>{fmt(vatByRate[r].net + vatByRate[r].vat)}</Text>
               </View>
             ))}
             {Math.abs(rounding) >= 0.005 && (
@@ -314,7 +333,7 @@ export function InvoicePDF({ invoice, company, customer, lines, template, qrData
                 <Text style={styles.sumLabel}>Omvänd betalningsskyldighet</Text>
                 <Text style={[styles.sumCell, { width: 90 }]}>{fmt(invoice.subtotal)}</Text>
                 <Text style={[styles.sumCell, { width: 70 }]}>0,00</Text>
-                <Text style={[styles.sumCell, { width: 90, fontFamily: "Helvetica-Bold", color: "#111827" }]}>{fmt(invoice.subtotal)}</Text>
+                <Text style={[styles.sumCell, { width: 90, fontFamily: "Inter", fontWeight: 700, color: "#111827" }]}>{fmt(invoice.subtotal)}</Text>
               </View>
             )}
             <View style={styles.attRow}>
