@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { kontrolleraOrgNr } from "@/lib/svenska-nummer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +60,12 @@ export function ClientForm({ initialData, getRedirectPath, createLabel }: Client
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    // Numret hamnar pa fakturan och i SIE-filen. Ett felskrivet nummer
+    // upptacks darfor inte har utan forst nar nagon annan avvisar det.
+    const orgKoll = kontrolleraOrgNr(form.org_no);
+    if (!orgKoll.giltigt) { setError(orgKoll.fel!); return; }
+
     setLoading(true);
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();

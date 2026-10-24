@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { kontrolleraOrgNr, kontrolleraPersonnummer } from "@/lib/svenska-nummer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,6 +48,12 @@ export function CustomerForm({ initialData, clientCompanies }: CustomerFormProps
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    // Personnumret kravs for begaran om ROT/RUT - ett felskrivet nummer
+    // gor att Skatteverket avvisar den, langt efter att fakturan skickats.
+    const koll = isCompany ? kontrolleraOrgNr(form.org_no) : kontrolleraPersonnummer(form.personnummer);
+    if (!koll.giltigt) { setError(koll.fel!); return; }
+
     setLoading(true);
     const supabase = createClient();
 

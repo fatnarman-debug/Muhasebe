@@ -32,9 +32,10 @@ const PLANER = [
     arspris: 790,
     note: "För dig som driver eget",
     beskrivning:
-      "Allt du behöver för att fakturera din egen verksamhet, utan tak på antalet fakturor.",
+      "Fakturera från dina egna företag. Driver du både enskild firma och aktiebolag lägger du upp båda i samma konto.",
     ingar: [
       "Obegränsat antal fakturor och offerter",
+      "Dina egna företag i samma konto",
       "ROT- och RUT-avdrag uträknat automatiskt",
       "Bankgiro, OCR-referens och QR för bankappen",
       "Kreditfaktura med hänvisning till originalet",
@@ -51,12 +52,14 @@ const PLANER = [
     arspris: 2990,
     note: "För redovisningsbyråer",
     beskrivning:
-      "För dig som fakturerar åt flera klientföretag och behöver hålla isär vem som ser vad.",
+      "För byrån som fakturerar åt sina klienter. Lägg upp dina konsulter, tilldela klienter till rätt person och håll isär vem som ser vad.",
     ingar: [
       "Allt i Egen",
       "Flera konsulter i samma konto",
-      "Tilldela klientföretag per konsult",
+      "Tilldela klienter till rätt konsult",
+      "Varje konsult ser bara sina egna klienter",
       "Roller och behörigheter",
+      "SIE4-export för bokföringen",
       "Krypterad säkerhetskopiering",
       "Prioriterad support",
     ],
@@ -73,8 +76,11 @@ const JAMFORELSE: { rad: string; egen: boolean | string; byra: boolean | string 
   { rad: "Bankgiro, OCR och QR-kod", egen: true, byra: true },
   { rad: "Kreditfaktura", egen: true, byra: true },
   { rad: "Påminnelser", egen: true, byra: true },
-  { rad: "Antal klientföretag", egen: "Ett", byra: "Flera" },
+  { rad: "SIE4-export", egen: true, byra: true },
+  { rad: "Egna företag", egen: "Flera", byra: "Flera" },
+  { rad: "Fakturera åt andras företag", egen: false, byra: true },
   { rad: "Flera användare", egen: false, byra: true },
+  { rad: "Tilldela klienter per konsult", egen: false, byra: true },
   { rad: "Roller och behörigheter", egen: false, byra: true },
 ];
 
