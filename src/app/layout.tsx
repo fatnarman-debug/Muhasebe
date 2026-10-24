@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Calistoga, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { CookieBanner } from "@/components/CookieBanner";
+import { KEY_SAMTYCKE } from "@/lib/samtycke";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -56,6 +57,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="sv"
       className={`h-full ${inter.variable} ${calistoga.variable} ${jetbrainsMono.variable}`}
+      /*
+        Skriptet nedan satter data-consent har innan React hydrerar, sa taggen
+        ser med flit inte likadan ut som i serversvaret. Flaggan galler bara
+        det har elementets egna attribut - riktiga avvikelser langre ner i
+        sidan rapporteras fortfarande.
+      */
+      suppressHydrationWarning
     >
       {/*
         Inga <link> till fonts.googleapis.com har: de blockerar renderingen pa
@@ -63,6 +71,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         next/font ovan. Material Symbols anvands BARA i /yetkili och /konsult
         och laddas darfor i respektive layout, inte globalt.
       */}
+      <head>
+        {/*
+          Bannern ligger i det statiska svaret, sa att den syns vid forsta
+          malningen. Det har skriptet maste darfor hinna fore: det markerar
+          <html> for den som redan har svarat, och css-regeln i globals.css
+          doljer bannern. Korde vi det efter hydreringen skulle bannern blinka
+          forbi hos aterkommande besokare.
+
+          Lasningen gors av bada kallorna. Cookien finns aven nar localStorage
+          ar blockerat, localStorage finns aven om cookien har rensats.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              `try{var k='${KEY_SAMTYCKE}';` +
+              `if(document.cookie.indexOf(k+'=')>-1||localStorage.getItem(k))` +
+              `document.documentElement.dataset.consent='1'}catch(e){}`,
+          }}
+        />
+      </head>
       <body className={`${inter.className} h-full antialiased`}>
         {children}
         <CookieBanner />

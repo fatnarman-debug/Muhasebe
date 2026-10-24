@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { KEY_SAMTYCKE } from "@/lib/samtycke";
 
-const KEY = "lf-cookie-consent"; // "all" | "necessary"
+const KEY = KEY_SAMTYCKE;
 export const OPEN_EVENT = "lf-consent-open";
 
 /** Oppnar cookiebannern igen sa att besokaren kan andra eller aterkalla sitt val. */
@@ -17,22 +18,31 @@ export function oppnaCookieinstallningar() {
  * statistik-/analyscookies: ladda dem ENDAST om samtycke === "all".
  */
 export function CookieBanner() {
-  const [show, setShow] = useState(false);
+  // Sant fran borjan, sa att bannern finns med i det forsta svaret och syns
+  // direkt i stallet for att hoppa in efter hydreringen. Besokare som redan
+  // har svarat ser den inte: skriptet i <head> satter data-consent pa <html>
+  // innan sidan malas, och css-regeln i globals.css doljer den da.
+  const [show, setShow] = useState(true);
   const [nuvarande, setNuvarande] = useState<"all" | "necessary" | null>(null);
 
   useEffect(() => {
     try {
       const sparat = localStorage.getItem(KEY) as "all" | "necessary" | null;
       setNuvarande(sparat);
-      if (!sparat) setShow(true);
+      if (sparat) setShow(false);
     } catch {
-      /* localStorage kan saknas (privat läge) – visa då inte bannern upprepat */
+      // localStorage kan vara blockerat (privat lage). Valet ligger aven i en
+      // cookie, och den lases av skriptet i <head> - bannern aterkommer darfor
+      // inte for den som redan har svarat.
     }
 
     // Samtycket maste ga att andra i efterhand, inte bara vid forsta besoket.
     // Lanken i sidfoten oppnar bannern igen via det har handelsen.
     function oppna() {
       try { setNuvarande(localStorage.getItem(KEY) as "all" | "necessary" | null); } catch {}
+      // Flaggan i <html> doljer bannern med css. Den maste bort nar besokaren
+      // sjalv valjer att oppna den igen, annars renderas den utan att synas.
+      try { delete document.documentElement.dataset.consent; } catch {}
       setShow(true);
     }
     window.addEventListener(OPEN_EVENT, oppna);
@@ -55,7 +65,7 @@ export function CookieBanner() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[100] p-3 sm:p-4">
+    <div id="cookie-banner" className="fixed inset-x-0 bottom-0 z-[100] p-3 sm:p-4">
       <div className="max-w-3xl mx-auto bg-white border border-slate-200 shadow-xl rounded-2xl p-4 sm:p-5 sm:flex sm:items-center sm:gap-4">
         <p className="text-sm text-slate-600 leading-relaxed flex-1">
           Vi använder nödvändiga cookies för att tjänsten ska fungera och vill gärna använda cookies för statistik

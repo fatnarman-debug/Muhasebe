@@ -128,3 +128,12 @@
     @apply font-sans;
   }
 }
+/*
+  Cookiebannern ligger i det statiska svaret for att den ska synas vid forsta
+  malningen i stallet for att hoppa in efter hydreringen. Skriptet i <head>
+  satter data-consent for den som redan har svarat, och da ska bannern bort
+  innan sidan malas - inte blinka forbi.
+*/
+html[data-consent] #cookie-banner {
+  display: none;
+}

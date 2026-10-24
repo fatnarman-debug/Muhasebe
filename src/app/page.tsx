@@ -379,7 +379,8 @@ export default function LandingPage() {
               <div key={x.t} className="rounded-[1.2rem] bg-white/5 border border-white/10 p-5">
                 <x.icon className="w-6 h-6 text-teal-300" strokeWidth={1.9} />
                 <p className="font-semibold mt-3">{x.t}</p>
-                <p className="text-sm text-stone-600 mt-0.5">{x.d}</p>
+                {/* Ljus text - korten star pa den morka banden, inte pa vitt. */}
+                <p className="text-sm text-stone-300 mt-0.5">{x.d}</p>
               </div>
             ))}
           </div>

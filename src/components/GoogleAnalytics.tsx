@@ -2,9 +2,10 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { KEY_SAMTYCKE } from "@/lib/samtycke";
 
 const GA_ID = "G-BEVD2E3F3G";
-const CONSENT_KEY = "lf-cookie-consent"; // "all" | "necessary"
+const CONSENT_KEY = KEY_SAMTYCKE;
 
 /**
  * Google Analytics – laddas ENDAST om anvandaren samtyckt till statistikcookies
