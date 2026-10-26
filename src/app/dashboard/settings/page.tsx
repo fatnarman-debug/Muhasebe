@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Save, Check, KeyRound, User, Download, ShieldAlert, AlertTriangle } from "lucide-react";
+import { Loader2, Save, Check, KeyRound, User, Download, ShieldAlert, AlertTriangle, CreditCard } from "lucide-react";
 
 export default function SettingsPage() {
   const [tab, setTab] = useState<"profile" | "password" | "data">("profile");
@@ -143,6 +143,8 @@ function DataTab() {
   const [skickar, setSkickar] = useState(false);
   const [skickat, setSkickat] = useState(false);
   const [fel, setFel] = useState<string | null>(null);
+  const [portalLaddar, setPortalLaddar] = useState(false);
+  const [portalFel, setPortalFel] = useState<string | null>(null);
   const [anledning, setAnledning] = useState("");
   const [bekrafta, setBekrafta] = useState(false);
 
@@ -160,8 +162,46 @@ function DataTab() {
     setSkickat(true);
   }
 
+  /** Hamtar en engangslank till Stripes sida och skickar besokaren dit. */
+  async function oppnaPortal() {
+    setPortalLaddar(true);
+    setPortalFel(null);
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      setPortalFel(data.error ?? "Kunde inte öppna sidan. Försök igen.");
+    } catch {
+      setPortalFel("Kunde inte öppna sidan. Försök igen.");
+    } finally {
+      setPortalLaddar(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
+      <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          Prenumeration
+        </h2>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          Säg upp, byt betalkort eller hämta dina kvitton. Säger du upp har du kvar
+          ditt konto perioden ut – du förlorar inte tid du redan har betalat för.
+        </p>
+        {portalFel && <p className="text-sm text-red-600">{portalFel}</p>}
+        <button
+          onClick={oppnaPortal}
+          disabled={portalLaddar}
+          className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 disabled:opacity-50 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
+        >
+          <CreditCard className="w-4 h-4" />
+          {portalLaddar ? "Öppnar…" : "Hantera prenumeration"}
+        </button>
+      </section>
+
       <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
           Ladda ner dina uppgifter
