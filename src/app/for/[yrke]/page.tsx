@@ -44,6 +44,7 @@ const REGLER = {
   rot: {
     etikett: "ROT 30 %",
     procent: 0.3,
+    guide: "rot-avdrag-pa-faktura",
     rubrik: "Så fungerar ROT-avdraget på fakturan",
     text: "ROT-avdraget är 30 procent av arbetskostnaden inklusive moms under 2026, med ett tak på 50 000 kronor per person och år. Avdraget gäller enbart arbete – inte material, resor eller maskiner. Du drar av rotavdraget på fakturan. När arbetet är utfört och kunden har betalat sin del begär du utbetalning från Skatteverket.",
     exempel: { arbete: 20000, material: 10000 },
@@ -51,6 +52,7 @@ const REGLER = {
   rut: {
     etikett: "RUT 50 %",
     procent: 0.5,
+    guide: "rut-avdrag-pa-faktura",
     rubrik: "Så fungerar RUT-avdraget på fakturan",
     text: "RUT-avdraget är 50 procent av arbetskostnaden inklusive moms. ROT och RUT delar ett gemensamt tak på högst 75 000 kronor per person och år, inom det gemensamma taket. Avdraget gäller bara arbete – material och växter ger inget avdrag. Du drar av rutavdraget på fakturan och begär utbetalning när kunden har betalat sin del.",
     exempel: { arbete: 8000, material: 2000 },
@@ -201,6 +203,16 @@ export default async function YrkePage({ params }: { params: Promise<{ yrke: str
                     <p className="text-sm text-stone-600 mt-2">
                       Exemplet förutsätter att kunden har rätt till avdraget och tillräckligt
                       utrymme kvar.
+                    </p>
+                    {/* Guiden tar vid dar exemplet slutar: uppgiftskrav, moms och
+                        gransfall. Lanken star sist i rutan, inte i lopande text. */}
+                    <p className="text-sm mt-4 pt-4 border-t border-stone-100">
+                      <Link
+                        href={`/guider/${regel.guide}`}
+                        className="text-[#13294B] underline decoration-stone-300 hover:decoration-[#13294B] underline-offset-2"
+                      >
+                        Hela guiden om {regel.etikett.split(" ")[0]}-avdrag på fakturan
+                      </Link>
                     </p>
                   </div>
                 </>
