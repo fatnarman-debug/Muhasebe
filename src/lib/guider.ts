@@ -28,7 +28,15 @@ export const guider: Guide[] = [
     etikett: "ROT",
     lead:
       "Vad som räknas som arbete, när du begär pengarna från Skatteverket och varför kundens betaldatum avgör vilket år avdraget hör till.",
-    kontrollerad: "20 oktober 2026",
+    kontrollerad: "26 oktober 2026",
+  },
+  {
+    slug: "rut-avdrag-pa-faktura",
+    titel: "RUT-avdrag på fakturan",
+    etikett: "RUT",
+    lead:
+      "50 procent av arbetskostnaden – men bara om kunden betalar elektroniskt. Gränsfallen i städ, trädgård, flytt och tvätt rad för rad.",
+    kontrollerad: "26 oktober 2026",
   },
   {
     slug: "omvand-betalningsskyldighet",

@@ -7,8 +7,10 @@ const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 const PATH = "/guider/rot-avdrag-pa-faktura";
 
 /* Skattefakta verifierade mot skatteverket.se 2026-10-20.
+   Uppgiftskraven och momshanteringen tillagda och verifierade 2026-10-26 mot
+   safungerarrotavdraget (foretag) och FAQ:n om fakturans utformning.
    Kontrollera om innan sidan uppdateras – reglerna andras arligen. */
-const UPPDATERAD = "20 oktober 2026";
+const UPPDATERAD = "26 oktober 2026";
 
 export const metadata: Metadata = {
   title: "ROT-avdrag på fakturan 2026 – guide för dig som utför arbetet",
@@ -26,6 +28,18 @@ export const metadata: Metadata = {
 };
 
 const faqs = [
+  {
+    q: "Vilka uppgifter ska lämnas i begäran om utbetalning?",
+    a: "Företaget ska lämna faktiskt antal arbetade timmar för respektive arbete, debiterad materialkostnad, övrig kostnad som resor, maskiner och administration, arbetskostnaden totalt inklusive moms, det belopp kunden har betalat efter rotavdrag samt det begärda beloppet. Timmarna är den uppgift som oftast saknas i efterhand – ett fast pris säger ingenting om antalet timmar, men timmarna ska ändå lämnas.",
+  },
+  {
+    q: "Räknas rotavdraget på arbetskostnaden med eller utan moms?",
+    a: "Med moms. Rotavdraget är 30 procent av arbetskostnaden inklusive moms, och i begäran om utbetalning redovisas arbetskostnad, kundens betalning och begärt belopp inklusive moms. Själva avdraget ändrar däremot inte din utgående moms: momsen beräknas på hela arbetskostnaden, oavsett att kunden bara betalar 70 procent av den och Skatteverket resten.",
+  },
+  {
+    q: "Ska fakturan visa beloppen med eller utan moms?",
+    a: "Båda. Skatteverket anger att fakturan ska visa fakturans totala belopp exklusive och inklusive moms, samt momsens storlek och procentsats. Dessutom ska fördelningen av kostnaden på arbete respektive material och övriga kostnader framgå, tillsammans med skattereduktionens storlek.",
+  },
   {
     q: "När får jag pengarna från Skatteverket?",
     a: "Först när arbetet är utfört och kunden har betalat sin del får du ansöka om utbetalning. Ansökan ska göras senast den 31 januari året efter betalningsåret. Du ligger alltså ute med avdragsbeloppet från det att fakturan skickas till dess att kunden betalar och ansökan går igenom.",
@@ -64,7 +78,7 @@ const jsonLd = {
       headline: "ROT-avdrag på fakturan 2026 – guide för dig som utför arbetet",
       inLanguage: "sv-SE",
       datePublished: "2026-10-20",
-      dateModified: "2026-10-20",
+      dateModified: "2026-10-26",
       author: { "@type": "Organization", name: "EnkeltFaktura" },
       publisher: { "@type": "Organization", name: "EnkeltFaktura" },
       mainEntityOfPage: `${BASE}${PATH}`,
@@ -100,6 +114,8 @@ export default function RotGuide() {
         <div className="max-w-6xl mx-auto px-5 sm:px-6 pt-10 sm:pt-14 pb-14">
           <nav aria-label="Brödsmula" className="text-sm text-stone-600 mb-8">
             <Link href="/" className="hover:text-stone-900">Start</Link>
+            <span className="mx-2 text-stone-400" aria-hidden="true">/</span>
+            <Link href="/guider" className="hover:text-stone-900">Guider</Link>
             <span className="mx-2 text-stone-400" aria-hidden="true">/</span>
             <span className="text-stone-900">ROT-avdrag på fakturan</span>
           </nav>
@@ -230,6 +246,117 @@ export default function RotGuide() {
         </p>
       </section>
 
+      {/* ───── Uppgifterna ───── */}
+      <section className="bg-white border-y border-stone-200/70">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-16 sm:py-20">
+          <div className="max-w-xl">
+            <p className="text-sm font-semibold text-teal-700 mb-3">Rotuppgifter</p>
+            <h2 className="font-display text-3xl sm:text-4xl text-stone-950">
+              Uppgifterna som ska lämnas
+            </h2>
+            <p className="text-stone-700 mt-4 leading-relaxed">
+              Rotavdrag är två uppgiftskrav, inte ett: fakturan har sin obligatoriska innehålls&shy;lista,
+              och begäran om utbetalning har en annan. Den som bara fyller i det ena får avslag på
+              det andra.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 mt-10 max-w-4xl">
+            <div className="rounded-[1.4rem] border border-stone-200 p-6">
+              <h3 className="font-semibold text-stone-900">På fakturan</h3>
+              <ul className="mt-4 space-y-2.5 text-[15px] text-stone-800">
+                {[
+                  "Vem som har utfört arbetet, och att utföraren har F-skatt",
+                  "Kundens personnummer",
+                  "Vilken typ av arbete som har utförts",
+                  "Var arbetet är utfört och under vilken tidsperiod",
+                  "Fastighetsbeteckning – eller föreningens organisationsnummer och lägenhetsnummer",
+                  "Fördelningen av kostnaden på arbete respektive material och övriga kostnader",
+                  "Totalbeloppet exklusive och inklusive moms, samt momsens storlek och procentsats",
+                  "Skattereduktionens storlek",
+                ].map((t) => (
+                  <li key={t} className="flex gap-2.5">
+                    <span className="text-teal-700 shrink-0" aria-hidden="true">✓</span> {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-[1.4rem] border-2 border-teal-200 bg-teal-50/30 p-6">
+              <h3 className="font-semibold text-stone-900">I begäran om utbetalning</h3>
+              <ul className="mt-4 space-y-2.5 text-[15px] text-stone-800">
+                {[
+                  "Faktiskt antal arbetade timmar för respektive arbete",
+                  "Debiterad materialkostnad",
+                  "Övrig kostnad – resor, maskiner, administration",
+                  "Arbetskostnad totalt, inklusive moms",
+                  "Belopp kunden har betalat, efter rotavdrag",
+                  "Begärt belopp, alltså rotavdraget",
+                ].map((t) => (
+                  <li key={t} className="flex gap-2.5">
+                    <span className="text-teal-700 shrink-0" aria-hidden="true">✓</span> {t}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm text-stone-700 leading-relaxed mt-5 pt-5 border-t border-teal-200/70">
+                Timmarna är den post som försvinner först. Ett fast pris på ett badrum säger
+                ingenting om antalet arbetade timmar – och det är ändå den uppgiften Skatteverket
+                begär. Anteckna timmarna medan jobbet pågår.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── ROT och momsen ───── */}
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 py-16 sm:py-20">
+        <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 lg:gap-14 items-start">
+          <div>
+            <p className="text-sm font-semibold text-teal-700 mb-3">ROT och momsen</p>
+            <h2 className="font-display text-3xl sm:text-4xl text-stone-950">
+              Avdraget sänker inte momsen
+            </h2>
+            <p className="text-stone-700 mt-5 leading-relaxed">
+              Det vanligaste missförståndet är att rotavdraget skulle minska den moms du redovisar.
+              Det gör det inte. Arbetskostnaden är densamma – kunden betalar 70 procent av den och
+              Skatteverket 30 procent. Den utgående momsen beräknas på hela arbetskostnaden.
+            </p>
+            <p className="text-stone-700 mt-4 leading-relaxed">
+              Därför anges beloppen inklusive moms i begäran om utbetalning, medan fakturan ska visa
+              totalbeloppet både exklusive och inklusive moms tillsammans med momssatsen. Räknar du
+              i stället 30 procent på arbetskostnaden exklusive moms blir avdraget för lågt, och
+              kunden betalar mer än hen skulle.
+            </p>
+          </div>
+
+          <div className="rounded-[1.4rem] border border-stone-200 bg-white p-7">
+            <h3 className="font-semibold text-stone-900">Räkneexempel</h3>
+            <p className="text-sm text-stone-600 mt-1">Arbetskostnad 25 000 kr inklusive moms</p>
+            <dl className="mt-5 space-y-3 text-[15px]">
+              {[
+                ["Arbetskostnad inklusive moms", "25 000 kr"],
+                ["Varav moms, 25 %", "5 000 kr"],
+                ["Rotavdrag, 30 % av 25 000 kr", "−7 500 kr"],
+                ["Kunden betalar", "17 500 kr"],
+                ["Du begär från Skatteverket", "7 500 kr"],
+              ].map(([k, v], i, arr) => (
+                <div
+                  key={k}
+                  className={`flex justify-between gap-4 ${i === arr.length - 1 ? "pt-3 border-t border-stone-200 font-semibold text-stone-900" : "text-stone-700"}`}
+                >
+                  <dt>{k}</dt>
+                  <dd className="tabular-nums font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="text-sm text-stone-700 leading-relaxed mt-5 pt-5 border-t border-stone-100">
+              Momsen du redovisar är 5 000 kronor – beräknad på 25 000, inte på de 17 500 kunden
+              betalade. Exemplet utgår från 25 procent moms på byggtjänster till privatperson.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ───── FAQ ───── */}
       <section className="bg-white border-y border-stone-200/70">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 py-16 sm:py-20">
@@ -267,6 +394,8 @@ export default function RotGuide() {
         </Link>
         <p className="text-sm text-stone-600 mt-6">
           <Link href="/for/hantverkare" className="underline hover:text-stone-900">Se hur det fungerar för hantverkare</Link>
+          <span className="mx-2.5 text-stone-400" aria-hidden="true">·</span>
+          <Link href="/guider/rut-avdrag-pa-faktura" className="underline hover:text-stone-900">Guiden om RUT-avdrag</Link>
         </p>
       </section>
 
