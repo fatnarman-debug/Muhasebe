@@ -57,15 +57,20 @@ async function skrivPrenumeration(sub: Stripe.Subscription) {
   }
 
   const kundId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
-  const plan = sub.metadata?.plan;
 
+  // Det som avgor om kunden slapps in skrivs for sig.
+  //
+  // Forst lag planens namn med i samma uppdatering. Kolumnen hade ett villkor
+  // fran en aldre prismodell och slappte inte igenom 'egen', sa hela raden
+  // avvisades: kunden betalade, statusen skrevs aldrig om och kontot forblev
+  // utelast. Ett falt som bara visas i superadmin far inte kunna stoppa det
+  // falt som styr atkomsten.
   const { error } = await adminClient()
     .from("profiles")
     .update({
       subscription_status: tillVarStatus(sub.status),
       stripe_subscription_id: sub.id,
       ...(kundId ? { stripe_customer_id: kundId } : {}),
-      ...(plan ? { subscription_tier: plan } : {}),
     })
     .eq("id", userId);
 
@@ -73,6 +78,17 @@ async function skrivPrenumeration(sub: Stripe.Subscription) {
     // Kastas vidare sa att Stripe forsoker igen. Ett tappat
     // "betalningen gick igenom" ar varre an en extra leverans.
     throw new Error(`kunde inte uppdatera profilen: ${error.message}`);
+  }
+
+  // Planens namn ar till for att kunna se vem som koper vad. Misslyckas den
+  // har loggas det, men begaran far inte falla - atkomsten ar redan satt.
+  const plan = sub.metadata?.plan;
+  if (plan) {
+    const { error: planFel } = await adminClient()
+      .from("profiles").update({ subscription_tier: plan }).eq("id", userId);
+    if (planFel) {
+      console.warn(`[stripe-webhook] kunde inte spara plannamn "${plan}":`, planFel.message);
+    }
   }
 }
 
