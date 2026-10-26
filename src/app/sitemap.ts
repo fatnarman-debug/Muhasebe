@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { yrkeSlugs } from "@/lib/yrken";
+import { guider } from "@/lib/guider";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 
@@ -22,15 +23,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
 
-    // Guider
-    { url: `${BASE}/guider/rot-avdrag-pa-faktura`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/guider/matmoms`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/guider/omvand-betalningsskyldighet`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    // Guider – listan kommer fran src/lib/guider.ts, samma kalla som /guider
+    { url: `${BASE}/guider`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    ...guider.map((g) => ({
+      url: `${BASE}/guider/${g.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
 
-    // Jamforelsesidor
-
-    { url: `${BASE}/auth/register`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE}/auth/login`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    // Inloggning och registrering ligger inte har. De ar satta till noindex i
+    // src/app/auth/layout.tsx, och en sida som bade lamnas in i sitemapen och
+    // sager noindex rapporteras av Google som ett fel.
     { url: `${BASE}/integritetspolicy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE}/anvandarvillkor`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE}/gdpr`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },

@@ -3,7 +3,11 @@ import type { MetadataRoute } from "next";
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://enkeltfaktura.com";
 
 // Privata app-rutter ska inte indexeras — bara marknadssidan (/) och auth.
-const DISALLOW = ["/dashboard/", "/yetkili/", "/konsult/", "/admin/", "/api/"];
+//
+// Utan avslutande snedstreck. En regel matchar prefix, sa "/konsult" tacker
+// bade /konsult och /konsult/fakturor. Skrivs den "/konsult/" slipper just
+// /konsult igenom - och den sidan hamnade darfor i Googles index-rapport.
+const DISALLOW = ["/dashboard", "/yetkili", "/konsult", "/admin", "/api"];
 
 // AI-sökmotorer & assistenter som uttryckligen tillåts (GEO/AEO).
 const AI_BOTS = [
