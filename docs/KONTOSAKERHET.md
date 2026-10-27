@@ -90,7 +90,12 @@ Svaret ska innehålla `captcha verification process failed`. Kommer ett vanligt
 svar är captcha avstängt. Anon-nyckeln finns i webbläsarens javascript och är
 inte hemlig.
 
-## Kvar att göra
+## Telefonregistrering är avstängd
 
-Registrering via telefon är påslaget (`phone: true`, `phone_autoconfirm: true`)
-och används inte. Det är en väg in som ingen bevakar och bör stängas.
+`ENABLE_PHONE_SIGNUP=false` på Supabase-tjänsten.
+
+Vägen användes inte och bevakades inte. En inloggningsväg som ingen tittar
+till är en väg in som ingen märker att någon använder.
+
+Inställningen `phone_autoconfirm` står kvar på `true` men saknar betydelse –
+GoTrue avvisar telefonregistrering redan innan den läses.
