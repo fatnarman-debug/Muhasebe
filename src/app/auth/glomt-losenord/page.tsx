@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Brandmark } from "@/components/Brandmark";
 import { Loader2, MailCheck } from "lucide-react";
+import { Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 
 /* Begar en ny losenordslank. Anvands ocksa nar en inbjudningslank har
    gatt ut eller redan blivit anvand - da racker det att anvandaren
@@ -15,6 +16,8 @@ export default function GlomtLosenord() {
   const [skickar, setSkickar] = useState(false);
   const [skickat, setSkickat] = useState(false);
   const [fel, setFel] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle | null>(null);
 
   async function skicka(e: React.FormEvent) {
     e.preventDefault();
@@ -24,8 +27,12 @@ export default function GlomtLosenord() {
     const supabase = createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(epost.trim(), {
       redirectTo: `${window.location.origin}/auth/satt-losenord`,
+      ...(captcha ? { captchaToken: captcha } : {}),
     });
     setSkickar(false);
+    // Tokenen ar forbrukad oavsett utfall. Nollstall sa att ett nytt forsok
+    // inte skickar samma token.
+    turnstile.current?.reset();
 
     // Visa samma bekraftelse aven vid fel pa adressen: annars gar det att
     // lista ut vilka e-postadresser som har konto har.
@@ -95,6 +102,8 @@ export default function GlomtLosenord() {
                     {fel}
                   </p>
                 )}
+
+                <Turnstile onToken={setCaptcha} handleRef={turnstile} />
 
                 <button
                   type="submit"

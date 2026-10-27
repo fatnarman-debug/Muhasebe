@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2, User, FileText, Loader2, CheckCircle2 } from "lucide-react";
+import { Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 
 type AccountType = "buro" | "sahsi";
 
@@ -21,6 +22,8 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +47,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
+        ...(captcha ? { captchaToken: captcha } : {}),
         emailRedirectTo: `${window.location.origin}/auth/callback`,
         data: {
           full_name: fullName,
@@ -55,6 +59,8 @@ export default function RegisterPage() {
 
     if (signUpError) {
       setError(signUpError.message);
+      // Forbrukad token - utan nollstallning avvisas nasta forsok direkt.
+      turnstile.current?.reset();
       setLoading(false);
       return;
     }
@@ -188,6 +194,8 @@ export default function RegisterPage() {
                 {error}
               </div>
             )}
+
+            <Turnstile onToken={setCaptcha} handleRef={turnstile} />
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
