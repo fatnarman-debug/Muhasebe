@@ -50,8 +50,16 @@ hanteraren. Det betyder två saker, och båda är viktiga:
 2. **Utan den nyckeln går ingen kopia att öppna. Det finns ingen reserv.**
 
 Punkt två är inte teoretisk. En kopia gick redan förlorad på exakt det sättet,
-innan rutinen var på plats. Kontrollera med jämna mellanrum att nyckeln
-verkligen går att hämta ur lösenordshanteraren – inte att den "borde ligga där".
+innan rutinen var på plats.
+
+Och det räcker inte att nyckeln finns. Den 27 oktober 2026 visade sig skriptet
+kryptera till en **annan** publik nyckel än den vars privata hälft låg i
+lösenordshanteraren: när den förra nyckeln tappades skapades ett nytt par, men
+skriptet på servern uppdaterades aldrig. Varje kopia sedan dess var alltså
+omöjlig att öppna, och ingenting såg fel ut – filerna laddades upp, storleken
+stämde, övervakningen sa "frisk".
+
+Kontrollera därför paret, inte bara att nyckeln existerar:
 
 ### Varför EU-hinken
 
@@ -77,6 +85,27 @@ inte – det är fel adress.
 
 Övervakningen har medvetet inte skrivrättighet. Ett kommando som bara ska läsa
 ska inte kunna radera.
+
+### Kontrollera att nycklarna hör ihop
+
+På servern, den publika nyckeln skriptet krypterar till:
+
+```bash
+grep -o 'age1[a-z0-9]*' /root/supabase-backup.sh | sort -u
+```
+
+På egen dator, den publika hälften av nyckeln i lösenordshanteraren (lägg den
+privata i en fil först – den publika är inte hemlig):
+
+```bash
+age-keygen -y nyckel.txt
+```
+
+De två raderna ska vara **identiska**. Är de det inte går kopiorna inte att
+öppna, hur välbevarad den privata nyckeln än är.
+
+Den enda kontroll som räcker hela vägen är ändå att faktiskt öppna en kopia –
+se **Om du måste återställa** nedan. Gör det ett par gånger om året.
 
 ## Övervakning
 
@@ -135,11 +164,12 @@ Att filen finns i hinken säger bara att något laddades upp. Gör en riktig
 provåterställning till en tom databas med jämna mellanrum, enligt stegen ovan.
 Det är det enda som visar att nyckeln, formatet och innehållet håller ihop.
 
+## Gallring
+
+Skriptet tar själv bort kopior äldre än 30 dagar, och skriver ut det i loggen.
+Ingen livscykelregel behövs i Cloudflare.
+
 ## Att ta tag i
 
-- **Gallring.** Kontrollera om hinken har en livscykelregel – det är inte
-  avstämt. Saknas den växer lagringen utan slut. En regel på prefixet `daily/`
-  som tar bort objekt efter 30 dagar räcker, och sätts under hinkens
-  inställningar i Cloudflare.
-- **Supabase Storage** ingår inte i kopian. Det spelar roll först när
-  logotyperna är svåra att ersätta.
+**Supabase Storage** ingår inte i kopian. Det spelar roll först när
+logotyperna är svåra att ersätta.
