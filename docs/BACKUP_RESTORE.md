@@ -61,6 +61,27 @@ stämde, övervakningen sa "frisk".
 
 Kontrollera därför paret, inte bara att nyckeln existerar:
 
+### Kontrollera att nycklarna hör ihop
+
+På servern, den publika nyckeln skriptet krypterar till:
+
+```bash
+grep -o 'age1[a-z0-9]*' /root/supabase-backup.sh | sort -u
+```
+
+På egen dator, den publika hälften av nyckeln i lösenordshanteraren (lägg den
+privata i en fil först – den publika är inte hemlig):
+
+```bash
+age-keygen -y nyckel.txt
+```
+
+De två raderna ska vara **identiska**. Är de det inte går kopiorna inte att
+öppna, hur välbevarad den privata nyckeln än är.
+
+Den enda kontroll som räcker hela vägen är ändå att faktiskt öppna en kopia –
+se **Om du måste återställa** nedan. Gör det ett par gånger om året.
+
 ### Varför EU-hinken
 
 Hinken är skapad med jurisdiktion **EU**, så att personuppgifterna stannar inom
@@ -85,27 +106,6 @@ inte – det är fel adress.
 
 Övervakningen har medvetet inte skrivrättighet. Ett kommando som bara ska läsa
 ska inte kunna radera.
-
-### Kontrollera att nycklarna hör ihop
-
-På servern, den publika nyckeln skriptet krypterar till:
-
-```bash
-grep -o 'age1[a-z0-9]*' /root/supabase-backup.sh | sort -u
-```
-
-På egen dator, den publika hälften av nyckeln i lösenordshanteraren (lägg den
-privata i en fil först – den publika är inte hemlig):
-
-```bash
-age-keygen -y nyckel.txt
-```
-
-De två raderna ska vara **identiska**. Är de det inte går kopiorna inte att
-öppna, hur välbevarad den privata nyckeln än är.
-
-Den enda kontroll som räcker hela vägen är ändå att faktiskt öppna en kopia –
-se **Om du måste återställa** nedan. Gör det ett par gånger om året.
 
 ## Övervakning
 
