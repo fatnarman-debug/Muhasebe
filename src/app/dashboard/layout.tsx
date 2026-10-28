@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { getAccess } from "@/lib/subscription";
 import { TrialBanner } from "@/components/TrialBanner";
+import { Brandmark } from "@/components/Brandmark";
 
 const M = ({ name, fill = false, size = 20 }: { name: string; fill?: boolean; size?: number }) => (
   <span className="material-symbols-outlined select-none leading-none"
@@ -42,9 +43,7 @@ function Sidebar({ name, email, open, onClose }: { name: string; email: string |
       {/* Logo */}
       <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid #f3f4f6" }}>
         <div className="flex items-center gap-3">
-          <div style={{ width: 36, height: 36, borderRadius: 9, background: "#111827", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-            <M name="account_balance" fill size={18} />
-          </div>
+          <Brandmark className="w-9 h-9 shrink-0" />
           <div>
             <div style={{ color: "#111827", fontWeight: 800, fontSize: 15, letterSpacing: "-0.01em" }}>EnkeltFaktura</div>
             <div style={{ color: "#9ca3af", fontSize: 10, letterSpacing: "0.1em", fontWeight: 600, textTransform: "uppercase" }}>
@@ -178,6 +177,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button onClick={() => setMenuOpen(true)} aria-label="Öppna meny" className="p-1.5 -ml-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
             <M name="menu" size={24} />
           </button>
+          <Brandmark className="w-6 h-6 shrink-0" />
           <span style={{ fontWeight: 800, fontSize: 15 }}>EnkeltFaktura</span>
         </div>
         <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-12">

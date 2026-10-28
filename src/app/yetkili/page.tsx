@@ -216,10 +216,15 @@ export default function YetkiliPage() {
 
       {/* Footer */}
       <footer style={{ background: "#fff", borderTop: "1px solid #f3f4f6", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <p style={{ fontSize: 12, color: "#95a5a6" }}>EnkeltFaktura © 2026 EnkeltFaktura Accounting SaaS. Alla rättigheter förbehållna.</p>
+        {/* Foretagsnamnet ar inte faststallt an - skriv inte ut ett pahittat. */}
+        <p style={{ fontSize: 12, color: "#95a5a6" }}>EnkeltFaktura © 2026</p>
         <div style={{ display: "flex", gap: 20 }}>
-          {["Användarvillkor", "Integritetspolicy", "Säkerhet"].map((l) => (
-            <a key={l} href="#" style={{ fontSize: 12, color: "#95a5a6", textDecoration: "none" }}>{l}</a>
+          {[
+            { l: "Användarvillkor", h: "/anvandarvillkor" },
+            { l: "Integritetspolicy", h: "/integritetspolicy" },
+            { l: "GDPR", h: "/gdpr" },
+          ].map(({ l, h }) => (
+            <a key={l} href={h} style={{ fontSize: 12, color: "#95a5a6", textDecoration: "none" }}>{l}</a>
           ))}
         </div>
       </footer>

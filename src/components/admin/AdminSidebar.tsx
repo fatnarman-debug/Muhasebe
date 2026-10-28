@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Shield, LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag, ScrollText, Menu } from "lucide-react";
+import { LayoutDashboard, Users, Building2, FileText, Mail, AlertTriangle, Settings, LogOut, Tag, ScrollText, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Brandmark } from "@/components/Brandmark";
 
 const NAV = [
   { href: "/admin", label: "Genel Bakış", icon: LayoutDashboard, exact: true },
@@ -49,9 +50,7 @@ export function AdminSidebar() {
       )}>
       <div className="h-16 flex items-center px-5 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-            <Shield className="w-4 h-4 text-white" />
-          </div>
+          <Brandmark className="w-8 h-8 shrink-0" color="#FFFFFF" />
           <div>
             <div className="text-white font-bold text-sm leading-tight">EnkeltFaktura</div>
             <div className="text-red-500 font-bold text-[10px] uppercase tracking-widest leading-tight">Super Admin</div>

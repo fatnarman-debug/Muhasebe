@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Receipt } from "lucide-react";
+import { Brandmark } from "@/components/Brandmark";
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
       <header className="sticky top-0 z-10 border-b border-slate-100 bg-white/90 backdrop-blur">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-slate-900 text-white grid place-items-center"><Receipt className="w-4 h-4" /></span>
+            <Brandmark className="w-8 h-8 shrink-0" />
             <span className="font-bold">EnkeltFaktura</span>
           </Link>
           <Link href="/" className="text-sm text-slate-500 hover:text-slate-900">← Till startsidan</Link>

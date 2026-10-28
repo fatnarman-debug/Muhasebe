@@ -155,8 +155,12 @@ export default function KonsultPage() {
           <span style={{ color: "#d1d5db", fontSize: 11 }}>© 2026 · Alla rättigheter förbehållna</span>
         </div>
         <div className="flex gap-5">
-          {["Användarvillkor", "Integritetspolicy", "Säkerhetsstandarder"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 11, color: "#9ca3af", textDecoration: "none" }}
+          {[
+            { l: "Användarvillkor", h: "/anvandarvillkor" },
+            { l: "Integritetspolicy", h: "/integritetspolicy" },
+            { l: "GDPR", h: "/gdpr" },
+          ].map(({ l, h }) => (
+            <a key={l} href={h} style={{ fontSize: 11, color: "#9ca3af", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = "#111827")}
               onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>{l}</a>
           ))}
